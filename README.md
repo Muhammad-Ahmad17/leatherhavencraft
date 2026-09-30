@@ -1,16 +1,29 @@
-## Hi there 👋
+# Leather Haven Craft
 
-<!--
-**leatherhavencraft/leatherhavencraft** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Frontend prototype of a coded storefront. Pieces are mock data. Scrolling the collection changes the jacket on a mannequin, using the same motion as `Jacket scroll demo.html`.
 
-Here are some ideas to get you started:
+## Stack
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- Next.js (App Router) and TypeScript
+- Tailwind CSS
+- Inline SVG, scroll progress, and `requestAnimationFrame`
+
+## Scripts
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The scroll stage is at `/products`. Category edits live at `/products/jackets`, `/products/coats`, and `/products/outerwear`.
+
+## Layout
+
+- `app/` routes, metadata, sitemap, and Open Graph image
+- `components/` header, footer, carousel, dots, and caption
+- `hooks/` scroll tracking, viewport size, and animation frames
+- `data/` mock products and categories
+- `lib/` easing, clamps, and constants
+- `styles/` page colors and the scroll stage
+
+Set `NEXT_PUBLIC_SITE_URL` when you deploy so canonical URLs, the sitemap, and robots point at the live host. Vercel can host the frontend as-is.

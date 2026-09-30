@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jacket scroll demo</title>
+<style>
+  :root {
+    --bg:#dde3e8; --bg2:#cdd6dd; --ink:#1d262e; --muted:#5d6b77; --mq:#b9b2a9; --mq2:#a39c93;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#1b2229; --bg2:#232c35; --ink:#e8edf1; --muted:#93a1ad; --mq:#8f8880; --mq2:#7d766f; }
+  }
+  :root[data-theme="dark"] { --bg:#1b2229; --bg2:#232c35; --ink:#e8edf1; --muted:#93a1ad; --mq:#8f8880; --mq2:#7d766f; }
+  html { scroll-padding-top:env(safe-area-inset-top,0px); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Helvetica Neue",Arial,sans-serif; overflow-x:hidden; }
+  .track { height:420vh; position:relative; }
+  .stage { position:sticky; top:env(safe-area-inset-top,0px); height:100vh; overflow:hidden; display:grid; place-items:center;
+           background:radial-gradient(ellipse at 50% 60%, var(--bg2), var(--bg) 70%); }
+  svg.scene { height:78vh; width:auto; overflow:visible; display:block; }
+  .caption { position:absolute; left:clamp(20px,5vw,64px); bottom:calc(clamp(20px,5vh,56px) + env(safe-area-inset-bottom,0px)); pointer-events:none; }
+  .name { font-size:clamp(28px,5vw,64px); font-weight:700; letter-spacing:-.02em; line-height:1; margin:0; }
+  .meta { margin:10px 0 0; color:var(--muted); font-size:clamp(14px,1.6vw,18px); }
+  .dots { position:absolute; right:clamp(20px,4vw,48px); top:50%; transform:translateY(-50%);
+          display:flex; flex-direction:column; gap:14px; }
+  .dots button { width:12px; height:12px; border-radius:50%; border:2px solid var(--ink);
+                 background:transparent; padding:0; cursor:pointer; }
+  .dots button[aria-current="true"] { background:var(--ink); }
+  .dots button:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+  .hint { position:absolute; top:24px; left:50%; transform:translateX(-50%); color:var(--muted);
+          font-size:14px; transition:opacity .3s; }
+</style>
+</head>
+<body>
+<div class="track" id="track">
+  <div class="stage">
+    <p class="hint" id="hint">Scroll down to change the jacket</p>
+
+    <svg class="scene" id="scene" viewBox="0 0 400 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A mannequin wearing a jacket that changes as you scroll">
+      <ellipse cx="200" cy="676" rx="110" ry="12" fill="#000" opacity=".14"/>
+      <g>
+        <path d="M148 430 L252 430 L244 660 L208 660 L200 470 L192 660 L156 660 Z" fill="#2a3440"/>
+        <rect x="150" y="656" width="52" height="12" rx="5" fill="#1b232c"/>
+        <rect x="198" y="656" width="52" height="12" rx="5" fill="#1b232c"/>
+        <path d="M132 170 Q200 152 268 170 L262 300 Q258 360 256 440 L144 440 Q142 360 138 300 Z" fill="#f1efea"/>
+        <path d="M132 172 Q100 180 96 260 L90 400 Q92 414 108 414 Q120 412 122 398 L134 260 Z" fill="#f1efea"/>
+        <path d="M268 172 Q300 180 304 260 L310 400 Q308 414 292 414 Q280 412 278 398 L266 260 Z" fill="#f1efea"/>
+        <circle cx="100" cy="430" r="14" fill="var(--mq)"/>
+        <circle cx="300" cy="430" r="14" fill="var(--mq)"/>
+        <rect x="185" y="132" width="30" height="40" rx="8" fill="var(--mq2)"/>
+        <ellipse cx="200" cy="92" rx="34" ry="44" fill="var(--mq)"/>
+      </g>
+      <g id="jackets"></g>
+    </svg>
+
+    <div class="caption" aria-live="polite">
+      <h1 class="name" id="jName"></h1>
+      <p class="meta" id="jMeta"></p>
+    </div>
+    <div class="dots" id="dots" aria-label="Jackets"></div>
+  </div>
+</div>
+
+<script>
+const jackets = [
+  { name:"Field Bomber", meta:"Olive cotton twill", color:"#5f7040", dark:"#3f4d2a", hem:400, cuff:416,
+    extra:`<path d="M200 160 L200 400" stroke="#2c361c" stroke-width="3"/>
+      <rect x="132" y="386" width="136" height="16" rx="3" fill="#3f4d2a"/>
+      <path d="M168 160 Q200 190 232 160 L232 148 Q200 160 168 148 Z" fill="#3f4d2a"/>
+      <rect x="150" y="300" width="34" height="5" rx="2" fill="#2c361c"/>
+      <rect x="216" y="300" width="34" height="5" rx="2" fill="#2c361c"/>
+      <rect x="84" y="404" width="34" height="14" rx="3" fill="#3f4d2a"/>
+      <rect x="282" y="404" width="34" height="14" rx="3" fill="#3f4d2a"/>` },
+  { name:"Camel Overcoat", meta:"Wool blend, long cut", color:"#b98d5c", dark:"#96703f", hem:540, cuff:424,
+    extra:`<path d="M172 158 L200 300 L228 158 L214 150 L200 200 L186 150 Z" fill="#a37a4b"/>
+      <path d="M156 164 L200 330 L172 158 Z" fill="#c7a074"/>
+      <path d="M244 164 L200 330 L228 158 Z" fill="#c7a074"/>
+      <circle cx="205" cy="340" r="4" fill="#5b4326"/>
+      <circle cx="205" cy="400" r="4" fill="#5b4326"/>
+      <circle cx="205" cy="460" r="4" fill="#5b4326"/>
+      <rect x="150" y="420" width="38" height="6" rx="3" fill="#96703f"/>
+      <rect x="212" y="420" width="38" height="6" rx="3" fill="#96703f"/>` },
+  { name:"Indigo Denim", meta:"Washed, chest pockets", color:"#38597f", dark:"#28425f", hem:392, cuff:414,
+    extra:`<path d="M200 162 L200 392" stroke="#22374f" stroke-width="2"/>
+      <path d="M168 160 L200 190 L232 160 L232 148 L200 158 L168 148 Z" fill="#28425f"/>
+      <rect x="146" y="214" width="38" height="36" rx="3" fill="none" stroke="#e0b25a" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <rect x="216" y="214" width="38" height="36" rx="3" fill="none" stroke="#e0b25a" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <path d="M135 350 L265 350" stroke="#e0b25a" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <circle cx="200" cy="230" r="3" fill="#e0b25a"/>
+      <circle cx="200" cy="290" r="3" fill="#e0b25a"/>
+      <rect x="84" y="402" width="34" height="14" rx="3" fill="#28425f"/>
+      <rect x="282" y="402" width="34" height="14" rx="3" fill="#28425f"/>` },
+  { name:"Quilted Puffer", meta:"Brick red, light fill", color:"#a8433a", dark:"#7f2f28", hem:420, cuff:420,
+    extra:`<g stroke="#7f2f28" stroke-width="3" opacity=".8">
+      <path d="M134 220 Q200 232 266 220"/><path d="M134 268 Q200 280 266 268"/>
+      <path d="M134 316 Q200 328 266 316"/><path d="M134 364 Q200 376 266 364"/>
+      <path d="M100 250 L128 254"/><path d="M96 310 L124 312"/><path d="M92 370 L120 370"/>
+      <path d="M300 250 L272 254"/><path d="M304 310 L276 312"/><path d="M308 370 L280 370"/></g>
+      <path d="M200 160 L200 420" stroke="#5c211c" stroke-width="3"/>
+      <path d="M166 160 Q200 176 234 160 L234 138 Q200 150 166 138 Z" fill="#7f2f28"/>` }
+];
+
+function jacketSVG(c) {
+  const h = c.hem, s = c.cuff;
+  return `
+    <path d="M140 168 Q200 156 260 168 L268 ${h} Q200 ${h+12} 132 ${h} Z" fill="${c.color}"/>
+    <path d="M140 168 L112 176 Q88 300 84 ${s} L118 ${s+4} Q126 330 148 250 Z" fill="${c.color}"/>
+    <path d="M260 168 L288 176 Q312 300 316 ${s} L282 ${s+4} Q274 330 252 250 Z" fill="${c.color}"/>
+    ${c.extra}`;
+}
+
+const layer = document.getElementById('jackets');
+const dots = document.getElementById('dots');
+const nameEl = document.getElementById('jName');
+const metaEl = document.getElementById('jMeta');
+const hint = document.getElementById('hint');
+const svg = document.getElementById('scene');
+const track = document.getElementById('track');
+const N = jackets.length;
+
+const groups = jackets.map((c, i) => {
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.innerHTML = jacketSVG(c);
+  layer.appendChild(g);
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', c.name);
+  b.onclick = () => {
+    const max = track.offsetHeight - innerHeight;
+    scrollTo({ top: track.offsetTop + (i / (N - 1)) * max, behavior: 'smooth' });
+  };
+  dots.appendChild(b);
+  return g;
+});
+
+let travel = 600;
+const measure = () => {
+  const scale = svg.getBoundingClientRect().height / 700;
+  travel = (innerWidth / 2) / scale + 260;
+};
+const ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+let current = -1;
+function render() {
+  const max = track.offsetHeight - innerHeight;
+  const f = clamp((scrollY - track.offsetTop) / max, 0, 1);
+  const u = f * (N - 1);
+
+  groups.forEach((g, i) => {
+    const p = u - i;
+    const a = Math.abs(p);
+    if (a >= 1) { g.style.display = 'none'; return; }
+    g.style.display = '';
+    const t = ease(clamp((a - 0.18) / 0.82, 0, 1));
+    const dx = (p < 0 ? 1 : -1) * t * travel;
+    g.setAttribute('transform', `translate(${dx.toFixed(1)} 0) rotate(${((dx / travel) * 10).toFixed(2)} 200 300)`);
+  });
+
+  const idx = clamp(Math.round(u), 0, N - 1);
+  if (idx !== current) {
+    current = idx;
+    nameEl.textContent = jackets[idx].name;
+    metaEl.textContent = jackets[idx].meta;
+    [...dots.children].forEach((d, k) => d.setAttribute('aria-current', k === idx ? 'true' : 'false'));
+  }
+  hint.style.opacity = f > 0.02 ? 0 : 1;
+}
+
+let ticking = false;
+addEventListener('scroll', () => {
+  if (!ticking) { ticking = true; requestAnimationFrame(() => { render(); ticking = false; }); }
+}, { passive: true });
+addEventListener('resize', () => { measure(); render(); });
+measure(); render();
+</script>
+</body>
+</html>
