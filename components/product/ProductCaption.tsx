@@ -1,5 +1,6 @@
 "use client";
 
+import { getBrandLabel } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { useScrollAnimationContext } from "@/components/animations/scroll-animation-context";
 
@@ -10,7 +11,7 @@ export function ProductCaption() {
 
   return (
     <div className="caption" aria-live="polite">
-      <p className="eyebrow">{product.category}</p>
+      <p className="eyebrow">{getBrandLabel(product.brand)}</p>
       <h1 className="name">{product.name}</h1>
       <p className="meta">
         {product.meta}

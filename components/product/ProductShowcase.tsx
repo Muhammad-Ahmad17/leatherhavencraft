@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Product } from "@/data/products";
-import { getCategoryLabel } from "@/data/products";
+import { getBrandLabel } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
@@ -10,7 +10,7 @@ import { ProductCarousel } from "@/components/product/ProductCarousel";
 export function ProductShowcase({
   products,
   title = "The collection",
-  intro = "Six pieces, one mannequin. Scroll and the jacket changes.",
+  intro = "One mannequin. Scroll and the jacket changes.",
 }: {
   products: Product[];
   title?: string;
@@ -44,7 +44,7 @@ export function ProductShowcase({
               <li key={product.id} className="flex flex-wrap items-end justify-between gap-4 py-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
-                    {getCategoryLabel(product.category)}
+                    {getBrandLabel(product.brand)}
                   </p>
                   <h3 className="mt-1 text-2xl font-semibold tracking-tight">{product.name}</h3>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--muted)]">

@@ -9,13 +9,13 @@ export function Footer() {
         <div>
           <p className="text-sm font-semibold tracking-[0.16em] uppercase">{SITE_NAME}</p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-[var(--muted)]">
-            Frontend prototype with mock pieces. Nothing here is for sale yet.
+            Authorized jackets for Europe and America. This prototype uses mock pieces.
           </p>
         </div>
         <div className="flex flex-col gap-4">
           <Navigation />
           <Link href="/products" className="text-sm underline underline-offset-4">
-            Scroll the collection
+            Shop all jackets
           </Link>
         </div>
       </div>

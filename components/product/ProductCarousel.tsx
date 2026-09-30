@@ -12,7 +12,7 @@ export function ProductCarousel() {
   return (
     <div className="stage">
       <p className="hint" style={{ opacity: hintVisible ? 1 : 0 }}>
-        Scroll to change the piece
+        Scroll the collection
       </p>
 
       <svg

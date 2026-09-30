@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import { products } from "@/data/products";
-import { ProductShowcase } from "@/components/product/ProductShowcase";
+import { ProductCatalog } from "@/components/product/ProductCatalog";
 
 export const metadata: Metadata = {
-  title: "Collection",
-  description:
-    "Scroll through leather jackets, coats, and outerwear. Each piece slides into place on the mannequin.",
+  title: "Jackets",
+  description: "Every jacket we carry, across Avirex, Harley-Davidson, Pelle Pelle, Schott NYC, and Supreme.",
   alternates: { canonical: "/products" },
 };
 
 export default function ProductsPage() {
   return (
-    <main>
-      <ProductShowcase
-        products={products}
-        title="Six pieces, one scroll"
-        intro="Prices and descriptions are mock data for the prototype. Scroll the stage above, or use the dots to jump."
-      />
+    <main className="pt-28">
+      <div className="mx-auto max-w-6xl px-6 pb-6">
+        <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">All brands</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">Jackets</h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)]">
+          One category. Five houses. Filter by size, colour, or price.
+        </p>
+      </div>
+      <ProductCatalog products={products} />
     </main>
   );
 }

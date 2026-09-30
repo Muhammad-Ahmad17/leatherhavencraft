@@ -1,6 +1,6 @@
 .scroll-track {
   position: relative;
-  height: 280vh;
+  height: 220vh;
 }
 
 .scroll-track-single {
@@ -10,7 +10,7 @@
 
 @media (min-width: 768px) {
   .scroll-track:not(.scroll-track-single) {
-    height: 420vh;
+    height: 280vh;
   }
 }
 
@@ -112,8 +112,88 @@ svg.scene {
   white-space: nowrap;
 }
 
+.brand-marquee {
+  height: 15vh;
+  min-height: 88px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: var(--bg);
+}
+
+.brand-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  width: max-content;
+  animation: brand-marquee 28s linear infinite;
+}
+
+.brand-marquee:hover .brand-marquee-track,
+.brand-marquee:focus-within .brand-marquee-track {
+  animation-play-state: paused;
+}
+
+.brand-marquee a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  min-width: 120px;
+}
+
+.brand-marquee img {
+  max-height: 44px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.8;
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+.brand-marquee a:hover img,
+.brand-marquee a:focus-visible img {
+  filter: none;
+  opacity: 1;
+}
+
+@keyframes brand-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hint {
+    transition: none;
+  }
+
+  .brand-marquee {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .brand-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    gap: 1.5rem 2.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .brand-marquee [data-marquee-clone] {
+    display: none;
+  }
+
+  .brand-marquee img {
     transition: none;
   }
 }

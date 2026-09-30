@@ -4,7 +4,7 @@ import { Navigation } from "@/components/common/Navigation";
 
 export function Header() {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-20 px-5 pt-[max(1rem,env(safe-area-inset-top))] sm:px-8">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-20 bg-[var(--bg)]/90 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 backdrop-blur-md sm:px-8">
       <div className="pointer-events-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/" className="text-sm font-semibold tracking-[0.16em] uppercase text-[var(--ink)]">
           {SITE_NAME}
