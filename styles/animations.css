@@ -1,0 +1,119 @@
+.scroll-track {
+  position: relative;
+  height: 280vh;
+}
+
+.scroll-track-single {
+  height: 100vh;
+  height: 100dvh;
+}
+
+@media (min-width: 768px) {
+  .scroll-track:not(.scroll-track-single) {
+    height: 420vh;
+  }
+}
+
+.stage {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 50% 60%, var(--bg2), var(--bg) 70%);
+}
+
+svg.scene {
+  height: 68vh;
+  height: 68dvh;
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  svg.scene {
+    height: 78vh;
+    height: 78dvh;
+  }
+}
+
+.caption {
+  position: absolute;
+  left: clamp(20px, 5vw, 64px);
+  bottom: calc(clamp(20px, 5vh, 56px) + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  max-width: min(70vw, 520px);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.name {
+  font-size: clamp(28px, 5vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+
+.meta {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: clamp(14px, 1.6vw, 18px);
+}
+
+.dots {
+  position: absolute;
+  right: clamp(16px, 4vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dots button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dots button[aria-current="true"] {
+  background: var(--ink);
+}
+
+.dots button:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.hint {
+  position: absolute;
+  top: calc(72px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: 14px;
+  transition: opacity 0.3s;
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint {
+    transition: none;
+  }
+}
