@@ -1,10 +1,9 @@
 import Link from "next/link";
+import { brands } from "@/data/brands";
 
 const links = [
-  { href: "/products", label: "Collection" },
-  { href: "/products/jackets", label: "Jackets" },
-  { href: "/products/coats", label: "Coats" },
-  { href: "/products/outerwear", label: "Outerwear" },
+  { href: "/products", label: "Jackets" },
+  ...brands.map((brand) => ({ href: `/brands/${brand.slug}`, label: brand.name })),
 ];
 
 export function Navigation({ className = "" }: { className?: string }) {

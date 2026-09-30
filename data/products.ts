@@ -1,16 +1,21 @@
-import { getCategory } from "@/data/categories";
+import { getBrand } from "@/data/brands";
 
 export interface Product {
   id: number;
   slug: string;
   name: string;
-  category: string;
+  brand: string;
   description: string;
   price: number;
   /** Short line shown under the name while scrolling. */
   meta: string;
   color: string;
   darkColor: string;
+  /** Plain-language colour used by the filter bar. */
+  colorName: string;
+  sizes: string[];
+  /** Shown in the home edit and brand best-sellers strip. */
+  featured: boolean;
   /** Jacket hem, in SVG units. Longer coats sit lower. */
   hem: number;
   /** Sleeve cuff, in SVG units. */
@@ -24,13 +29,16 @@ export const products: Product[] = [
     id: 1,
     slug: "field-bomber",
     name: "Field Bomber",
-    category: "jackets",
+    brand: "avirex",
     description:
       "Olive cotton twill with a ribbed hem and a collar that stands up to weather.",
     price: 248,
     meta: "Olive cotton twill",
     color: "#5f7040",
     darkColor: "#3f4d2a",
+    colorName: "Olive",
+    sizes: ["S", "M", "L", "XL"],
+    featured: true,
     hem: 400,
     cuff: 416,
     svgExtra: `<path d="M200 160 L200 400" stroke="#2c361c" stroke-width="3"/>
@@ -45,12 +53,15 @@ export const products: Product[] = [
     id: 2,
     slug: "camel-overcoat",
     name: "Camel Overcoat",
-    category: "coats",
+    brand: "schott-nyc",
     description: "A long wool-blend coat with a notched lapel and horn buttons.",
     price: 420,
     meta: "Wool blend, long cut",
     color: "#b98d5c",
     darkColor: "#96703f",
+    colorName: "Camel",
+    sizes: ["M", "L", "XL"],
+    featured: true,
     hem: 540,
     cuff: 424,
     svgExtra: `<path d="M172 158 L200 300 L228 158 L214 150 L200 200 L186 150 Z" fill="#a37a4b"/>
@@ -66,12 +77,15 @@ export const products: Product[] = [
     id: 3,
     slug: "indigo-denim",
     name: "Indigo Denim",
-    category: "jackets",
+    brand: "supreme",
     description: "Washed denim with contrast stitching and two chest pockets.",
     price: 198,
     meta: "Washed, chest pockets",
     color: "#38597f",
     darkColor: "#28425f",
+    colorName: "Indigo",
+    sizes: ["S", "M", "L", "XL"],
+    featured: true,
     hem: 392,
     cuff: 414,
     svgExtra: `<path d="M200 162 L200 392" stroke="#22374f" stroke-width="2"/>
@@ -88,12 +102,15 @@ export const products: Product[] = [
     id: 4,
     slug: "quilted-puffer",
     name: "Quilted Puffer",
-    category: "outerwear",
+    brand: "pelle-pelle",
     description: "Brick-red shell with a light fill and horizontal baffle lines.",
     price: 310,
     meta: "Brick red, light fill",
     color: "#a8433a",
     darkColor: "#7f2f28",
+    colorName: "Brick",
+    sizes: ["S", "M", "L"],
+    featured: true,
     hem: 420,
     cuff: 420,
     svgExtra: `<g stroke="#7f2f28" stroke-width="3" opacity=".8">
@@ -108,13 +125,16 @@ export const products: Product[] = [
     id: 5,
     slug: "saddle-leather",
     name: "Saddle Leather",
-    category: "jackets",
+    brand: "harley-davidson",
     description:
       "Full-grain leather with brass snaps and a collar that breaks in with wear.",
     price: 560,
     meta: "Full-grain, brass hardware",
     color: "#6b3e2e",
     darkColor: "#4a291d",
+    colorName: "Brown",
+    sizes: ["M", "L", "XL"],
+    featured: true,
     hem: 410,
     cuff: 418,
     svgExtra: `<path d="M200 162 L200 410" stroke="#3a2018" stroke-width="2.5"/>
@@ -131,12 +151,15 @@ export const products: Product[] = [
     id: 6,
     slug: "cognac-rider",
     name: "Cognac Rider",
-    category: "coats",
+    brand: "schott-nyc",
     description: "Horsehide rider with an asymmetric brass zip and a belted waist.",
     price: 640,
     meta: "Horsehide, asymmetric zip",
     color: "#8c4a2f",
     darkColor: "#6a3420",
+    colorName: "Cognac",
+    sizes: ["S", "M", "L", "XL"],
+    featured: false,
     hem: 430,
     cuff: 422,
     svgExtra: `<path d="M168 168 L232 210 L232 156 L200 168 L168 150 Z" fill="#6a3420"/>
@@ -146,12 +169,109 @@ export const products: Product[] = [
       <rect x="84" y="410" width="34" height="14" rx="3" fill="#6a3420"/>
       <rect x="282" y="410" width="34" height="14" rx="3" fill="#6a3420"/>`,
   },
+  {
+    id: 7,
+    slug: "navy-flight",
+    name: "Navy Flight",
+    brand: "avirex",
+    description: "A nylon flight jacket with a knit collar, cuffs, and a flap pocket.",
+    price: 275,
+    meta: "Nylon flight, knit trim",
+    color: "#243044",
+    darkColor: "#17202e",
+    colorName: "Navy",
+    sizes: ["S", "M", "L", "XL"],
+    featured: false,
+    hem: 405,
+    cuff: 416,
+    svgExtra: `<path d="M168 158 Q200 186 232 158 L226 146 Q200 156 174 146 Z" fill="#17202e"/>
+      <rect x="146" y="220" width="40" height="32" rx="2" fill="#17202e"/>
+      <rect x="84" y="404" width="34" height="14" rx="3" fill="#17202e"/>
+      <rect x="282" y="404" width="34" height="14" rx="3" fill="#17202e"/>
+      <rect x="132" y="390" width="136" height="16" rx="3" fill="#17202e"/>`,
+  },
+  {
+    id: 8,
+    slug: "black-bar-shield",
+    name: "Black Bar & Shield",
+    brand: "harley-davidson",
+    description: "Black leather rider with a tall collar and brass snaps down the front.",
+    price: 590,
+    meta: "Black leather rider",
+    color: "#2a2e33",
+    darkColor: "#16191c",
+    colorName: "Black",
+    sizes: ["M", "L", "XL"],
+    featured: false,
+    hem: 418,
+    cuff: 420,
+    svgExtra: `<path d="M200 162 L200 418" stroke="#111" stroke-width="2.5"/>
+      <circle cx="206" cy="240" r="3.5" fill="#c6a15b"/>
+      <circle cx="206" cy="300" r="3.5" fill="#c6a15b"/>
+      <circle cx="206" cy="360" r="3.5" fill="#c6a15b"/>
+      <path d="M166 160 Q200 178 234 160 L230 146 Q200 156 170 146 Z" fill="#16191c"/>
+      <rect x="84" y="408" width="34" height="14" rx="3" fill="#16191c"/>
+      <rect x="282" y="408" width="34" height="14" rx="3" fill="#16191c"/>`,
+  },
+  {
+    id: 9,
+    slug: "cream-varsity",
+    name: "Cream Varsity",
+    brand: "pelle-pelle",
+    description: "Wool body, leather sleeves, and striped rib at the collar and hem.",
+    price: 340,
+    meta: "Wool body, leather sleeves",
+    color: "#e6dcc8",
+    darkColor: "#6b3e2e",
+    colorName: "Cream",
+    sizes: ["S", "M", "L", "XL"],
+    featured: false,
+    hem: 400,
+    cuff: 414,
+    svgExtra: `<path d="M140 168 L112 176 Q88 300 84 414 L118 418 Q126 330 148 250 Z" fill="#6b3e2e"/>
+      <path d="M260 168 L288 176 Q312 300 316 414 L282 418 Q274 330 252 250 Z" fill="#6b3e2e"/>
+      <rect x="132" y="386" width="136" height="16" rx="3" fill="#6b3e2e"/>
+      <path d="M168 160 Q200 184 232 160 L232 148 Q200 158 168 148 Z" fill="#6b3e2e"/>
+      <rect x="84" y="402" width="34" height="14" rx="3" fill="#c6a15b"/>
+      <rect x="282" y="402" width="34" height="14" rx="3" fill="#c6a15b"/>`,
+  },
+  {
+    id: 10,
+    slug: "red-box-coach",
+    name: "Red Box Coach",
+    brand: "supreme",
+    description: "A short coach jacket in red nylon with a snap placket and slash pockets.",
+    price: 220,
+    meta: "Red nylon coach",
+    color: "#c4312e",
+    darkColor: "#8d1e1c",
+    colorName: "Red",
+    sizes: ["S", "M", "L", "XL"],
+    featured: false,
+    hem: 388,
+    cuff: 410,
+    svgExtra: `<path d="M200 160 L200 388" stroke="#8d1e1c" stroke-width="3"/>
+      <circle cx="206" cy="230" r="3" fill="#f4f1ea"/>
+      <circle cx="206" cy="280" r="3" fill="#f4f1ea"/>
+      <circle cx="206" cy="330" r="3" fill="#f4f1ea"/>
+      <path d="M168 158 Q200 176 232 158 L232 146 Q200 156 168 146 Z" fill="#8d1e1c"/>
+      <rect x="84" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>
+      <rect x="282" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>`,
+  },
 ];
 
-export function getProductsByCategory(slug: string): Product[] {
-  return products.filter((product) => product.category === slug);
+export function getProductsByBrand(slug: string): Product[] {
+  return products.filter((product) => product.brand === slug);
 }
 
-export function getCategoryLabel(slug: string): string {
-  return getCategory(slug)?.name ?? slug;
+export function getProduct(slug: string): Product | undefined {
+  return products.find((product) => product.slug === slug);
+}
+
+export function getFeaturedProducts(): Product[] {
+  return products.filter((product) => product.featured);
+}
+
+export function getBrandLabel(slug: string): string {
+  return getBrand(slug)?.name ?? slug;
 }
