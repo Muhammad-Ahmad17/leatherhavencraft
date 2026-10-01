@@ -13,8 +13,8 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          background: "#dde3e8",
-          color: "#1d262e",
+          background: "#f7f5f2",
+          color: "#141414",
           padding: "72px",
         }}
       >

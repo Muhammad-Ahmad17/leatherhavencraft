@@ -15,7 +15,7 @@ export function ProductPurchase({ sizes }: { sizes: string[] }) {
             type="button"
             aria-pressed={size === value}
             onClick={() => setSize(value)}
-            className={`h-11 min-w-11 rounded-full border px-4 text-sm ${
+            className={`h-11 min-w-11 border px-4 text-sm ${
               size === value
                 ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--bg)]"
                 : "border-black/15"
@@ -28,7 +28,7 @@ export function ProductPurchase({ sizes }: { sizes: string[] }) {
       <button
         type="button"
         disabled
-        className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[var(--ink)] px-6 text-sm font-medium text-[var(--bg)] opacity-60"
+        className="mt-8 inline-flex h-12 items-center justify-center bg-[var(--ink)] px-6 text-[13px] font-medium tracking-[0.14em] uppercase text-white opacity-60"
       >
         Add to cart
       </button>

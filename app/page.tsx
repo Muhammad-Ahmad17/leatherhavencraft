@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { products, getFeaturedProducts } from "@/data/products";
+import { getFeaturedProducts, products } from "@/data/products";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import { ProductSVG } from "@/components/product/ProductSVG";
+import { Banner } from "@/components/common/Banner";
 import { BrandMarquee } from "@/components/brand/BrandMarquee";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
@@ -16,30 +16,29 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const heroPiece = products.find((product) => product.slug === "saddle-leather") ?? products[0];
-
   return (
     <main>
-      <div className="flex h-[100dvh] flex-col">
-        <section className="relative flex min-h-0 flex-1 items-end overflow-hidden bg-[radial-gradient(ellipse_at_70%_40%,var(--bg2),var(--bg)_68%)] px-6 pt-28 pb-8">
-          <div className="mx-auto grid w-full max-w-6xl items-end gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">
+      <div className="flex h-[calc(100dvh-3.5rem)] flex-col">
+        <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a1a1a] text-white">
+          <Banner desktop="/banners/home-desktop.jpg" mobile="/banners/home-mobile.jpg" alt="" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
+          <div className="relative flex h-full items-end px-6 pb-8 sm:px-10 sm:pb-12">
+            <div className="max-w-xl">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-white/75">
                 Jackets · Europe and America
               </p>
-              <h1 className="mt-4 max-w-xl text-5xl font-semibold tracking-tight text-[var(--ink)] sm:text-6xl">
+              <h1 className="mt-3 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
                 The brands. The cut. In stock.
               </h1>
-              <p className="mt-6 max-w-lg text-lg leading-8 text-[var(--muted)]">
+              <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
                 Authorized Avirex, Harley-Davidson, Pelle Pelle, Schott NYC, and Supreme
                 jackets, shipped across Europe and America.
               </p>
-              <div className="mt-8">
-                <Button href="/products">Shop jackets</Button>
+              <div className="mt-6">
+                <Button href="/products" variant="light">
+                  Shop jackets
+                </Button>
               </div>
-            </div>
-            <div className="mx-auto hidden w-full max-w-xs sm:block lg:max-w-sm">
-              <ProductSVG product={heroPiece} label={heroPiece.name} className="h-[46vh] w-auto max-w-full" />
             </div>
           </div>
         </section>
@@ -55,10 +54,10 @@ export default function HomePage() {
         </ScrollAnimationContainer>
       </section>
 
-      <section className="border-t border-black/10 px-6 py-20">
+      <section className="border-t border-[var(--line)] px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="text-3xl font-semibold tracking-tight">The edit</h2>
+            <h2 className="text-3xl font-medium tracking-tight">The edit</h2>
             <Link href="/products" className="text-sm underline underline-offset-4">
               Shop all jackets
             </Link>

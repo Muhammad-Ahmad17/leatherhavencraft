@@ -16,6 +16,10 @@ export interface Product {
   sizes: string[];
   /** Shown in the home edit and brand best-sellers strip. */
   featured: boolean;
+  /** Card photo, 900×1200. */
+  image: string;
+  /** Second photo shown on hover. */
+  imageHover: string;
   /** Jacket hem, in SVG units. Longer coats sit lower. */
   hem: number;
   /** Sleeve cuff, in SVG units. */
@@ -29,6 +33,8 @@ export const products: Product[] = [
     id: 1,
     slug: "field-bomber",
     name: "Field Bomber",
+    image: "/catalog/field-bomber.jpg",
+    imageHover: "/catalog/field-bomber-alt.jpg",
     brand: "avirex",
     description:
       "Olive cotton twill with a ribbed hem and a collar that stands up to weather.",
@@ -53,6 +59,8 @@ export const products: Product[] = [
     id: 2,
     slug: "camel-overcoat",
     name: "Camel Overcoat",
+    image: "/catalog/camel-overcoat.jpg",
+    imageHover: "/catalog/camel-overcoat-alt.jpg",
     brand: "schott-nyc",
     description: "A long wool-blend coat with a notched lapel and horn buttons.",
     price: 420,
@@ -77,6 +85,8 @@ export const products: Product[] = [
     id: 3,
     slug: "indigo-denim",
     name: "Indigo Denim",
+    image: "/catalog/indigo-denim.jpg",
+    imageHover: "/catalog/indigo-denim-alt.jpg",
     brand: "supreme",
     description: "Washed denim with contrast stitching and two chest pockets.",
     price: 198,
@@ -102,6 +112,8 @@ export const products: Product[] = [
     id: 4,
     slug: "quilted-puffer",
     name: "Quilted Puffer",
+    image: "/catalog/quilted-puffer.jpg",
+    imageHover: "/catalog/quilted-puffer-alt.jpg",
     brand: "pelle-pelle",
     description: "Brick-red shell with a light fill and horizontal baffle lines.",
     price: 310,
@@ -125,6 +137,8 @@ export const products: Product[] = [
     id: 5,
     slug: "saddle-leather",
     name: "Saddle Leather",
+    image: "/catalog/saddle-leather.jpg",
+    imageHover: "/catalog/saddle-leather-alt.jpg",
     brand: "harley-davidson",
     description:
       "Full-grain leather with brass snaps and a collar that breaks in with wear.",
@@ -151,6 +165,8 @@ export const products: Product[] = [
     id: 6,
     slug: "cognac-rider",
     name: "Cognac Rider",
+    image: "/catalog/cognac-rider.jpg",
+    imageHover: "/catalog/cognac-rider-alt.jpg",
     brand: "schott-nyc",
     description: "Horsehide rider with an asymmetric brass zip and a belted waist.",
     price: 640,
@@ -173,6 +189,8 @@ export const products: Product[] = [
     id: 7,
     slug: "navy-flight",
     name: "Navy Flight",
+    image: "/catalog/navy-flight.jpg",
+    imageHover: "/catalog/navy-flight-alt.jpg",
     brand: "avirex",
     description: "A nylon flight jacket with a knit collar, cuffs, and a flap pocket.",
     price: 275,
@@ -194,6 +212,8 @@ export const products: Product[] = [
     id: 8,
     slug: "black-bar-shield",
     name: "Black Bar & Shield",
+    image: "/catalog/black-bar-shield.jpg",
+    imageHover: "/catalog/black-bar-shield-alt.jpg",
     brand: "harley-davidson",
     description: "Black leather rider with a tall collar and brass snaps down the front.",
     price: 590,
@@ -217,6 +237,8 @@ export const products: Product[] = [
     id: 9,
     slug: "cream-varsity",
     name: "Cream Varsity",
+    image: "/catalog/cream-varsity.jpg",
+    imageHover: "/catalog/cream-varsity-alt.jpg",
     brand: "pelle-pelle",
     description: "Wool body, leather sleeves, and striped rib at the collar and hem.",
     price: 340,
@@ -239,6 +261,8 @@ export const products: Product[] = [
     id: 10,
     slug: "red-box-coach",
     name: "Red Box Coach",
+    image: "/catalog/red-box-coach.jpg",
+    imageHover: "/catalog/red-box-coach-alt.jpg",
     brand: "supreme",
     description: "A short coach jacket in red nylon with a snap placket and slash pockets.",
     price: 220,

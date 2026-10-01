@@ -7,8 +7,8 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 type Sort = "featured" | "price-asc" | "price-desc";
 
 const chip =
-  "h-9 rounded-full border border-black/15 px-3 text-sm text-[var(--ink)] transition-colors hover:bg-black/5";
-const chipOn = "border-[var(--ink)] bg-[var(--ink)] text-[var(--bg)] hover:bg-[var(--ink)]";
+  "h-9 border border-[var(--line)] bg-white px-3 text-[13px] text-[var(--ink)] transition-colors hover:border-[var(--ink)]";
+const chipOn = "border-[var(--ink)] bg-[var(--ink)] text-white hover:bg-[var(--ink)]";
 
 export function ProductCatalog({ products }: { products: Product[] }) {
   const [size, setSize] = useState("all");
@@ -44,7 +44,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
 
   return (
     <section className="px-6 pb-20">
-      <div className="sticky top-24 z-10 -mx-6 mb-8 border-b border-black/10 bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm sm:top-16">
+      <div className="sticky top-14 z-10 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2">
           <button type="button" className={`${chip} ${size === "all" ? chipOn : ""}`} onClick={() => setSize("all")}>
             All sizes
