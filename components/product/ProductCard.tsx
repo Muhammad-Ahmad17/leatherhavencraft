@@ -6,22 +6,24 @@ import { formatPrice } from "@/lib/utils";
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-[var(--bg2)]">
-        <span
-          className="absolute inset-0 transition-opacity duration-300 group-hover:opacity-0"
-          style={{ background: product.color }}
-          aria-hidden="true"
+      <span className="relative block aspect-[3/4] overflow-hidden bg-[var(--bg2)]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={product.image}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
         />
-        <span
-          className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{ background: product.darkColor }}
-          aria-hidden="true"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={product.imageHover}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         />
       </span>
-      <span className="mt-3 block text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+      <span className="mt-3 block text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
         {getBrandLabel(product.brand)}
       </span>
-      <span className="mt-1 block text-base font-semibold tracking-tight">{product.name}</span>
+      <span className="mt-1 block text-[15px] font-medium tracking-tight">{product.name}</span>
       <span className="mt-1 block text-sm text-[var(--muted)]">{formatPrice(product.price)}</span>
     </Link>
   );

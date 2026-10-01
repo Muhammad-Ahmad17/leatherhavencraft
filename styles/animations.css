@@ -22,7 +22,7 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: radial-gradient(ellipse at 50% 60%, var(--bg2), var(--bg) 70%);
+  background: radial-gradient(ellipse at 50% 58%, #fbfaf8, var(--bg2) 72%);
 }
 
 svg.scene {
@@ -114,13 +114,13 @@ svg.scene {
 
 .brand-marquee {
   height: 15vh;
-  min-height: 88px;
+  min-height: 76px;
+  flex-shrink: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
-  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-  background: var(--bg);
+  border-top: 1px solid var(--line);
+  background: #fff;
 }
 
 .brand-marquee-track {
@@ -149,14 +149,12 @@ svg.scene {
   width: auto;
   max-width: 140px;
   object-fit: contain;
-  filter: grayscale(1);
-  opacity: 0.8;
-  transition: filter 0.2s, opacity 0.2s;
+  opacity: 0.72;
+  transition: opacity 0.2s;
 }
 
 .brand-marquee a:hover img,
 .brand-marquee a:focus-visible img {
-  filter: none;
   opacity: 1;
 }
 
@@ -195,5 +193,6 @@ svg.scene {
 
   .brand-marquee img {
     transition: none;
+    opacity: 1;
   }
 }

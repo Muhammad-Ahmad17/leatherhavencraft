@@ -28,7 +28,7 @@ export function BrandBestSellers({ products }: { products: Product[] }) {
         <div className="flex gap-2">
           <button
             type="button"
-            className="h-10 w-10 rounded-full border border-black/15 text-lg"
+            className="h-10 w-10 border border-[var(--line)] bg-white text-lg"
             onClick={() => move(-1)}
             aria-label="Previous jackets"
           >
@@ -36,7 +36,7 @@ export function BrandBestSellers({ products }: { products: Product[] }) {
           </button>
           <button
             type="button"
-            className="h-10 w-10 rounded-full border border-black/15 text-lg"
+            className="h-10 w-10 border border-[var(--line)] bg-white text-lg"
             onClick={() => move(1)}
             aria-label="Next jackets"
           >

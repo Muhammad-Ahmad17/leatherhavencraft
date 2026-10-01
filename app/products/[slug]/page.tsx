@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { getBrand } from "@/data/brands";
 import { getProduct, products } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
-import { ProductSVG } from "@/components/product/ProductSVG";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 
 type ProductPageProps = {
@@ -35,10 +34,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const brand = getBrand(product.brand);
 
   return (
-    <main className="px-6 pt-28 pb-20">
+    <main className="px-6 pt-10 pb-20">
       <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-2">
-        <div className="rounded-3xl bg-[radial-gradient(ellipse_at_50%_60%,var(--bg2),var(--bg)_70%)] p-6">
-          <ProductSVG product={product} label={product.name} className="mx-auto h-[62vh] w-auto max-w-full" />
+        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--bg2)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
         </div>
         <div>
           {brand ? (
@@ -49,7 +49,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {brand.name}
             </Link>
           ) : null}
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">{product.name}</h1>
+          <h1 className="mt-3 text-4xl font-medium tracking-tight sm:text-5xl">{product.name}</h1>
           <p className="mt-4 text-lg">{formatPrice(product.price)}</p>
           <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">{product.description}</p>
           <p className="mt-2 text-sm text-[var(--muted)]">{product.meta}</p>
