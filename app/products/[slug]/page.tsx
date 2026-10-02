@@ -54,7 +54,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">{product.description}</p>
           <p className="mt-2 text-sm text-[var(--muted)]">{product.meta}</p>
           <div className="mt-10">
-            <ProductPurchase sizes={product.sizes} />
+            <ProductPurchase
+              productName={product.name}
+              brandName={brand?.name}
+              price={product.price}
+              sizes={product.sizes}
+              productPath={`/products/${product.slug}`}
+            />
           </div>
         </div>
       </div>

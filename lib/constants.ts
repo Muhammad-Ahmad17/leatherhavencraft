@@ -14,5 +14,8 @@ export const EASE_SPAN = 0.82;
 
 export const SITE_NAME = "Leather Haven Craft";
 
+/** Full wordmark + mark; served from public/logo.png (source: favicon.ico). */
+export const SITE_LOGO = "/logo.png";
+
 export const SITE_DESCRIPTION =
   "Authorized jackets from Avirex, Harley-Davidson, Pelle Pelle, Schott NYC, and Supreme, shipped to Europe and America.";
