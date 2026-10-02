@@ -4,7 +4,9 @@ import { getFeaturedProducts, products } from "@/data/products";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
-import { BrandMarquee } from "@/components/brand/BrandMarquee";
+import { BrandStrip } from "@/components/brand/BrandStrip";
+import { CutTiles } from "@/components/home/CutTiles";
+import { OrderPath } from "@/components/home/OrderPath";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <main>
-      <div className="flex h-[calc(100dvh-3.5rem)] flex-col">
+      <div className="flex h-[calc(100dvh-var(--site-header-h))] flex-col">
         <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a1a1a] text-white">
           <Banner desktop="/banners/home-desktop.jpg" mobile="/banners/home-mobile.jpg" alt="" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
@@ -42,7 +44,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-        <BrandMarquee />
+        <BrandStrip />
       </div>
 
       <section aria-labelledby="scroll-collection">
@@ -67,6 +69,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <CutTiles />
+      <OrderPath />
     </main>
   );
 }

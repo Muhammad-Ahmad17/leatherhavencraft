@@ -44,7 +44,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
 
   return (
     <section className="px-6 pb-20">
-      <div className="sticky top-14 z-10 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
+      <div className="sticky top-[var(--site-header-h)] z-10 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2">
           <button type="button" className={`${chip} ${size === "all" ? chipOn : ""}`} onClick={() => setSize("all")}>
             All sizes

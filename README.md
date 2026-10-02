@@ -17,6 +17,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). The jacket scroller is on the home page. Brand shops live at `/brands/avirex`, `/brands/harley-davidson`, `/brands/pelle-pelle`, `/brands/schott-nyc`, and `/brands/supreme`. Every jacket is listed at `/products`.
 
+Orders go to WhatsApp or email (see `.env.example`). Designer banner and scroll-stage sizes are in [docs/DESIGNER-ASSETS.md](docs/DESIGNER-ASSETS.md).
+
 ## Layout
 
 - `app/` routes, metadata, sitemap, and Open Graph image

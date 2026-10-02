@@ -60,6 +60,21 @@ export const brands: Brand[] = [
   },
 ];
 
+/** Static hero strip order (left → right). */
+export const brandStripSlugs = [
+  "schott-nyc",
+  "harley-davidson",
+  "pelle-pelle",
+  "supreme",
+  "avirex",
+] as const;
+
 export function getBrand(slug: string): Brand | undefined {
   return brands.find((brand) => brand.slug === slug);
+}
+
+export function getBrandStrip(): Brand[] {
+  return brandStripSlugs
+    .map((slug) => getBrand(slug))
+    .filter((brand): brand is Brand => brand !== undefined);
 }
