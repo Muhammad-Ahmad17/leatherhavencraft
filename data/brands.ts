@@ -14,13 +14,13 @@ export interface Brand {
 
 export const brands: Brand[] = [
   {
-    slug: "avirex",
-    name: "Avirex",
-    logo: "/brands/avirex.png",
-    tagline: "Flight jackets built for the street.",
-    accent: "#1c2430",
-    heroDesktop: "/banners/avirex-desktop.jpg",
-    heroMobile: "/banners/avirex-mobile.jpg",
+    slug: "schott-nyc",
+    name: "Schott NYC",
+    logo: "/brands/schott_nyc.png",
+    tagline: "The original American motorcycle jacket.",
+    accent: "#141414",
+    heroDesktop: "/banners/schott-nyc-desktop.jpg",
+    heroMobile: "/banners/schott-nyc-mobile.jpg",
   },
   {
     slug: "harley-davidson",
@@ -41,15 +41,6 @@ export const brands: Brand[] = [
     heroMobile: "/banners/pelle-pelle-mobile.jpg",
   },
   {
-    slug: "schott-nyc",
-    name: "Schott NYC",
-    logo: "/brands/schott_nyc.png",
-    tagline: "The original American motorcycle jacket.",
-    accent: "#141414",
-    heroDesktop: "/banners/schott-nyc-desktop.jpg",
-    heroMobile: "/banners/schott-nyc-mobile.jpg",
-  },
-  {
     slug: "supreme",
     name: "Supreme",
     logo: "/brands/supreme.png",
@@ -57,6 +48,33 @@ export const brands: Brand[] = [
     accent: "#3a1014",
     heroDesktop: "/banners/supreme-desktop.jpg",
     heroMobile: "/banners/supreme-mobile.jpg",
+  },
+  {
+    slug: "avirex",
+    name: "Avirex",
+    logo: "/brands/avirex.png",
+    tagline: "Flight jackets built for the street.",
+    accent: "#1c2430",
+    heroDesktop: "/banners/avirex-desktop.jpg",
+    heroMobile: "/banners/avirex-mobile.jpg",
+  },
+  {
+    slug: "leather-haven-craft",
+    name: "Leather Haven Craft",
+    logo: "/brands/leather-haven-craft.png",
+    tagline: "Signature handcrafted leather outerwear and bespoke atelier goods.",
+    accent: "#1f1610",
+    heroDesktop: "/banners/leather-haven-craft-desktop.jpg",
+    heroMobile: "/banners/leather-haven-craft-mobile.jpg",
+  },
+  {
+    slug: "accessories",
+    name: "Accessories",
+    logo: "/brands/accessories.png",
+    tagline: "Handcrafted full-grain leather belts, wallets, bags, and heritage goods.",
+    accent: "#241914",
+    heroDesktop: "/banners/accessories-desktop.jpg",
+    heroMobile: "/banners/accessories-mobile.jpg",
   },
 ];
 
@@ -67,10 +85,19 @@ export const brandStripSlugs = [
   "pelle-pelle",
   "supreme",
   "avirex",
+  "leather-haven-craft",
+  "accessories",
 ] as const;
 
 export function getBrand(slug: string): Brand | undefined {
-  return brands.find((brand) => brand.slug === slug);
+  const normalized = slug.toLowerCase();
+  if (normalized === "leather-heaven-craft") {
+    return brands.find((brand) => brand.slug === "leather-haven-craft");
+  }
+  if (normalized === "accessory") {
+    return brands.find((brand) => brand.slug === "accessories");
+  }
+  return brands.find((brand) => brand.slug === normalized);
 }
 
 export function getBrandStrip(): Brand[] {

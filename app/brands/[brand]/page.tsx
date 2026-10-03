@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { brands, getBrand } from "@/data/brands";
-import { getProductsByBrand } from "@/data/products";
+import { fetchLiveProductsByBrand } from "@/data/products";
 import { Banner } from "@/components/common/Banner";
 import { BrandBestSellers } from "@/components/brand/BrandBestSellers";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
+
+export const dynamic = "force-dynamic";
 
 type BrandPageProps = {
   params: Promise<{ brand: string }>;
@@ -32,7 +34,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
   const brand = getBrand(slug);
   if (!brand) notFound();
 
-  const items = getProductsByBrand(brand.slug);
+  const items = await fetchLiveProductsByBrand(brand.slug);
   const others = brands.filter((entry) => entry.slug !== brand.slug);
 
   return (
@@ -53,7 +55,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
             <p className="mt-3 max-w-lg text-base leading-7 text-white/80">{brand.tagline}</p>
           </div>
           <p className="text-[11px] uppercase tracking-[0.18em] text-white/75">
-            {items.length} {items.length === 1 ? "jacket" : "jackets"}
+            {items.length} {items.length === 1 ? "piece" : "pieces"}
           </p>
         </div>
       </section>
@@ -63,7 +65,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
       <section className="border-t border-[var(--line)] px-6 py-16">
         <div className="mx-auto max-w-6xl">
-          <h2 className="text-sm uppercase tracking-[0.18em] text-[var(--muted)]">Other brands</h2>
+          <h2 className="text-sm uppercase tracking-[0.18em] text-[var(--muted)]">Other brands &amp; collections</h2>
           <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3">
             {others.map((entry) => (
               <li key={entry.slug}>

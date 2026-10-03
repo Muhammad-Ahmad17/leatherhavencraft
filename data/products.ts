@@ -1,7 +1,7 @@
 import { getBrand } from "@/data/brands";
 
 export interface Product {
-  id: number;
+  id: number | string;
   slug: string;
   name: string;
   brand: string;
@@ -20,6 +20,8 @@ export interface Product {
   image: string;
   /** Second photo shown on hover. */
   imageHover: string;
+  /** Multi-photo gallery images. */
+  images?: string[];
   /** Jacket hem, in SVG units. Longer coats sit lower. */
   hem: number;
   /** Sleeve cuff, in SVG units. */
@@ -282,10 +284,60 @@ export const products: Product[] = [
       <rect x="84" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>
       <rect x="282" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>`,
   },
+  {
+    id: 11,
+    slug: "artisan-steerhide-rider",
+    name: "Artisan Steerhide Rider",
+    image: "/catalog/cognac-rider.jpg",
+    imageHover: "/catalog/cognac-rider-alt.jpg",
+    brand: "leather-haven-craft",
+    description: "Hand-burnished steerhide double rider with brass hardware, crafted in our atelier.",
+    price: 680,
+    meta: "Handcrafted atelier steerhide",
+    color: "#543022",
+    darkColor: "#371c14",
+    colorName: "Cognac",
+    sizes: ["S", "M", "L", "XL"],
+    featured: true,
+    hem: 425,
+    cuff: 420,
+    svgExtra: `<path d="M168 168 L232 210 L232 156 L200 168 L168 150 Z" fill="#371c14"/>
+      <path d="M156 200 L248 250" stroke="#1d0d08" stroke-width="3"/>
+      <rect x="210" y="248" width="22" height="10" rx="2" fill="#c6a15b"/>
+      <rect x="84" y="410" width="34" height="14" rx="3" fill="#371c14"/>
+      <rect x="282" y="410" width="34" height="14" rx="3" fill="#371c14"/>`,
+  },
+  {
+    id: 12,
+    slug: "heritage-leather-duffle",
+    name: "Heritage Duffle Bag",
+    image: "/catalog/saddle-leather.jpg",
+    imageHover: "/catalog/saddle-leather-alt.jpg",
+    brand: "accessories",
+    description: "Heavyweight pull-up leather weekender bag with solid brass fittings and reinforced handles.",
+    price: 340,
+    meta: "Full-grain leather luggage",
+    color: "#6b3e2e",
+    darkColor: "#4a291d",
+    colorName: "Brown",
+    sizes: ["One Size"],
+    featured: true,
+    hem: 410,
+    cuff: 418,
+    svgExtra: `<rect x="140" y="240" width="120" height="90" rx="6" fill="#4a291d"/>
+      <path d="M160 240 Q200 200 240 240" stroke="#c6a15b" stroke-width="3" fill="none"/>`,
+  },
 ];
 
 export function getProductsByBrand(slug: string): Product[] {
-  return products.filter((product) => product.brand === slug);
+  const normalized = slug.toLowerCase();
+  if (normalized === "leather-heaven-craft") {
+    return products.filter((product) => product.brand === "leather-haven-craft");
+  }
+  if (normalized === "accessory") {
+    return products.filter((product) => product.brand === "accessories");
+  }
+  return products.filter((product) => product.brand === normalized);
 }
 
 export function getProduct(slug: string): Product | undefined {
@@ -298,4 +350,110 @@ export function getFeaturedProducts(): Product[] {
 
 export function getBrandLabel(slug: string): string {
   return getBrand(slug)?.name ?? slug;
+}
+
+
+export interface BackendProduct {
+  _id?: string;
+  id?: number | string;
+  slug: string;
+  name: string;
+  category?: string;
+  brand?: string;
+  description?: string;
+  price: number;
+  meta?: string;
+  color?: string;
+  darkColor?: string;
+  colorName?: string;
+  sizes?: string[];
+  featured?: boolean;
+  image?: string;
+  imageHover?: string;
+  images?: string[];
+  hem?: number;
+  cuff?: number;
+  svgExtra?: string;
+}
+
+export function mapBackendProduct(p: BackendProduct): Product {
+  const images = Array.isArray(p.images) && p.images.length > 0
+    ? p.images
+    : ([p.image, p.imageHover].filter(Boolean) as string[]);
+
+  return {
+    id: p._id || p.id || p.slug,
+    slug: p.slug,
+    name: p.name,
+    brand: p.category || p.brand || "accessories",
+    description: p.description || "",
+    price: Number(p.price) || 0,
+    meta: p.meta || "",
+    color: p.color || "#1a1a1a",
+    darkColor: p.darkColor || "#0f0f0f",
+    colorName: p.colorName || "Black",
+    sizes: Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"],
+    featured: Boolean(p.featured),
+    image: p.image || images[0] || "/catalog/field-bomber.jpg",
+    imageHover: p.imageHover || images[1] || p.image || images[0] || "/catalog/field-bomber.jpg",
+    images,
+    hem: typeof p.hem === "number" ? p.hem : 410,
+    cuff: typeof p.cuff === "number" ? p.cuff : 418,
+    svgExtra: p.svgExtra || "",
+  };
+}
+
+export async function fetchLiveProducts(): Promise<Product[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const res = await fetch(`${backendUrl}/api/products?limit=100`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return products;
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+      return json.data.map(mapBackendProduct);
+    }
+  } catch {
+    // If backend is unreachable, smoothly use static catalog fallback
+  }
+  return products;
+}
+
+export async function fetchLiveProductBySlug(slug: string): Promise<Product | undefined> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const res = await fetch(`${backendUrl}/api/products/${slug}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return mapBackendProduct(json.data);
+      }
+    }
+  } catch {
+    // Fall back to local search
+  }
+  return getProduct(slug);
+}
+
+export async function fetchLiveProductsByBrand(brandSlug: string): Promise<Product[]> {
+  const all = await fetchLiveProducts();
+  const normalized = brandSlug.toLowerCase();
+  return all.filter((p) => {
+    const b = (p.brand || "").toLowerCase();
+    if (normalized === "leather-haven-craft" || normalized === "leather-heaven-craft") {
+      return b === "leather-haven-craft" || b === "leather-heaven-craft";
+    }
+    if (normalized === "accessory" || normalized === "accessories") {
+      return b === "accessories" || b === "accessory";
+    }
+    return b === normalized;
+  });
+}
+
+export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
+  const all = await fetchLiveProducts();
+  return all.filter((p) => p.featured);
 }
