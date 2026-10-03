@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getBrandStrip } from "@/data/brands";
 
 function BrandLogo({ slug, logo, name }: { slug: string; logo: string; name: string }) {
-  const enlarged = slug === "harley-davidson";
+  const enlarged = slug === "harley-davidson" || slug === "leather-haven-craft";
   return (
     <Link
       href={`/brands/${slug}`}
@@ -15,9 +15,12 @@ function BrandLogo({ slug, logo, name }: { slug: string; logo: string; name: str
 }
 
 export function BrandStrip() {
-  const items = getBrandStrip();
-  const rowOne = items.slice(0, 3);
-  const rowTwo = items.slice(3, 5);
+  const items = getBrandStrip().filter(
+    (brand) => brand.slug !== "accessories" && brand.slug !== "accessory"
+  );
+  const mid = Math.ceil(items.length / 2);
+  const rowOne = items.slice(0, mid);
+  const rowTwo = items.slice(mid);
 
   return (
     <section className="brand-strip" aria-label="Brands we carry">
@@ -38,7 +41,7 @@ export function BrandStrip() {
               </li>
             ))}
           </ul>
-          <ul className="brand-strip-row">
+          <ul className="brand-strip-row brand-strip-row-three">
             {rowTwo.map((brand) => (
               <li key={brand.slug}>
                 <BrandLogo slug={brand.slug} logo={brand.logo} name={brand.name} />

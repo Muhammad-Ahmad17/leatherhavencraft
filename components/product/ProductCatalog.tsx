@@ -18,18 +18,18 @@ export function ProductCatalog({ products }: { products: Product[] }) {
   const sizes = useMemo(() => {
     const found = new Set<string>();
     for (const product of products) {
-      for (const value of product.sizes) found.add(value);
+      for (const value of product.sizes || []) found.add(value);
     }
-    return ["S", "M", "L", "XL"].filter((value) => found.has(value));
+    return ["S", "M", "L", "XL", "One Size"].filter((value) => found.has(value));
   }, [products]);
 
   const colors = useMemo(() => {
-    return [...new Set(products.map((product) => product.colorName))].sort();
+    return [...new Set(products.map((product) => product.colorName).filter(Boolean))].sort();
   }, [products]);
 
   const visible = useMemo(() => {
     const filtered = products.filter((product) => {
-      if (size !== "all" && !product.sizes.includes(size)) return false;
+      if (size !== "all" && !(product.sizes || []).includes(size)) return false;
       if (color !== "all" && product.colorName !== color) return false;
       return true;
     });
@@ -38,7 +38,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
       if (sort === "price-asc") return a.price - b.price;
       if (sort === "price-desc") return b.price - a.price;
       if (a.featured !== b.featured) return a.featured ? -1 : 1;
-      return a.id - b.id;
+      return String(a.id || "").localeCompare(String(b.id || ""));
     });
   }, [products, size, color, sort]);
 

@@ -29,11 +29,11 @@ const trust = [
 export function OrderPath() {
   return (
     <>
-      <section className="border-t border-[var(--line)] bg-white px-6 py-20">
+      <section className="border-t border-[var(--line)] bg-[var(--bg)] px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">No checkout cart</p>
           <h2 className="mt-2 text-3xl font-medium tracking-tight">How an order works</h2>
-          <ol className="mt-10 grid gap-8 md:grid-cols-3">
+          <ol className="mt-8 grid gap-8 md:grid-cols-3">
             {steps.map((step) => (
               <li key={step.n} className="border-t border-[var(--line)] pt-6">
                 <p className="text-[11px] tracking-[0.18em] text-[var(--leather)]">{step.n}</p>
@@ -45,10 +45,10 @@ export function OrderPath() {
         </div>
       </section>
 
-      <section className="relative min-h-[420px] overflow-hidden bg-[var(--leather-dark)] text-white md:min-h-[480px]">
+      <section className="relative min-h-[380px] overflow-hidden bg-[var(--leather-dark)] text-white md:min-h-[440px]">
         <Banner desktop="/banners/harley-davidson-desktop.jpg" mobile="/banners/harley-davidson-mobile.jpg" alt="" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
-        <div className="relative mx-auto flex min-h-[420px] max-w-6xl flex-col justify-end px-6 py-16 md:min-h-[480px] md:justify-center">
+        <div className="relative mx-auto flex min-h-[380px] max-w-6xl flex-col justify-end px-6 py-14 md:min-h-[440px] md:justify-center">
           <p className="text-[11px] tracking-[0.22em] text-white/70 uppercase">Talk to the shop</p>
           <h2 className="mt-3 max-w-lg text-3xl font-medium tracking-tight sm:text-5xl">
             Ready when you are.
@@ -62,12 +62,12 @@ export function OrderPath() {
         </div>
       </section>
 
-      <section className="border-t border-[var(--line)] px-6 py-16">
-        <ul className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="border-t border-[var(--line)] bg-white px-6 py-10">
+        <ul className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {trust.map((item) => (
             <li key={item.title}>
               <h3 className="text-sm font-medium tracking-tight">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{item.copy}</p>
+              <p className="mt-1.5 text-sm leading-6 text-[var(--muted)]">{item.copy}</p>
             </li>
           ))}
         </ul>

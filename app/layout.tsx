@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/common/Footer";
-import { Header } from "@/components/common/Header";
+import { SiteShell } from "@/components/common/SiteShell";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import "./globals.css";
 
@@ -41,9 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Header />
-        {children}
-        <Footer />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );

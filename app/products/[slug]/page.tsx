@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBrand } from "@/data/brands";
-import { getProduct, products } from "@/data/products";
+import { fetchLiveProductBySlug, fetchLiveProductsByBrand, products } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
+import { ProductGallery } from "@/components/product/ProductGallery";
+
+export const dynamic = "force-dynamic";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -16,11 +19,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await fetchLiveProductBySlug(slug);
   if (!product) return { title: "Not found" };
 
   return {
-    title: product.name,
+    title: `${product.name} | Leather Haven Craft`,
     description: product.description,
     alternates: { canonical: `/products/${product.slug}` },
   };
@@ -28,42 +31,175 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await fetchLiveProductBySlug(slug);
   if (!product) notFound();
 
   const brand = getBrand(product.brand);
 
+  // Fetch related pieces from the same heritage house
+  const related = (await fetchLiveProductsByBrand(product.brand))
+    .filter((p) => p.slug !== product.slug)
+    .slice(0, 4);
+
   return (
-    <main className="px-6 pt-10 pb-20">
-      <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-2">
-        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--bg2)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-        </div>
-        <div>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+      {/* ── Breadcrumb Navigation ── */}
+      <nav aria-label="Breadcrumb" className="border-b border-black/10 bg-white/40">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 text-xs sm:px-6 lg:px-8">
+          <Link href="/" className="text-[var(--muted)] hover:text-[var(--ink)]">
+            Home
+          </Link>
+          <span className="text-[var(--muted)]">/</span>
           {brand ? (
-            <Link
-              href={`/brands/${brand.slug}`}
-              className="text-xs uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--ink)]"
-            >
-              {brand.name}
-            </Link>
+            <>
+              <Link
+                href={`/brands/${brand.slug}`}
+                className="text-[var(--muted)] hover:text-[var(--ink)]"
+              >
+                {brand.name}
+              </Link>
+              <span className="text-[var(--muted)]">/</span>
+            </>
           ) : null}
-          <h1 className="mt-3 text-4xl font-medium tracking-tight sm:text-5xl">{product.name}</h1>
-          <p className="mt-4 text-lg">{formatPrice(product.price)}</p>
-          <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">{product.description}</p>
-          <p className="mt-2 text-sm text-[var(--muted)]">{product.meta}</p>
-          <div className="mt-10">
+          <span className="font-semibold text-[var(--ink)] truncate max-w-[200px] sm:max-w-none">
+            {product.name}
+          </span>
+        </div>
+      </nav>
+
+      {/* ── Main Editorial 2-Column Showcase ── */}
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column: Avirex-Grade Photography Stage */}
+          <div className="lg:col-span-7">
+            <ProductGallery
+              productName={product.name}
+              images={product.images || []}
+              defaultImage={product.image}
+              hoverImage={product.imageHover}
+              brandName={brand?.name}
+            />
+          </div>
+
+          {/* Right Column: Authority & Atelier Purchasing Panel */}
+          <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-24">
+            {/* Brand Header Crest */}
+            {brand && (
+              <div className="flex items-center justify-between border-b border-black/10 pb-3">
+                <Link
+                  href={`/brands/${brand.slug}`}
+                  className="group inline-flex items-center gap-2.5 transition-transform hover:scale-[1.01]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    className="h-7 w-auto object-contain"
+                  />
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] group-hover:text-[var(--ink)]">
+                    {brand.name} Archive
+                  </span>
+                </Link>
+                <span className="rounded bg-black/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                  Certified Authentic
+                </span>
+              </div>
+            )}
+
+            {/* Product Title & Stately Price */}
+            <div>
+              <h1 className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl lg:text-4xl">
+                {product.name}
+              </h1>
+              <div className="mt-2 flex items-baseline gap-3">
+                <span className="text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="text-xs font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  Complimentary Express Courier Included
+                </span>
+              </div>
+            </div>
+
+            {/* Short Narrative Lead */}
+            <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
+              {product.description}
+            </p>
+
+            {/* Purchase & Options Component */}
             <ProductPurchase
+              productId={product.id}
               productName={product.name}
               brandName={brand?.name}
               price={product.price}
               sizes={product.sizes}
               productPath={`/products/${product.slug}`}
+              image={product.image}
+              color={product.color}
+              colorName={product.colorName}
+              meta={product.meta}
+              description={product.description}
             />
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ── Brand House Lookbook / Related Pieces ── */}
+      {related.length > 0 && brand && (
+        <section className="border-t border-black/10 bg-white/60 py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-black/10 pb-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
+                  {brand.name} Collection
+                </span>
+                <h2 className="mt-1 font-serif text-xl sm:text-2xl font-bold text-[var(--ink)]">
+                  More Iconic Outerwear from this House
+                </h2>
+              </div>
+              <Link
+                href={`/brands/${brand.slug}`}
+                className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--ink)] hover:text-[#8a4d2b] transition-colors"
+              >
+                View Full {brand.name} Catalog →
+              </Link>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+              {related.map((rel) => (
+                <Link
+                  key={rel.slug}
+                  href={`/products/${rel.slug}`}
+                  className="group block overflow-hidden rounded-xl border border-black/10 bg-white shadow-2xs transition-all hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#ede9e2]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={rel.image}
+                      alt={rel.name}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-2.5 left-2.5 rounded bg-black/75 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+                      {rel.colorName || "Leather"}
+                    </div>
+                  </div>
+                  <div className="p-3.5">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      {brand.name}
+                    </div>
+                    <div className="mt-1 font-serif text-sm font-bold text-[var(--ink)] group-hover:text-[#8a4d2b] transition-colors truncate">
+                      {rel.name}
+                    </div>
+                    <div className="mt-1 font-semibold text-xs text-[var(--ink)]">
+                      {formatPrice(rel.price)}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
