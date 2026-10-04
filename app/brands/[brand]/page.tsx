@@ -1,3 +1,4 @@
+import { CustomManufacturing } from "@/components/home/CustomManufacturing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -62,6 +63,10 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
       <BrandBestSellers products={items} />
       <ProductCatalog products={items} />
+
+      {brand.slug === "leather-haven-craft" && (
+        <CustomManufacturing />
+      )}
 
       <section className="border-t border-[var(--line)] px-6 py-16">
         <div className="mx-auto max-w-6xl">

@@ -1,54 +1,62 @@
 import Link from "next/link";
-import { getBrandStrip } from "@/data/brands";
-
-function BrandLogo({ slug, logo, name }: { slug: string; logo: string; name: string }) {
-  const enlarged = slug === "harley-davidson" || slug === "leather-haven-craft";
-  return (
-    <Link
-      href={`/brands/${slug}`}
-      className={`brand-strip-cell ${enlarged ? "brand-strip-cell-lg" : ""}`}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={logo} alt={name} />
-    </Link>
-  );
-}
+import { getBrand, type Brand } from "@/data/brands";
 
 export function BrandStrip() {
-  const items = getBrandStrip().filter(
-    (brand) => brand.slug !== "accessories" && brand.slug !== "accessory"
-  );
-  const mid = Math.ceil(items.length / 2);
-  const rowOne = items.slice(0, mid);
-  const rowTwo = items.slice(mid);
+  const lhc = getBrand("leather-haven-craft");
+  const otherSlugs = [
+    "schott-nyc",
+    "harley-davidson",
+    "pelle-pelle",
+    "supreme",
+    "avirex",
+  ];
+
+  const others = otherSlugs
+    .map((slug) => getBrand(slug))
+    .filter((b): b is Brand => b !== undefined);
+
+  // Interleave: Leather Haven Craft, then brand, then Leather Haven Craft, then another brand...
+  const sequence: Brand[] = [];
+  if (lhc) {
+    for (const b of others) {
+      sequence.push(lhc);
+      sequence.push(b);
+    }
+  } else {
+    sequence.push(...others);
+  }
+
+  // Duplicate for seamless 0% -> -50% CSS infinite marquee
+  const loopItems = [...sequence, ...sequence];
 
   return (
-    <section className="brand-strip" aria-label="Brands we carry">
-      <div className="brand-strip-inner">
-        <ul className="brand-strip-list brand-strip-list-desktop">
-          {items.map((brand) => (
-            <li key={brand.slug}>
-              <BrandLogo slug={brand.slug} logo={brand.logo} name={brand.name} />
-            </li>
-          ))}
-        </ul>
-
-        <div className="brand-strip-mobile">
-          <ul className="brand-strip-row brand-strip-row-three">
-            {rowOne.map((brand) => (
-              <li key={brand.slug}>
-                <BrandLogo slug={brand.slug} logo={brand.logo} name={brand.name} />
-              </li>
-            ))}
-          </ul>
-          <ul className="brand-strip-row brand-strip-row-three">
-            {rowTwo.map((brand) => (
-              <li key={brand.slug}>
-                <BrandLogo slug={brand.slug} logo={brand.logo} name={brand.name} />
-              </li>
-            ))}
-          </ul>
-        </div>
+    <section
+      className="relative flex-shrink-0 overflow-hidden border-t border-b border-[#ded5c7] bg-white py-3.5 sm:py-4 shadow-2xs"
+      aria-label="Authorized brands and workshop marquee"
+    >
+      <div className="marquee-track gap-8 sm:gap-14 px-4">
+        {loopItems.map((brand, idx) => {
+          const isLHC = brand.slug === "leather-haven-craft";
+          return (
+            <Link
+              key={`${brand.slug}-${idx}`}
+              href={`/brands/${brand.slug}`}
+              className={`inline-flex items-center justify-center shrink-0 transition-opacity hover:opacity-100 ${
+                isLHC ? "opacity-90 scale-105" : "opacity-70"
+              }`}
+              title={brand.name}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={brand.logo}
+                alt={brand.name}
+                className={`h-8 sm:h-10 w-auto max-w-[130px] sm:max-w-[155px] object-contain ${
+                  isLHC ? "brightness-95" : ""
+                }`}
+              />
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

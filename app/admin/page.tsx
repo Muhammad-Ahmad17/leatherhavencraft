@@ -1578,7 +1578,7 @@ export default function AdminDashboardPage() {
                       Available Sizes [XS to 6XL]
                     </label>
                     <span className="text-[11px] text-[#8a7a6c]">
-                      Click pills to toggle sizes on/off (sizes 2XL–6XL automatically include +$20 hide surcharge on storefront)
+                      Click pills to toggle sizes on/off (sizes 3XL–6XL automatically include +$20 hide surcharge on storefront)
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
