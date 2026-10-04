@@ -162,6 +162,19 @@ export function Footer() {
               <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Response Time</span>
               <span className="text-[#8a4d2b] font-semibold">Within 30 minutes</span>
             </div>
+            <div>
+              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Atelier &amp; Workshop</span>
+              <a
+                href="https://maps.app.goo.gl/JPg45EsFFu8Y5Qa69?g_st=aw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#221b16] font-medium hover:text-[#8a4d2b] transition-colors inline-flex items-center gap-1 group"
+                title="View atelier on Google Maps"
+              >
+                <span>Kashmir Road, Sialkot</span>
+                <span aria-hidden="true" className="text-[10px] text-[#8a4d2b] group-hover:translate-x-0.5 transition-transform">↗</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

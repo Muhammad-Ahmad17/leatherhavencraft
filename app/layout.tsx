@@ -81,6 +81,15 @@ const organizationSchema = {
         { "@type": "Country", name: "Italy" },
         { "@type": "Country", name: "Canada" },
       ],
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Kashmir Road, Near MAF Town",
+        addressLocality: "Sialkot",
+        addressRegion: "Punjab",
+        postalCode: "51310",
+        addressCountry: "PK",
+      },
+      hasMap: "https://maps.app.goo.gl/JPg45EsFFu8Y5Qa69?g_st=aw",
       contactPoint: [
         {
           "@type": "ContactPoint",
