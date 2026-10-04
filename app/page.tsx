@@ -2,7 +2,7 @@ import { HomeFAQ } from "@/components/home/HomeFAQ";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchLiveFeaturedProducts, fetchLiveProducts } from "@/data/products";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
+import { SITE_DESCRIPTION } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
 import { BrandStrip } from "@/components/brand/BrandStrip";
@@ -12,22 +12,82 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
+import { LeatherHeritageGuide } from "@/components/home/LeatherHeritageGuide";
 import { OurProcess } from "@/components/home/OurProcess";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: SITE_NAME,
-  description: SITE_DESCRIPTION,
+  title: "Leather Haven Craft | Authentic Heritage Leather Jackets & Bespoke Outerwear",
+  description:
+    "Authorized stockist of authentic Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson leather jackets, plus handcrafted bespoke made-to-measure outerwear. Shipped express across Europe and America.",
   alternates: { canonical: "/" },
+  openGraph: {
+    title: "Leather Haven Craft | Heritage Leather Outerwear",
+    description:
+      "Curated authentic Schott NYC, Avirex, Pelle Pelle, and bespoke made-to-measure leather jackets.",
+    images: [{ url: "/banners/home-desktop.jpg" }],
+  },
 };
+
+const homeFaqSchema = [
+  {
+    q: "Are all jackets authentic Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson?",
+    a: "Yes, 100% authentic. Every piece sourced from heritage houses is verified for authentic hardware (RiRi, Talon, or YKK zippers), heavyweight hides, and official brand tags. For our in-house line, pieces are handcrafted by our master artisans using full-grain Horween leathers.",
+  },
+  {
+    q: "What leather types do you offer?",
+    a: "We curate premium heavyweight steerhide and cowhide (Schott Perfecto & Cafe Racers), thick shearling sheepskin pelt (Avirex B-3 Bombers), supple lambskin (Pelle Pelle Plush Bombers), and competition-weight full-grain Horween Chromexcel for our bespoke creations.",
+  },
+  {
+    q: "How do I choose the correct size?",
+    a: "Every jacket has exact pit-to-pit chest, sleeve, back length, and hem measurements listed on its product page and in our Universal Size Guide (XS–6XL). If you are unsure between two sizes, message our concierge for personalized fit advice before ordering.",
+  },
+  {
+    q: "How does the ordering and payment process work?",
+    a: "Click 'Inquire / Order' on any jacket to reach our concierge via WhatsApp or email. We confirm exact measurements, live inventory, and shipping address, then issue a secure, encrypted payment link via Stripe or invoice.",
+  },
+  {
+    q: "Where do you ship and what are the delivery times?",
+    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door-to-door tracking and transit insurance.",
+  },
+];
 
 export default async function HomePage() {
   const allProducts = await fetchLiveProducts();
   const featuredProducts = await fetchLiveFeaturedProducts();
 
+  const homePageSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://www.leatherhavencraft.com/#webpage",
+        url: "https://www.leatherhavencraft.com",
+        name: "Leather Haven Craft | Authentic Heritage Leather Jackets & Bespoke Outerwear",
+        description: SITE_DESCRIPTION,
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: homeFaqSchema.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: f.a,
+          },
+        })),
+      },
+    ],
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
+      />
+
       {/* ── 1. Hero + brand logos moving marquee ── */}
       <div className="flex h-[calc(100dvh-var(--site-header-h))] flex-col">
         <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a1a1a] text-white">
@@ -88,16 +148,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. Custom Manufacturing (Message or mail us) ── */}
+      {/* ── 5. The Master Collector & Heritage Leather Guide (High-Rank SEO Feature) ── */}
+      <LeatherHeritageGuide />
+
+      {/* ── 6. Custom Manufacturing (Message or mail us) ── */}
       <CustomManufacturing />
 
-      {/* ── 6. How ordering works + CTA + trust badges ── */}
+      {/* ── 7. How ordering works + CTA + trust badges ── */}
       <OrderPath />
 
-      {/* ── 7. Client FAQ & Care Guidance ── */}
+      {/* ── 8. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
 
-      {/* ── 8. Our Process (Directly above the footer) ── */}
+      {/* ── 9. Our Process (Directly above the footer) ── */}
       <OurProcess />
     </main>
   );

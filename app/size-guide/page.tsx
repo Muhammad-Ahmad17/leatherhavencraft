@@ -2,17 +2,40 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { UniversalSizeChart } from "@/components/common/UniversalSizeChart";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
+import { HOW_TO_MEASURE_STEPS } from "@/data/sizeChart";
 
 export const metadata: Metadata = {
-  title: "Universal Size Guide (XS – 6XL) | Leather Haven Craft",
+  title: "Universal Men's Leather Jacket Size Guide (XS–6XL) | Measurement Chart & Fit Guide",
   description:
-    "Official universal gents sizing chart for leather jackets and outerwear across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft. Detailed pit-to-pit chest, waist, length, shoulder, sleeve, and wrist measurements in inches and cm.",
+    "Official universal gents sizing chart for leather jackets across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft. Exact pit-to-pit chest, waist, back length, shoulder, and sleeve measurements in inches and cm.",
   alternates: { canonical: "/size-guide" },
+  openGraph: {
+    title: "Universal Leather Jacket Size Guide (XS–6XL) | Leather Haven Craft",
+    description: "Compare flat garment measurements across heritage leather outerwear houses.",
+  },
 };
 
 export default function SizeGuidePage() {
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to Measure a Leather Jacket for Sizing",
+    description:
+      "A step-by-step masterclass on taking accurate flat garment measurements across chest, shoulders, length, and sleeves to determine your perfect leather jacket size.",
+    step: HOW_TO_MEASURE_STEPS.map((s) => ({
+      "@type": "HowToStep",
+      position: s.step,
+      name: s.title,
+      text: s.text,
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-[#fbf9f6] text-[#221b16] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
       <div className="mx-auto max-w-5xl">
         {/* ── Breadcrumb ── */}
         <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-2 text-xs text-[#8a7b70]">

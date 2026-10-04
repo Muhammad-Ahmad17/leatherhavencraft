@@ -1,4 +1,5 @@
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
+import { BrandDossier } from "@/components/brand/BrandDossier";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -24,9 +25,14 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
   if (!brand) return { title: "Not found" };
 
   return {
-    title: brand.name,
-    description: brand.tagline,
+    title: `${brand.name} Leather Jackets & Outerwear Archive | Leather Haven Craft`,
+    description: `Explore authentic ${brand.name} leather jackets: ${brand.tagline} Verified vintage hardware, heavy full-grain hides, and heritage cuts. Express shipping to US, UK, and Europe.`,
     alternates: { canonical: `/brands/${brand.slug}` },
+    openGraph: {
+      title: `${brand.name} Leather Jackets | Leather Haven Craft`,
+      description: brand.tagline,
+      images: [{ url: brand.heroDesktop }],
+    },
   };
 }
 
@@ -38,8 +44,55 @@ export default async function BrandPage({ params }: BrandPageProps) {
   const items = await fetchLiveProductsByBrand(brand.slug);
   const others = brands.filter((entry) => entry.slug !== brand.slug);
 
+  const brandSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Brand",
+        "@id": `https://www.leatherhavencraft.com/brands/${brand.slug}#brand`,
+        name: brand.name,
+        description: brand.tagline,
+        logo: `https://www.leatherhavencraft.com${brand.logo}`,
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `https://www.leatherhavencraft.com/brands/${brand.slug}#collection`,
+        name: `${brand.name} Leather Jackets & Outerwear Archive`,
+        url: `https://www.leatherhavencraft.com/brands/${brand.slug}`,
+        description: `Curated collection of authentic ${brand.name} outerwear.`,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://www.leatherhavencraft.com",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Houses & Brands",
+            item: "https://www.leatherhavencraft.com/products",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: brand.name,
+            item: `https://www.leatherhavencraft.com/brands/${brand.slug}`,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(brandSchema) }}
+      />
       <section
         className="relative flex min-h-[520px] items-end overflow-hidden px-6 pt-10 pb-10 text-white md:min-h-[45vh] md:pb-12"
         style={{ background: brand.accent }}
@@ -63,6 +116,9 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
       <BrandBestSellers products={items} />
       <ProductCatalog products={items} />
+
+      {/* ── Brand Heritage & Authenticity Dossier (High-Rank SEO & Collector Guide) ── */}
+      <BrandDossier brand={brand} />
 
       {brand.slug === "leather-haven-craft" && (
         <CustomManufacturing />
