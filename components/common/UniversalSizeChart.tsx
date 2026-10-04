@@ -168,7 +168,7 @@ export function UniversalSizeChart({
 
       {/* ── Diagram & Measurement Methodology Grid ── */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start pt-2">
-        {/* Left Column: Visual Jacket Diagram */}
+                {/* Left Column: Visual Jacket Diagram */}
         <div className="rounded-xl border border-[#ded5c7] bg-[#f9f7f3] p-4 lg:col-span-6 flex flex-col items-center">
           <div className="w-full flex items-center justify-between border-b border-[#ded5c7] pb-2 mb-3">
             <span className="text-xs font-bold uppercase tracking-wider text-[#221b16]">
@@ -177,180 +177,438 @@ export function UniversalSizeChart({
             <span className="text-[11px] text-[#8a7b70]">Laid Flat (Inches/cm)</span>
           </div>
 
-          {/* High-fidelity Jacket Vector Diagram */}
-          <div className="relative w-full max-w-[340px] aspect-[4/3] flex items-center justify-center">
+          {/* High-fidelity Bespoke Leather Jacket Vector Diagram */}
+          <div className="relative w-full max-w-[390px] aspect-[440/370] flex items-center justify-center">
             <svg
-              viewBox="0 0 400 320"
+              viewBox="0 0 440 370"
               className="w-full h-full select-none"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Outer Jacket Silhouette */}
+              <defs>
+                {/* Soft ambient drop shadow for flat-laid garment */}
+                <filter id="leatherShadow" x="-8%" y="-4%" width="116%" height="116%" filterUnits="userSpaceOnUse">
+                  <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#2a1d17" floodOpacity="0.14" />
+                </filter>
+
+                {/* Subtle rich leather tonal gradient */}
+                <linearGradient id="leatherBodyGrad" x1="120" y1="40" x2="320" y2="300" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#fcfaf6" />
+                  <stop offset="45%" stopColor="#f5eee3" />
+                  <stop offset="100%" stopColor="#e8ded0" />
+                </linearGradient>
+
+                {/* Interior collar lining */}
+                <linearGradient id="collarLining" x1="184" y1="36" x2="236" y2="52" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#d5c4b0" />
+                  <stop offset="100%" stopColor="#ba9f83" />
+                </linearGradient>
+
+                {/* Metallic antique brass hardware */}
+                <linearGradient id="brassHardware" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#e5c99e" />
+                  <stop offset="50%" stopColor="#b4884c" />
+                  <stop offset="100%" stopColor="#7a5423" />
+                </linearGradient>
+
+                {/* Badge shadow */}
+                <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.25" />
+                </filter>
+              </defs>
+
+              {/* ═══════════ 1. JACKET LEATHER FOUNDATION ═══════════ */}
+              {/* Main Outer Body & Sleeves Silhouette */}
               <path
-                d="M 140 40 L 160 55 L 240 55 L 260 40 L 320 70 L 350 220 L 315 230 L 295 125 L 295 240 L 105 240 L 105 125 L 85 230 L 50 220 L 80 70 Z"
-                fill="#f0ebe1"
-                stroke="#2a1810"
+                d="M 184 40
+                   Q 210 35 236 40
+                   L 316 72
+                   Q 338 145 348 205
+                   Q 354 240 356 264
+                   L 322 272
+                   Q 312 215 286 150
+                   L 280 274
+                   Q 210 279 140 274
+                   L 134 150
+                   Q 108 215 98 272
+                   L 64 264
+                   Q 66 240 72 205
+                   Q 82 145 104 72
+                   Z"
+                fill="url(#leatherBodyGrad)"
+                stroke="#2a1d17"
                 strokeWidth="2.5"
                 strokeLinejoin="round"
+                strokeLinecap="round"
+                filter="url(#leatherShadow)"
               />
-              {/* Collar & Lapels */}
+
+              {/* ═══════════ 2. COLLAR (CAFÉ RACER SNAP BAND COLLAR) ═══════════ */}
+              {/* Inside Neck Hole / Interior Lining */}
               <path
-                d="M 160 55 L 200 110 L 240 55"
-                stroke="#2a1810"
+                d="M 184 40 Q 210 52 236 40 Q 210 35 184 40 Z"
+                fill="url(#collarLining)"
+                stroke="#2a1d17"
+                strokeWidth="1.5"
+              />
+              {/* Outer Collar Stand Band */}
+              <path
+                d="M 180 39
+                   Q 210 33 240 39
+                   L 242 47
+                   Q 210 56 178 47
+                   Z"
+                fill="#ece1d2"
+                stroke="#2a1d17"
+                strokeWidth="2"
+              />
+              {/* Collar Double Topstitching */}
+              <path
+                d="M 181 41 Q 210 35 239 41"
+                stroke="#8c6f58"
+                strokeWidth="1"
+                strokeDasharray="2.5 1.5"
+                fill="none"
+              />
+              {/* Collar Snap Button Tab */}
+              <circle cx="218" cy="48" r="3" fill="url(#brassHardware)" stroke="#2a1d17" strokeWidth="0.8" />
+
+              {/* ═══════════ 3. SHOULDER & ARM SEAMS (SCYE) ═══════════ */}
+              {/* Left Armhole Scye Seam */}
+              <path
+                d="M 104 72 Q 118 112 134 150"
+                stroke="#2a1d17"
                 strokeWidth="2"
                 fill="none"
               />
               <path
-                d="M 160 55 L 180 85 L 140 75"
-                stroke="#2a1810"
+                d="M 102 73 Q 115 112 131 150"
+                stroke="#8c6f58"
+                strokeWidth="1"
+                strokeDasharray="2 1.5"
+                fill="none"
+              />
+              {/* Right Armhole Scye Seam */}
+              <path
+                d="M 316 72 Q 302 112 286 150"
+                stroke="#2a1d17"
+                strokeWidth="2"
+                fill="none"
+              />
+              <path
+                d="M 318 73 Q 305 112 289 150"
+                stroke="#8c6f58"
+                strokeWidth="1"
+                strokeDasharray="2 1.5"
+                fill="none"
+              />
+
+              {/* Classic Moto Shoulder Yokes */}
+              <path
+                d="M 104 72 Q 155 86 205 88"
+                stroke="#2a1d17"
                 strokeWidth="1.5"
                 fill="none"
               />
               <path
-                d="M 240 55 L 220 85 L 260 75"
-                stroke="#2a1810"
+                d="M 316 72 Q 265 86 215 88"
+                stroke="#2a1d17"
                 strokeWidth="1.5"
                 fill="none"
               />
-              {/* Main Center Zipper */}
+              <path
+                d="M 106 74 Q 155 88 205 90"
+                stroke="#8c6f58"
+                strokeWidth="0.8"
+                strokeDasharray="2 1.5"
+                fill="none"
+              />
+              <path
+                d="M 314 74 Q 265 88 215 90"
+                stroke="#8c6f58"
+                strokeWidth="0.8"
+                strokeDasharray="2 1.5"
+                fill="none"
+              />
+
+              {/* ═══════════ 4. FRONT ZIPPER PLACKET & HARDWARE ═══════════ */}
+              {/* Storm Flap Parallel Stitch Lines */}
+              <line x1="205" y1="52" x2="205" y2="277" stroke="#8c6f58" strokeWidth="1" strokeDasharray="3 2" />
+              <line x1="215" y1="52" x2="215" y2="277" stroke="#8c6f58" strokeWidth="1" strokeDasharray="3 2" />
+              {/* Heavy Center Front Zipper Track */}
               <line
-                x1="200"
-                y1="110"
-                x2="200"
-                y2="240"
-                stroke="#8a4d2b"
-                strokeWidth="2"
+                x1="210"
+                y1="52"
+                x2="210"
+                y2="277"
+                stroke="#33241c"
+                strokeWidth="2.5"
                 strokeDasharray="3 2"
               />
-
-              {/* 4. Shoulder Line (Point 4) */}
-              <line
-                x1="120"
-                y1="65"
-                x2="280"
-                y2="65"
-                stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"}
-                strokeWidth="2.5"
-              />
-              <circle cx="120" cy="65" r="4" fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} />
-              <circle cx="280" cy="65" r="4" fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} />
-
-              {/* 1. Chest Line (Point 1: Pit to Pit) */}
-              <line
-                x1="105"
-                y1="140"
-                x2="295"
-                y2="140"
-                stroke={activeMeasurement === 1 ? "#d9480f" : "#2563eb"}
-                strokeWidth="2.5"
-              />
-              <circle cx="105" cy="140" r="4" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
-              <circle cx="295" cy="140" r="4" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
-
-              {/* 2. Waist Line (Point 2: Bottom Hem) */}
-              <line
-                x1="105"
-                y1="250"
-                x2="295"
-                y2="250"
-                stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"}
-                strokeWidth="2.5"
-              />
-              <circle cx="105" cy="250" r="4" fill={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} />
-              <circle cx="295" cy="250" r="4" fill={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} />
-
-              {/* 3. Length Line (Point 3: Collar to Hem) */}
-              <line
-                x1="200"
-                y1="40"
-                x2="200"
-                y2="240"
-                stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"}
-                strokeWidth="2.5"
-              />
-              <circle cx="200" cy="40" r="4" fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} />
-              <circle cx="200" cy="240" r="4" fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} />
-
-              {/* 5. Sleeve Line (Point 5: Outer Arm Curve) */}
-              <path
-                d="M 80 70 Q 55 140 50 220"
-                stroke={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"}
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <circle cx="80" cy="70" r="4" fill={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"} />
-              <circle cx="50" cy="220" r="4" fill={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"} />
-
-              {/* 6. Wrist Line (Point 6: Cuff) */}
-              <line
-                x1="315"
-                y1="235"
-                x2="350"
-                y2="225"
-                stroke={activeMeasurement === 6 ? "#d9480f" : "#db2777"}
-                strokeWidth="3"
-              />
-
-              {/* Number Badges matching user diagram */}
-              {/* Badge 1: Chest */}
-              <g transform="translate(188, 128)">
-                <rect width="24" height="24" rx="12" fill="#2563eb" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">1</text>
+              {/* Brass Zipper Slider & Leather Pull Tab */}
+              <g transform="translate(206, 68)">
+                <rect width="8" height="6" rx="1.5" fill="url(#brassHardware)" stroke="#2a1d17" strokeWidth="0.8" />
+                <path d="M 4 6 L 4 16 L 2 18 L 6 18 L 4 16" fill="url(#brassHardware)" stroke="#2a1d17" strokeWidth="0.8" />
               </g>
-              {/* Badge 2: Waist */}
-              <g transform="translate(188, 255)">
-                <rect width="24" height="24" rx="12" fill="#2563eb" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">2</text>
+
+              {/* ═══════════ 5. CHEST & WAIST ZIPPER POCKETS ═══════════ */}
+              {/* Left Slanted Chest Zip Pocket */}
+              <g>
+                <path d="M 148 110 L 186 116" stroke="#2a1d17" strokeWidth="2.5" />
+                <path d="M 148 108 L 186 114" stroke="#8c6f58" strokeWidth="1" strokeDasharray="2 1.5" />
+                <circle cx="152" cy="111" r="2" fill="url(#brassHardware)" />
               </g>
-              {/* Badge 3: Length */}
-              <g transform="translate(188, 20)">
-                <rect width="24" height="24" rx="12" fill="#059669" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">3</text>
+              {/* Right Horizontal Chest Zip Pocket */}
+              <g>
+                <path d="M 234 116 L 272 110" stroke="#2a1d17" strokeWidth="2.5" />
+                <path d="M 234 114 L 272 108" stroke="#8c6f58" strokeWidth="1" strokeDasharray="2 1.5" />
+                <circle cx="268" cy="111" r="2" fill="url(#brassHardware)" />
               </g>
-              {/* Badge 4: Shoulder */}
-              <g transform="translate(188, 53)">
-                <rect width="24" height="24" rx="12" fill="#2563eb" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">4</text>
+
+              {/* Lower Hand-Warmer Slash Pockets */}
+              <g>
+                <path d="M 152 195 L 148 244" stroke="#2a1d17" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 155 196 L 151 243" stroke="#8c6f58" strokeWidth="1" strokeDasharray="2 1.5" />
+                <circle cx="150" cy="220" r="1.8" fill="url(#brassHardware)" />
               </g>
-              {/* Badge 5: Sleeve */}
-              <g transform="translate(30, 130)">
-                <rect width="24" height="24" rx="12" fill="#7c3aed" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">5</text>
+              <g>
+                <path d="M 268 195 L 272 244" stroke="#2a1d17" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 265 196 L 269 243" stroke="#8c6f58" strokeWidth="1" strokeDasharray="2 1.5" />
+                <circle cx="270" cy="220" r="1.8" fill="url(#brassHardware)" />
               </g>
-              {/* Badge 6: Wrist */}
-              <g transform="translate(340, 240)">
-                <rect width="24" height="24" rx="12" fill="#db2777" />
-                <text x="12" y="16" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">6</text>
+
+              {/* ═══════════ 6. SLEEVE DETAILS & CUFF ZIPPERS ═══════════ */}
+              {/* Articulated Biker Elbow Seams */}
+              <path d="M 72 205 Q 86 210 98 212" stroke="#8c6f58" strokeWidth="1.2" strokeDasharray="3 2" fill="none" />
+              <path d="M 348 205 Q 334 210 322 212" stroke="#8c6f58" strokeWidth="1.2" strokeDasharray="3 2" fill="none" />
+              {/* Left Cuff Zipper */}
+              <line x1="72" y1="264" x2="76" y2="242" stroke="#3b2b22" strokeWidth="2" strokeDasharray="2 1.5" />
+              <circle cx="76" cy="242" r="1.8" fill="url(#brassHardware)" />
+              {/* Right Cuff Zipper */}
+              <line x1="348" y1="264" x2="344" y2="242" stroke="#3b2b22" strokeWidth="2" strokeDasharray="2 1.5" />
+              <circle cx="344" cy="242" r="1.8" fill="url(#brassHardware)" />
+
+              {/* ═══════════ 7. WAISTBAND & BOTTOM HEM ═══════════ */}
+              <path d="M 137 262 Q 210 267 283 262" stroke="#2a1d17" strokeWidth="1.5" fill="none" />
+              <path d="M 138 260 Q 210 265 282 260" stroke="#8c6f58" strokeWidth="1" strokeDasharray="2.5 1.5" fill="none" />
+              {/* Side Cinch Buckle Tabs */}
+              <rect x="134" y="264" width="7" height="4" rx="1" fill="#ede3d5" stroke="#2a1d17" strokeWidth="1" />
+              <circle cx="137.5" cy="266" r="1" fill="url(#brassHardware)" />
+              <rect x="279" y="264" width="7" height="4" rx="1" fill="#ede3d5" stroke="#2a1d17" strokeWidth="1" />
+              <circle cx="282.5" cy="266" r="1" fill="url(#brassHardware)" />
+
+              {/* ═══════════════════════════════════════════════════════
+                  8. TECHNICAL MEASUREMENT OVERLAYS (1 TO 6)
+                  ═══════════════════════════════════════════════════════ */}
+
+              {/* ── POINT 4: SHOULDER (Shoulder to Shoulder) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 4 ? null : 4)}
+                onMouseEnter={() => setActiveMeasurement(4)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Guide Witness Lines down to shoulder tips */}
+                <line x1="104" y1="56" x2="104" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                <line x1="316" y1="56" x2="316" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                {/* Main Dimension Line */}
+                <line
+                  x1="104"
+                  y1="58"
+                  x2="316"
+                  y2="58"
+                  stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"}
+                  strokeWidth={activeMeasurement === 4 ? 3 : 2}
+                />
+                {/* End Ticks */}
+                <line x1="104" y1="53" x2="104" y2="63" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <line x1="316" y1="53" x2="316" y2="63" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                {/* Badge 4 */}
+                <circle cx="210" cy="58" r={activeMeasurement === 4 ? 13 : 11} fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
+                <text x="210" y="62" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">4</text>
+              </g>
+
+              {/* ── POINT 1: CHEST (Pit to Pit) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 1 ? null : 1)}
+                onMouseEnter={() => setActiveMeasurement(1)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Main Dimension Line across armpits */}
+                <line
+                  x1="134"
+                  y1="150"
+                  x2="286"
+                  y2="150"
+                  stroke={activeMeasurement === 1 ? "#d9480f" : "#2563eb"}
+                  strokeWidth={activeMeasurement === 1 ? 3 : 2}
+                />
+                {/* End Ticks & Circles */}
+                <line x1="134" y1="142" x2="134" y2="158" stroke={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <line x1="286" y1="142" x2="286" y2="158" stroke={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <circle cx="134" cy="150" r="3.5" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
+                <circle cx="286" cy="150" r="3.5" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
+                {/* Badge 1 */}
+                <circle cx="210" cy="150" r={activeMeasurement === 1 ? 13 : 11} fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
+                <text x="210" y="154" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">1</text>
+              </g>
+
+              {/* ── POINT 2: WAIST (Bottom Hem Sweep) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 2 ? null : 2)}
+                onMouseEnter={() => setActiveMeasurement(2)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Extension Witness Lines */}
+                <line x1="138" y1="274" x2="138" y2="304" stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                <line x1="282" y1="274" x2="282" y2="304" stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                {/* Main Dimension Line */}
+                <line
+                  x1="138"
+                  y1="298"
+                  x2="282"
+                  y2="298"
+                  stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"}
+                  strokeWidth={activeMeasurement === 2 ? 3 : 2}
+                />
+                {/* End Ticks */}
+                <line x1="138" y1="292" x2="138" y2="304" stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <line x1="282" y1="292" x2="282" y2="304" stroke={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                {/* Badge 2 */}
+                <circle cx="210" cy="298" r={activeMeasurement === 2 ? 13 : 11} fill={activeMeasurement === 2 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
+                <text x="210" y="302" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">2</text>
+              </g>
+
+              {/* ── POINT 3: LENGTH (Collar to Hem) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 3 ? null : 3)}
+                onMouseEnter={() => setActiveMeasurement(3)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Dimension Line from neck to hem */}
+                <line
+                  x1="210"
+                  y1="36"
+                  x2="210"
+                  y2="278"
+                  stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"}
+                  strokeWidth={activeMeasurement === 3 ? 3 : 2}
+                />
+                {/* Top/Bottom Horizontal Ticks */}
+                <line x1="202" y1="36" x2="218" y2="36" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
+                <line x1="202" y1="278" x2="218" y2="278" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
+                {/* Top Lead Line to Badge */}
+                <line x1="210" y1="27" x2="210" y2="36" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="1.5" />
+                {/* Badge 3 */}
+                <circle cx="210" cy="16" r={activeMeasurement === 3 ? 13 : 11} fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} filter="url(#badgeShadow)" />
+                <text x="210" y="20" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">3</text>
+              </g>
+
+              {/* ── POINT 5: SLEEVE (Shoulder Tip to Cuff) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 5 ? null : 5)}
+                onMouseEnter={() => setActiveMeasurement(5)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Dimension Curve following outer sleeve contour */}
+                <path
+                  d="M 96 68 Q 62 145 52 205 Q 46 240 50 264"
+                  stroke={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"}
+                  strokeWidth={activeMeasurement === 5 ? 3 : 2}
+                  fill="none"
+                />
+                {/* End Markers */}
+                <circle cx="96" cy="68" r="3.5" fill={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"} />
+                <circle cx="50" cy="264" r="3.5" fill={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"} />
+                {/* Badge 5 */}
+                <circle cx="38" cy="154" r={activeMeasurement === 5 ? 13 : 11} fill={activeMeasurement === 5 ? "#d9480f" : "#7c3aed"} filter="url(#badgeShadow)" />
+                <text x="38" y="158" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">5</text>
+              </g>
+
+              {/* ── POINT 6: WRIST (Cuff Opening) ── */}
+              <g
+                className="cursor-pointer transition-opacity"
+                onClick={() => setActiveMeasurement(activeMeasurement === 6 ? null : 6)}
+                onMouseEnter={() => setActiveMeasurement(6)}
+                onMouseLeave={() => setActiveMeasurement(null)}
+              >
+                {/* Offset dimension line across cuff */}
+                <line
+                  x1="324"
+                  y1="288"
+                  x2="358"
+                  y2="280"
+                  stroke={activeMeasurement === 6 ? "#d9480f" : "#db2777"}
+                  strokeWidth={activeMeasurement === 6 ? 3 : 2.5}
+                />
+                <line x1="322" y1="284" x2="326" y2="292" stroke={activeMeasurement === 6 ? "#d9480f" : "#db2777"} strokeWidth="2" />
+                <line x1="356" y1="276" x2="360" y2="284" stroke={activeMeasurement === 6 ? "#d9480f" : "#db2777"} strokeWidth="2" />
+                {/* Badge 6 */}
+                <circle cx="356" cy="306" r={activeMeasurement === 6 ? 13 : 11} fill={activeMeasurement === 6 ? "#d9480f" : "#db2777"} filter="url(#badgeShadow)" />
+                <text x="356" y="310" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">6</text>
               </g>
             </svg>
           </div>
 
-          {/* Number Legend */}
+          {/* Dynamic Measurement Spec Callout */}
+          <div className="mt-3 min-h-[38px] w-full rounded-lg border border-[#ded5c7] bg-[#fdfbf7] px-3 py-1.5 text-center text-xs leading-tight flex items-center justify-center transition-all">
+            {activeMeasurement ? (
+              <div className="text-[#221b16]">
+                <strong className="text-[#8a4d2b]">
+                  Point {activeMeasurement} • {MEASUREMENT_ROWS.find((r) => r.num === activeMeasurement)?.label}:
+                </strong>{" "}
+                <span className="text-[#5a4c41]">
+                  {MEASUREMENT_ROWS.find((r) => r.num === activeMeasurement)?.description}
+                </span>
+              </div>
+            ) : (
+              <span className="text-[#8a7b70] italic text-[11px]">
+                Hover or click any marker (1–6) or table row to inspect measurement guide
+              </span>
+            )}
+          </div>
+
+          {/* Interactive Number Legend */}
           <div className="mt-3 grid grid-cols-3 gap-2 w-full pt-3 border-t border-[#ded5c7] text-left text-xs">
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#2563eb] text-[10px] font-bold text-white">1</span>
-              <span>Chest</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#2563eb] text-[10px] font-bold text-white">2</span>
-              <span>Waist</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#059669] text-[10px] font-bold text-white">3</span>
-              <span>Length</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#2563eb] text-[10px] font-bold text-white">4</span>
-              <span>Shoulder</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#7c3aed] text-[10px] font-bold text-white">5</span>
-              <span>Sleeve</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-medium">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#db2777] text-[10px] font-bold text-white">6</span>
-              <span>Wrist</span>
-            </div>
+            {MEASUREMENT_ROWS.map((row) => {
+              const isAct = activeMeasurement === row.num;
+              const badgeBg =
+                row.num === 1 || row.num === 2 || row.num === 4
+                  ? "bg-[#2563eb]"
+                  : row.num === 3
+                  ? "bg-[#059669]"
+                  : row.num === 5
+                  ? "bg-[#7c3aed]"
+                  : "bg-[#db2777]";
+
+              return (
+                <button
+                  key={row.num}
+                  type="button"
+                  onClick={() => setActiveMeasurement(isAct ? null : row.num)}
+                  onMouseEnter={() => setActiveMeasurement(row.num)}
+                  onMouseLeave={() => setActiveMeasurement(null)}
+                  className={`flex items-center gap-1.5 rounded-md px-2 py-1 transition-all cursor-pointer text-left ${
+                    isAct
+                      ? "bg-[#8a4d2b]/15 text-[#8a4d2b] font-bold shadow-2xs"
+                      : "text-[#4a3f35] hover:bg-[#ede5d8]"
+                  }`}
+                >
+                  <span
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white transition-transform ${badgeBg} ${
+                      isAct ? "scale-110 ring-2 ring-[#8a4d2b]/40" : ""
+                    }`}
+                  >
+                    {row.num}
+                  </span>
+                  <span className="truncate">{row.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
