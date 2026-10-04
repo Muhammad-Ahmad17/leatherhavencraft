@@ -6,9 +6,16 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 
 type Sort = "featured" | "price-asc" | "price-desc";
 
-const chip =
-  "h-9 border border-[var(--line)] bg-white px-3 text-[13px] text-[var(--ink)] transition-colors hover:border-[var(--ink)]";
-const chipOn = "border-[var(--ink)] bg-[var(--ink)] text-white hover:bg-[var(--ink)]";
+function getChipClass(isActive: boolean) {
+  return `h-9 px-3.5 text-[13px] font-semibold rounded-md border transition-all cursor-pointer ${
+    isActive
+      ? "border-[#2a1810] bg-[#2a1810] text-white shadow-xs"
+      : "border-[#ded5c7] bg-white text-[#221b16] hover:border-[#8a4d2b] hover:bg-[#faf8f5]"
+  }`;
+}
+
+const selectClass =
+  "h-9 px-3 text-[13px] font-medium rounded-md border border-[#ded5c7] bg-white text-[#221b16] hover:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs";
 
 export function ProductCatalog({ products }: { products: Product[] }) {
   const [size, setSize] = useState("all");
@@ -46,14 +53,14 @@ export function ProductCatalog({ products }: { products: Product[] }) {
     <section className="px-6 pb-20">
       <div className="sticky top-[var(--site-header-h)] z-10 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2">
-          <button type="button" className={`${chip} ${size === "all" ? chipOn : ""}`} onClick={() => setSize("all")}>
+          <button type="button" className={getChipClass(size === "all")} onClick={() => setSize("all")}>
             All sizes
           </button>
           {sizes.map((value) => (
             <button
               key={value}
               type="button"
-              className={`${chip} ${size === value ? chipOn : ""}`}
+              className={getChipClass(size === value)}
               onClick={() => setSize(value)}
               aria-pressed={size === value}
             >
@@ -70,7 +77,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
             id="color-filter"
             value={color}
             onChange={(event) => setColor(event.target.value)}
-            className={`${chip} bg-[var(--bg)]`}
+            className={selectClass}
           >
             <option value="all">All colours</option>
             {colors.map((value) => (
@@ -87,7 +94,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
             id="sort"
             value={sort}
             onChange={(event) => setSort(event.target.value as Sort)}
-            className={`${chip} bg-[var(--bg)] sm:ml-auto`}
+            className={`${selectClass} sm:ml-auto`}
           >
             <option value="featured">Featured</option>
             <option value="price-asc">Price, low to high</option>
