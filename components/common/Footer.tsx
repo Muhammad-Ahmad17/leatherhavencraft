@@ -13,13 +13,13 @@ export function Footer() {
       <div className="border-b border-[#ded5c7] bg-[#f0ebe3] px-6 py-14 sm:py-16">
         <div className="mx-auto max-w-4xl text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-[#8a4d2b]">
-            Private Atelier Dispatch
+            Newsletter
           </p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#221b16] sm:text-3xl lg:text-4xl">
-            The Leather Haven Gazette
+            Stay Connected
           </h2>
           <p className="mt-3 text-xs leading-relaxed text-[#6b5c51] sm:text-sm max-w-xl mx-auto">
-            Receive confidential notifications on rare archive restocks, limited seasonal cuts, and custom bespoke commissions from Schott NYC, Avirex, and our London workshop.
+            Subscribe to receive updates on new jacket arrivals, seasonal archive restocks, and exclusive releases from Schott NYC, Avirex, and our workshop.
           </p>
 
           <div className="mt-6 max-w-md mx-auto">
@@ -48,7 +48,7 @@ export function Footer() {
                 Dedicated Concierge
               </span>
               <p className="text-[11px] text-[#6b5c51]">
-                Direct WhatsApp &amp; email fit consultations.
+                WhatsApp &amp; email customer support.
               </p>
             </div>
           </div>
@@ -69,13 +69,13 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex h-9 items-center justify-center rounded bg-[#25D366] px-4 text-xs font-semibold uppercase tracking-wider text-black transition-opacity hover:opacity-90 shadow-2xs"
             >
-              WhatsApp Concierge
+              WhatsApp
             </a>
             <a
               href="mailto:support@leatherhavencraft.com?subject=Jacket%20Inquiry"
               className="inline-flex h-9 items-center justify-center rounded border border-[#ded5c7] bg-white px-4 text-xs font-semibold uppercase tracking-wider text-[#221b16] transition-colors hover:border-[#8a4d2b] hover:bg-[#f0ebe3] shadow-2xs"
             >
-              Email Desk
+              Email Us
             </a>
           </div>
         </div>
@@ -129,11 +129,11 @@ export function Footer() {
 
         <div className="lg:col-span-2">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Store Desk
+            Customer Support
           </p>
           <div className="mt-4 space-y-2.5 text-xs text-[#6b5c51]">
             <div>
-              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Desk Hours</span>
+              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Support Hours</span>
               <span className="text-[#221b16] font-medium">Mon – Sat · 09:00 – 20:00 CET</span>
             </div>
             <div>

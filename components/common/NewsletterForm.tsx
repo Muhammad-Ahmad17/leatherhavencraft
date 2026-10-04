@@ -49,26 +49,26 @@ export function NewsletterForm() {
           placeholder="Enter your email address"
           disabled={status === "loading"}
           aria-label="Email address for newsletter"
-          className="h-11 flex-1 rounded border border-white/20 bg-white/10 px-4 text-xs text-white placeholder-white/45 transition-colors focus:border-[#d4af37] focus:bg-white/15 focus:outline-none disabled:opacity-50"
+          className="h-11 flex-1 rounded-md border border-[#d6cdbf] bg-white px-4 text-xs text-[#221b16] placeholder-[#8a7b70] shadow-2xs transition-colors focus:border-[#8a4d2b] focus:outline-none focus:ring-1 focus:ring-[#8a4d2b] disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="inline-flex h-11 shrink-0 items-center justify-center rounded bg-[#d4af37] px-6 text-xs font-semibold uppercase tracking-[0.14em] text-[#14100c] transition-all hover:bg-[#e2bd44] active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-md bg-[#2a1810] px-6 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-[#3d2417] active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-2xs"
         >
-          {status === "loading" ? "Subscribing..." : "Join Gazette"}
+          {status === "loading" ? "Subscribing..." : "Subscribe"}
         </button>
       </form>
 
-      <div className="mt-2.5 flex items-center justify-between text-[11px] text-white/50">
-        <span>Confidential · Single-click unsubscribe</span>
-        <span>Archive &amp; seasonal dispatches</span>
+      <div className="mt-2.5 flex items-center justify-between text-[11px] text-[#6b5c51]">
+        <span>No spam · Unsubscribe anytime</span>
+        <span>New arrivals &amp; collection updates</span>
       </div>
 
       {message && (
         <p
           className={`mt-2.5 text-xs font-medium ${
-            status === "success" ? "text-[#d4af37]" : "text-rose-400"
+            status === "success" ? "text-emerald-700" : "text-rose-600"
           }`}
         >
           {status === "success" ? "✓ " : "✕ "}

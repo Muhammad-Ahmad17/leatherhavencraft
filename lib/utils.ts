@@ -15,11 +15,12 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/** Surcharge for extended sizes (2XL and above) to cover additional premium hide consumption. */
+/** Surcharge for extended sizes (3XL and above) to cover additional premium hide consumption. */
 export const PLUS_SIZE_SURCHARGE = 20;
 
 /**
- * Returns true if the size is 2XL or higher (e.g. 2XL, 3XL, 4XL, 5XL, 6XL, XXL, XXXL).
+ * Returns true if the size is 3XL or higher (e.g. 3XL, 4XL, 5XL, 6XL, XXXL).
+ * 2XL is excluded from surcharge.
  */
 export function isPlusSize(size?: string): boolean {
   if (!size) return false;
@@ -27,9 +28,9 @@ export function isPlusSize(size?: string): boolean {
   const match = s.match(/^(\d+)XL$/);
   if (match) {
     const num = parseInt(match[1], 10);
-    return num >= 2;
+    return num >= 3;
   }
-  return s === "XXL" || s === "XXXL" || s.startsWith("XXXX");
+  return s === "XXXL" || s.startsWith("XXXX");
 }
 
 /**

@@ -194,7 +194,7 @@ export function ProductPurchase({
             </span>
             {hasPlusSurcharge && (
               <span className="text-[11px] font-medium text-[#8a4d2b]">
-                (Includes +${PLUS_SIZE_SURCHARGE} 2XL–6XL surcharge)
+                (Includes +${PLUS_SIZE_SURCHARGE} 3XL–6XL surcharge)
               </span>
             )}
           </div>
@@ -422,7 +422,7 @@ export function ProductPurchase({
 
             <div className="mt-3 rounded-lg border border-[#e8ded3] bg-[#faf8f5] p-2.5 text-[11px] text-[#706456]">
               <span className="font-semibold text-[#8a4d2b]">Extended Sizing Note: </span>
-              Sizes 2XL through 6XL are handcrafted with extra hide selection and artisanal pattern scaling, incurring a standard +${PLUS_SIZE_SURCHARGE} tailoring surcharge.
+              Sizes 3XL through 6XL are handcrafted with extra hide selection and artisanal pattern scaling, incurring a standard +${PLUS_SIZE_SURCHARGE} tailoring surcharge.
             </div>
 
             <div className="mt-4 flex justify-end border-t border-black/10 pt-3">

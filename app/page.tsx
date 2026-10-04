@@ -11,6 +11,8 @@ import { OrderPath } from "@/components/home/OrderPath";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
+import { CustomManufacturing } from "@/components/home/CustomManufacturing";
+import { OurProcess } from "@/components/home/OurProcess";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* ── 1. Hero + brand logos ── */}
+      {/* ── 1. Hero + brand logos moving marquee ── */}
       <div className="flex h-[calc(100dvh-var(--site-header-h))] flex-col">
         <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a1a1a] text-white">
           <Banner desktop="/banners/home-desktop.jpg" mobile="/banners/home-mobile.jpg" alt="" />
@@ -58,10 +60,7 @@ export default async function HomePage() {
         <BrandStrip />
       </div>
 
-      {/* ── 2. Shop by brand & category ── */}
-      <BrandShowcase />
-
-      {/* ── 3. Scroll the collection ── */}
+      {/* ── 2. Scroll the collection (Brand animation stage swapped here) ── */}
       <section aria-labelledby="scroll-collection">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
@@ -70,6 +69,9 @@ export default async function HomePage() {
           <ProductCarousel />
         </ScrollAnimationContainer>
       </section>
+
+      {/* ── 3. Shop by brand & category (Swapped after scroll collection) ── */}
+      <BrandShowcase />
 
       {/* ── 4. Featured picks ── */}
       <section className="border-t border-[var(--line)] px-6 py-16 sm:py-20">
@@ -86,11 +88,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. How ordering works + CTA + trust badges ── */}
+      {/* ── 5. Custom Manufacturing (Message or mail us) ── */}
+      <CustomManufacturing />
+
+      {/* ── 6. How ordering works + CTA + trust badges ── */}
       <OrderPath />
 
-      {/* ── 6. Client FAQ & Care Guidance ── */}
+      {/* ── 7. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
+
+      {/* ── 8. Our Process (Directly above the footer) ── */}
+      <OurProcess />
     </main>
   );
 }
