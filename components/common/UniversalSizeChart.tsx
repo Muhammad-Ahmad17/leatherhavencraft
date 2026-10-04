@@ -178,9 +178,9 @@ export function UniversalSizeChart({
           </div>
 
           {/* High-fidelity Bespoke Leather Jacket Vector Diagram */}
-          <div className="relative w-full max-w-[390px] aspect-[440/370] flex items-center justify-center">
+          <div className="relative w-full max-w-[410px] aspect-[450/360] flex items-center justify-center">
             <svg
-              viewBox="0 0 440 370"
+              viewBox="0 0 450 360"
               className="w-full h-full select-none"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -397,11 +397,11 @@ export function UniversalSizeChart({
               <rect x="279" y="264" width="7" height="4" rx="1" fill="#ede3d5" stroke="#2a1d17" strokeWidth="1" />
               <circle cx="282.5" cy="266" r="1" fill="url(#brassHardware)" />
 
-              {/* ═══════════════════════════════════════════════════════
-                  8. TECHNICAL MEASUREMENT OVERLAYS (1 TO 6)
+                            {/* ═══════════════════════════════════════════════════════
+                  8. TECHNICAL MEASUREMENT OVERLAYS (1 TO 6 - CLEAN ZERO OVERLAP)
                   ═══════════════════════════════════════════════════════ */}
 
-              {/* ── POINT 4: SHOULDER (Shoulder to Shoulder) ── */}
+              {/* ── POINT 4: SHOULDER (Shoulder to Shoulder - Positioned Cleanly at Top) ── */}
               <g
                 className="cursor-pointer transition-opacity"
                 onClick={() => setActiveMeasurement(activeMeasurement === 4 ? null : 4)}
@@ -409,26 +409,28 @@ export function UniversalSizeChart({
                 onMouseLeave={() => setActiveMeasurement(null)}
               >
                 {/* Guide Witness Lines down to shoulder tips */}
-                <line x1="104" y1="56" x2="104" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
-                <line x1="316" y1="56" x2="316" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
-                {/* Main Dimension Line */}
+                <line x1="104" y1="38" x2="104" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                <line x1="316" y1="38" x2="316" y2="72" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="1.2" strokeDasharray="2 2" />
+                {/* Main Dimension Line across shoulders */}
                 <line
                   x1="104"
-                  y1="58"
+                  y1="42"
                   x2="316"
-                  y2="58"
+                  y2="42"
                   stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"}
                   strokeWidth={activeMeasurement === 4 ? 3 : 2}
                 />
-                {/* End Ticks */}
-                <line x1="104" y1="53" x2="104" y2="63" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
-                <line x1="316" y1="53" x2="316" y2="63" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
-                {/* Badge 4 */}
-                <circle cx="210" cy="58" r={activeMeasurement === 4 ? 13 : 11} fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
-                <text x="210" y="62" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">4</text>
+                {/* End Ticks & Anchors */}
+                <line x1="104" y1="36" x2="104" y2="48" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <line x1="316" y1="36" x2="316" y2="48" stroke={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
+                <circle cx="104" cy="42" r="3" fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} />
+                <circle cx="316" cy="42" r="3" fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} />
+                {/* Badge 4 - Cleanly isolated at top center */}
+                <circle cx="210" cy="42" r={activeMeasurement === 4 ? 13 : 11} fill={activeMeasurement === 4 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
+                <text x="210" y="46" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">4</text>
               </g>
 
-              {/* ── POINT 1: CHEST (Pit to Pit) ── */}
+              {/* ── POINT 1: CHEST (Pit to Pit - Clean Horizontal Center Line) ── */}
               <g
                 className="cursor-pointer transition-opacity"
                 onClick={() => setActiveMeasurement(activeMeasurement === 1 ? null : 1)}
@@ -449,12 +451,12 @@ export function UniversalSizeChart({
                 <line x1="286" y1="142" x2="286" y2="158" stroke={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} strokeWidth="2" />
                 <circle cx="134" cy="150" r="3.5" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
                 <circle cx="286" cy="150" r="3.5" fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} />
-                {/* Badge 1 */}
+                {/* Badge 1 - Center chest, completely free from any vertical crossing line */}
                 <circle cx="210" cy="150" r={activeMeasurement === 1 ? 13 : 11} fill={activeMeasurement === 1 ? "#d9480f" : "#2563eb"} filter="url(#badgeShadow)" />
                 <text x="210" y="154" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">1</text>
               </g>
 
-              {/* ── POINT 2: WAIST (Bottom Hem Sweep) ── */}
+              {/* ── POINT 2: WAIST (Bottom Hem Sweep - Clean Bottom Line) ── */}
               <g
                 className="cursor-pointer transition-opacity"
                 onClick={() => setActiveMeasurement(activeMeasurement === 2 ? null : 2)}
@@ -481,30 +483,33 @@ export function UniversalSizeChart({
                 <text x="210" y="302" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">2</text>
               </g>
 
-              {/* ── POINT 3: LENGTH (Collar to Hem) ── */}
+              {/* ── POINT 3: LENGTH (Collar to Hem - Positioned on Flank with Projection Lines) ── */}
               <g
                 className="cursor-pointer transition-opacity"
                 onClick={() => setActiveMeasurement(activeMeasurement === 3 ? null : 3)}
                 onMouseEnter={() => setActiveMeasurement(3)}
                 onMouseLeave={() => setActiveMeasurement(null)}
               >
-                {/* Dimension Line from neck to hem */}
+                {/* Horizontal Extension Witness Lines from collar base & hem edge to side axis */}
+                <line x1="236" y1="40" x2="395" y2="40" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="1.2" strokeDasharray="2 2" />
+                <line x1="280" y1="274" x2="395" y2="274" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="1.2" strokeDasharray="2 2" />
+                {/* Main Vertical Dimension Line on side flank */}
                 <line
-                  x1="210"
-                  y1="36"
-                  x2="210"
-                  y2="278"
+                  x1="395"
+                  y1="40"
+                  x2="395"
+                  y2="274"
                   stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"}
                   strokeWidth={activeMeasurement === 3 ? 3 : 2}
                 />
-                {/* Top/Bottom Horizontal Ticks */}
-                <line x1="202" y1="36" x2="218" y2="36" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
-                <line x1="202" y1="278" x2="218" y2="278" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
-                {/* Top Lead Line to Badge */}
-                <line x1="210" y1="27" x2="210" y2="36" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="1.5" />
-                {/* Badge 3 */}
-                <circle cx="210" cy="16" r={activeMeasurement === 3 ? 13 : 11} fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} filter="url(#badgeShadow)" />
-                <text x="210" y="20" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">3</text>
+                {/* Top/Bottom Horizontal Ticks & Anchor Circles */}
+                <line x1="388" y1="40" x2="402" y2="40" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
+                <line x1="388" y1="274" x2="402" y2="274" stroke={activeMeasurement === 3 ? "#d9480f" : "#059669"} strokeWidth="2" />
+                <circle cx="395" cy="40" r="3" fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} />
+                <circle cx="395" cy="274" r="3" fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} />
+                {/* Badge 3 - Dedicated flank position, 0 overlap with points 1, 4, or 2 */}
+                <circle cx="395" cy="157" r={activeMeasurement === 3 ? 13 : 11} fill={activeMeasurement === 3 ? "#d9480f" : "#059669"} filter="url(#badgeShadow)" />
+                <text x="395" y="161" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">3</text>
               </g>
 
               {/* ── POINT 5: SLEEVE (Shoulder Tip to Cuff) ── */}
