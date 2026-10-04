@@ -30,21 +30,21 @@ export function HomeFAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section className="border-t border-[var(--line)] bg-[#0d0c0b] text-[#f2eee9] px-6 py-20">
+    <section className="border-t border-[#ded5c7] bg-[#faf8f5] text-[#221b16] px-6 py-20">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
             Questions &amp; Guidance
           </p>
-          <h2 className="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#221b16] sm:text-4xl">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-sm text-[#f2eee9]/60 max-w-xl mx-auto">
+          <p className="mt-3 text-sm text-[#6b5c51] max-w-xl mx-auto">
             Everything you need to know about our leather grades, authentic heritage cuts, concierge ordering, and worldwide delivery.
           </p>
         </div>
 
-        <div className="mt-12 divide-y divide-white/10 border-y border-white/10">
+        <div className="mt-12 divide-y divide-[#ded5c7] border-y border-[#ded5c7]">
           {faqs.map((faq, i) => {
             const isOpen = openIdx === i;
             return (
@@ -52,18 +52,18 @@ export function HomeFAQ() {
                 <button
                   type="button"
                   onClick={() => setOpenIdx(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between text-left transition-colors hover:text-[#d4af37]"
+                  className="flex w-full items-center justify-between text-left transition-colors hover:text-[#8a4d2b] cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-base font-medium pr-4 sm:text-lg">
+                  <span className="text-base font-semibold pr-4 sm:text-lg text-[#221b16]">
                     {faq.q}
                   </span>
-                  <span className="text-xl text-[#d4af37] flex-shrink-0 transition-transform duration-200">
+                  <span className="text-xl text-[#8a4d2b] flex-shrink-0 font-bold">
                     {isOpen ? "−" : "+"}
                   </span>
                 </button>
                 {isOpen && (
-                  <div className="mt-3 text-sm leading-relaxed text-[#f2eee9]/70 sm:text-base animate-fadeIn">
+                  <div className="mt-3 text-sm leading-relaxed text-[#6b5c51] sm:text-base">
                     <p>{faq.a}</p>
                   </div>
                 )}
@@ -73,11 +73,11 @@ export function HomeFAQ() {
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-xs text-[#f2eee9]/50">
+          <p className="text-xs text-[#6b5c51]">
             Have a custom measurement or bespoke inquiry?{" "}
             <Link
               href="/faq"
-              className="text-[#d4af37] underline underline-offset-4 hover:text-white"
+              className="text-[#8a4d2b] font-medium underline underline-offset-4 hover:text-[#221b16]"
             >
               View Full FAQ &amp; Policies →
             </Link>

@@ -50,48 +50,48 @@ export default function FAQPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#11100f] text-[#f2eee9] px-6 py-16 sm:py-24">
+    <main className="min-h-screen bg-[#fbf9f6] text-[#221b16] px-6 py-16 sm:py-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <div className="mx-auto max-w-4xl">
         {/* Breadcrumb */}
-        <nav className="text-xs text-white/50 mb-8">
-          <Link href="/" className="hover:text-white">Home</Link>
+        <nav className="text-xs text-[#8a7b70] mb-8">
+          <Link href="/" className="hover:text-[#221b16]">Home</Link>
           <span className="mx-2">/</span>
           <span className="text-[#d4af37]">FAQ &amp; Guidance</span>
         </nav>
 
-        <header className="border-b border-white/10 pb-8">
+        <header className="border-b border-[#ded5c7] pb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
             Client Advisory
           </p>
           <h1 className="mt-2 text-3xl font-medium tracking-tight sm:text-5xl">
             Frequently Asked Questions
           </h1>
-          <p className="mt-3 text-sm text-white/70 max-w-2xl">
+          <p className="mt-3 text-sm text-[#6b5c51] max-w-2xl">
             Detailed information on leather provenance, brand authenticity, size selection, and express shipping.
           </p>
         </header>
 
         <div className="mt-12 space-y-10">
           {faqSchemaData.map((item, idx) => (
-            <div key={idx} className="border-b border-white/10 pb-8">
-              <h2 className="text-lg font-medium text-white sm:text-xl">
+            <div key={idx} className="border-b border-[#ded5c7] pb-8">
+              <h2 className="text-lg font-medium text-[#221b16] sm:text-xl">
                 {item.q}
               </h2>
-              <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
+              <p className="mt-3 text-sm leading-relaxed text-[#52453c] sm:text-base">
                 {item.a}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-16 rounded-xl border border-white/15 bg-white/5 p-8 text-center sm:text-left sm:flex sm:items-center sm:justify-between">
+        <div className="mt-16 rounded-xl border border-[#ded5c7] bg-[#f2ede6] p-8 text-center sm:text-left sm:flex sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-medium text-white">Still have a question?</h3>
-            <p className="mt-1 text-xs text-white/60">
+            <h3 className="text-lg font-medium text-[#221b16]">Still have a question?</h3>
+            <p className="mt-1 text-xs text-[#6b5c51]">
               Our specialists respond within 30 minutes during business hours.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function FAQPage() {
             </a>
             <Link
               href="/shipping"
-              className="inline-flex h-10 items-center justify-center rounded border border-white/20 px-5 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-white/10"
+              className="inline-flex h-10 items-center justify-center rounded border border-[#ded5c7] px-5 text-xs font-semibold uppercase tracking-wider text-[#221b16] transition-colors hover:bg-[#ece6dc]"
             >
               Shipping Policy
             </Link>
