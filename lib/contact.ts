@@ -5,7 +5,7 @@ export const WHATSAPP_NUMBER =
   process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") ?? "";
 
 export const CONTACT_EMAIL =
-  process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "orders@leatherhavencraft.com";
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "support@leatherhavencraft.com";
 
 export function buildWhatsAppUrl(text: string): string {
   const encoded = encodeURIComponent(text);
