@@ -136,54 +136,42 @@ export function ProductPurchase({
         {meta && <span className="text-[var(--muted)] text-[11px] truncate max-w-[200px] hidden sm:inline">{meta}</span>}
       </div>
 
-      {/* ── Dedicated Colorway Section ── */}
-      {availableColors.length > 1 ? (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink)]">
-              Color: <span className="font-normal text-[var(--muted)]">{selectedColor?.name}</span>
-            </span>
-            {meta && <span className="text-[var(--muted)] text-[11px] truncate max-w-[200px]">{meta}</span>}
-          </div>
+      {/* ── Color Selection: Clean Circles with Boundary on Click ── */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink)]">
+            Color: <span className="font-normal text-[var(--muted)]">{selectedColor?.name || colorName}</span>
+          </span>
+          {meta && <span className="text-[var(--muted)] text-[11px] truncate max-w-[200px]">{meta}</span>}
+        </div>
 
-          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Select color">
-            {availableColors.map((c) => {
-              const isSelected = selectedColor?.name === c.name;
-              return (
-                <button
-                  key={c.name}
-                  type="button"
-                  onClick={() => setSelectedColor(c)}
-                  className={`flex h-9 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-all cursor-pointer ${
-                    isSelected
-                      ? "border-black bg-black text-white shadow-xs"
-                      : "border-black/15 bg-white text-[var(--ink)] hover:border-black/50"
-                  }`}
-                >
-                  <span
-                    className="h-3.5 w-3.5 rounded-full border border-black/20 shrink-0"
-                    style={{ backgroundColor: c.hex || "#1a1a1a" }}
-                    aria-hidden="true"
-                  />
-                  <span>{c.name}</span>
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex flex-wrap items-center gap-2.5" role="group" aria-label="Select color">
+          {availableColors.map((c) => {
+            const isSelected = selectedColor?.name === c.name;
+            return (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => setSelectedColor(c)}
+                title={c.name}
+                aria-label={`Select color ${c.name}`}
+                aria-pressed={isSelected}
+                className={`group relative flex items-center justify-center rounded-full p-[2.5px] transition-all cursor-pointer ${
+                  isSelected
+                    ? "border-2 border-[#2a1810]"
+                    : "border-2 border-transparent hover:border-black/25"
+                }`}
+              >
+                <span
+                  className="block h-5 w-5 rounded-full border border-black/15 shadow-2xs transition-transform group-hover:scale-105"
+                  style={{ backgroundColor: c.hex || "#1a1a1a" }}
+                  aria-hidden="true"
+                />
+              </button>
+            );
+          })}
         </div>
-      ) : (
-        <div className="flex items-center justify-between text-xs text-[var(--ink)]">
-          <div className="flex items-center gap-2">
-            <span
-              className="h-4 w-4 rounded-full border border-black/20 shadow-xs"
-              style={{ backgroundColor: selectedColor?.hex || color }}
-              title={selectedColor?.name || colorName}
-            />
-            <span className="font-medium">{selectedColor?.name || colorName}</span>
-          </div>
-          {meta && <span className="text-[var(--muted)] text-[11px] truncate max-w-[260px]">{meta}</span>}
-        </div>
-      )}
+      </div>
 
       {/* ── Clean Size Selection (Supports XS to 6XL) ── */}
       <div>
