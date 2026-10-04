@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { brands } from "@/data/brands";
 import { products } from "@/data/products";
+import { getSiteUrl } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.leatherhavencraft.com";
+  const base = getSiteUrl();
 
   return [
     { url: base, changeFrequency: "weekly", priority: 1 },

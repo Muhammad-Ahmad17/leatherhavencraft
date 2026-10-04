@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/constants";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.leatherhavencraft.com";
+  const base = getSiteUrl();
   return {
     rules: {
       userAgent: "*",

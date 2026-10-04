@@ -19,3 +19,17 @@ export const SITE_LOGO = "/logo.png";
 
 export const SITE_DESCRIPTION =
   "Authorized jackets and bespoke leather goods from Schott NYC, Harley-Davidson, Pelle Pelle, Supreme, Avirex, and Leather Haven Craft, shipped to Europe and America.";
+
+export const SITE_URL = "https://www.leatherhavencraft.com";
+
+/**
+ * Returns the production canonical site URL.
+ * Automatically guards against localhost leakage in production sitemaps, robots, and metadata.
+ */
+export function getSiteUrl(): string {
+  const env = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!env || env.includes("localhost") || process.env.NODE_ENV === "production") {
+    return SITE_URL;
+  }
+  return env.replace(/\/+$/, "");
+}

@@ -1,7 +1,7 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/common/SiteShell";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
+import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/constants";
 import "./globals.css";
 
 
@@ -11,7 +11,7 @@ const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.leatherhavencraft.com";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
