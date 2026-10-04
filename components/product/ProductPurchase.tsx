@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { buildOrderMessage, buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contact";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getProductPriceForSize, isPlusSize, PLUS_SIZE_SURCHARGE } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 
 type ProductPurchaseProps = {
@@ -67,27 +67,36 @@ export function ProductPurchase({
     return productPath;
   }, [productPath]);
 
-  const priceLabel = formatPrice(price);
+  // Dynamic price calculation: base price + $20 if size is 2XL or above
+  const effectivePrice = useMemo(() => {
+    return getProductPriceForSize(price, size);
+  }, [price, size]);
 
-  const sizeAndColorLabel = `${size}${selectedColor?.name ? ` · Color: ${selectedColor.name}` : ""}`;
+  const effectivePriceLabel = useMemo(() => {
+    return formatPrice(effectivePrice);
+  }, [effectivePrice]);
+
+  const hasPlusSurcharge = isPlusSize(size);
+
+  const sizeAndColorLabel = `${size}${hasPlusSurcharge ? ` (+${PLUS_SIZE_SURCHARGE})` : ""}${selectedColor?.name ? ` · Color: ${selectedColor.name}` : ""}`;
 
   const whatsappHref = buildWhatsAppUrl(
     buildOrderMessage({
       productName,
       brandName,
-      priceLabel,
+      priceLabel: effectivePriceLabel,
       size: sizeAndColorLabel,
       productUrl,
     }),
   );
 
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    `Order Inquiry: ${productName} (Size: ${size}${selectedColor?.name ? `, Color: ${selectedColor.name}` : ""})`
+    `Order Inquiry: ${productName} (${sizeAndColorLabel}) - ${effectivePriceLabel}`
   )}&body=${encodeURIComponent(
     buildOrderMessage({
       productName,
       brandName,
-      priceLabel,
+      priceLabel: effectivePriceLabel,
       size: sizeAndColorLabel,
       productUrl,
     }),
@@ -100,7 +109,7 @@ export function ProductPurchase({
       name: productName,
       slug,
       brandName,
-      price,
+      price: effectivePrice,
       size: size || (sizes[0] ?? "One Size"),
       color: selectedColor?.name,
       image: image || "/catalog/field-bomber.jpg",
@@ -111,6 +120,22 @@ export function ProductPurchase({
 
   return (
     <div className="space-y-6">
+      {/* ── Dynamic Price with Surcharge Badge ── */}
+      <div className="flex items-baseline justify-between border-b border-black/10 pb-4">
+        <div className="flex flex-wrap items-baseline gap-2.5">
+          <span className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
+            {effectivePriceLabel}
+          </span>
+          {hasPlusSurcharge && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-[#8a4d2b]/30 bg-[#faf6f0] px-2.5 py-0.5 text-[11px] font-semibold text-[#8a4d2b]">
+              <span>+${PLUS_SIZE_SURCHARGE}</span>
+              <span className="font-normal">({size} hide surcharge)</span>
+            </span>
+          )}
+        </div>
+        {meta && <span className="text-[var(--muted)] text-[11px] truncate max-w-[200px] hidden sm:inline">{meta}</span>}
+      </div>
+
       {/* ── Dedicated Colorway Section ── */}
       {availableColors.length > 1 ? (
         <div>
@@ -163,9 +188,16 @@ export function ProductPurchase({
       {/* ── Clean Size Selection (Supports XS to 6XL) ── */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink)]">
-            Size
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink)]">
+              Size
+            </span>
+            {hasPlusSurcharge && (
+              <span className="text-[11px] font-medium text-[#8a4d2b]">
+                (Includes +${PLUS_SIZE_SURCHARGE} 2XL–6XL surcharge)
+              </span>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setShowSizeGuide(true)}
@@ -178,18 +210,28 @@ export function ProductPurchase({
         <div className="grid grid-cols-4 sm:grid-cols-6 gap-2" role="group" aria-label="Select size">
           {sizes.map((val) => {
             const isSelected = size === val;
+            const plus = isPlusSize(val);
             return (
               <button
                 key={val}
                 type="button"
                 onClick={() => setSize(val)}
-                className={`flex h-11 items-center justify-center rounded-md border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
+                className={`relative flex h-12 flex-col items-center justify-center rounded-md border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                   isSelected
                     ? "border-black bg-black text-white shadow-xs"
                     : "border-black/15 bg-white text-black hover:border-black/50"
                 }`}
               >
-                {val}
+                <span>{val}</span>
+                {plus && (
+                  <span
+                    className={`text-[9px] font-semibold leading-none tracking-normal transition-colors ${
+                      isSelected ? "text-[#f0d4b8]" : "text-[#8a4d2b]"
+                    }`}
+                  >
+                    +${PLUS_SIZE_SURCHARGE}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -215,7 +257,7 @@ export function ProductPurchase({
               <span>Added to Bag</span>
             </>
           ) : (
-            <span>Add to Bag · {priceLabel}</span>
+            <span>Add to Bag · {effectivePriceLabel}</span>
           )}
         </button>
 
@@ -376,6 +418,11 @@ export function ProductPurchase({
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <div className="mt-3 rounded-lg border border-[#e8ded3] bg-[#faf8f5] p-2.5 text-[11px] text-[#706456]">
+              <span className="font-semibold text-[#8a4d2b]">Extended Sizing Note: </span>
+              Sizes 2XL through 6XL are handcrafted with extra hide selection and artisanal pattern scaling, incurring a standard +${PLUS_SIZE_SURCHARGE} tailoring surcharge.
             </div>
 
             <div className="mt-4 flex justify-end border-t border-black/10 pt-3">

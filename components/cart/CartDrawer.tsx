@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, isPlusSize } from "@/lib/utils";
 import { buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contact";
 
 export function CartDrawer() {
@@ -134,6 +134,11 @@ export function CartDrawer() {
                         </>
                       )}
                       <span>Size: <strong className="text-[#1e1713] font-semibold">{it.size}</strong></span>
+                      {isPlusSize(it.size) && (
+                        <span className="rounded bg-[#8a4d2b]/10 px-1.5 py-0.5 text-[9px] font-semibold text-[#8a4d2b]">
+                          +$20
+                        </span>
+                      )}
                       <span>·</span>
                       <span className="text-[#1e1713] font-bold">{formatPrice(it.price)}</span>
                     </div>

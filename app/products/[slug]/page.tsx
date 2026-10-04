@@ -124,9 +124,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h1 className="mt-1 font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
                 {product.name}
               </h1>
-              <div className="mt-2 text-xl font-bold text-[var(--ink)]">
-                {formatPrice(product.price)}
-              </div>
             </div>
 
             <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
