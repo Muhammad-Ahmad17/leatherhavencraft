@@ -1,3 +1,4 @@
+import { HomeFAQ } from "@/components/home/HomeFAQ";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchLiveFeaturedProducts, fetchLiveProducts } from "@/data/products";
@@ -87,6 +88,9 @@ export default async function HomePage() {
 
       {/* ── 5. How ordering works + CTA + trust badges ── */}
       <OrderPath />
+
+      {/* ── 6. Client FAQ & Care Guidance ── */}
+      <HomeFAQ />
     </main>
   );
 }

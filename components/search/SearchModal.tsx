@@ -63,207 +63,204 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Filtered search results
+  // Fuzzy filter
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return catalog.filter((product) => {
-      const matchesCategory =
-        selectedCategory === "all" ||
-        product.brand.toLowerCase() === selectedCategory.toLowerCase();
+    let pool = catalog;
+    if (selectedCategory !== "all") {
+      pool = pool.filter((p) => p.brand.toLowerCase() === selectedCategory);
+    }
+    if (!query.trim()) return pool;
 
-      if (!q) return matchesCategory;
-
-      const matchesText =
-        product.name.toLowerCase().includes(q) ||
-        product.brand.toLowerCase().includes(q) ||
-        product.description.toLowerCase().includes(q) ||
-        (product.meta && product.meta.toLowerCase().includes(q)) ||
-        (product.colorName && product.colorName.toLowerCase().includes(q));
-
-      return matchesCategory && matchesText;
-    });
+    const q = query.toLowerCase().trim();
+    return pool.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.colorName.toLowerCase().includes(q) ||
+        p.meta.toLowerCase().includes(q)
+    );
   }, [catalog, query, selectedCategory]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 lg:p-10">
+      {/* Soft Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/45 transition-opacity backdrop-blur-xs"
         aria-hidden="true"
       />
 
-      <div className="flex min-h-full items-start justify-center p-4 sm:p-6 lg:p-12">
-        <div className="relative w-full max-w-2xl rounded-2xl border border-[#382e25] bg-[#16120e] text-[#f7f5f2] shadow-2xl overflow-hidden mt-6">
-          {/* Search Header Bar */}
-          <div className="flex items-center gap-3 border-b border-[#2e261f] px-5 py-4">
-            <svg
-              className="h-5 w-5 text-[#d4af37] shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search jackets, brands, cuts, leather types..."
-              className="h-9 flex-1 bg-transparent text-sm text-white placeholder-[#8a7b6d] focus:outline-none"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-[#261f18] text-xs text-[#9c8e80] hover:text-white"
-              >
-                ✕
-              </button>
-            )}
+      {/* Modal Dialog (Warm Light Luxury Theme) */}
+      <div className="relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-[#ded5c8] bg-[#faf8f5] text-[#1e1713] shadow-2xl animate-fadeIn">
+        {/* Search Header Input */}
+        <div className="flex items-center gap-3 border-b border-[#e5ded3] bg-white px-5 py-4">
+          <svg
+            className="h-5 w-5 shrink-0 text-[#8a7a6c]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by jacket name, cut, leather, or heritage house..."
+            className="flex-1 bg-transparent text-sm sm:text-base font-medium text-[#1e1713] placeholder-[#998b7e] outline-hidden"
+          />
+          {query && (
             <button
               type="button"
-              onClick={onClose}
-              className="rounded border border-[#382f26] px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-[#9c8e80] hover:border-[#d4af37] hover:text-white transition-colors"
+              onClick={() => setQuery("")}
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f0ebe3] text-xs text-[#5a4c40] hover:bg-[#e2dad0] transition-colors cursor-pointer"
             >
-              Esc
+              ✕
             </button>
-          </div>
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded border border-[#ded5c8] bg-[#faf8f5] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#6e5e52] hover:border-[#2a1810] hover:text-[#2a1810] transition-colors cursor-pointer"
+          >
+            Esc
+          </button>
+        </div>
 
-          {/* Category Filter Chips */}
-          <div className="flex gap-1.5 overflow-x-auto border-b border-[#2a221b] bg-[#130f0c] px-5 py-2.5 scrollbar-none">
-            {CATEGORIES.map((cat) => {
-              const isActive = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
-                    isActive
-                      ? "bg-[#d4af37] text-[#14100c]"
-                      : "bg-[#1f1914] text-[#9c8e80] hover:bg-[#2c231c] hover:text-white"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
+        {/* Category Filter Chips */}
+        <div className="flex gap-1.5 overflow-x-auto border-b border-[#ece6dc] bg-[#f5f1ea] px-5 py-2.5 scrollbar-none">
+          {CATEGORIES.map((cat) => {
+            const isActive = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-[#2a1810] text-white shadow-xs"
+                    : "bg-white text-[#5c4f44] border border-[#ded7cc] hover:bg-[#ece6dc]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Results Area */}
-          <div className="max-h-[60vh] overflow-y-auto p-4 sm:p-5">
-            {query.trim() === "" && selectedCategory === "all" ? (
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#8a7b6d]">
-                  Popular Searches
-                </p>
-                <div className="mt-2.5 flex flex-wrap gap-2">
-                  {POPULAR_SEARCHES.map((term) => (
-                    <button
-                      key={term}
-                      type="button"
-                      onClick={() => setQuery(term)}
-                      className="rounded-lg border border-[#332a22] bg-[#1d1712] px-3 py-1.5 text-xs text-[#d1c4b6] hover:border-[#d4af37] hover:text-white transition-colors"
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-6 border-t border-[#261f18] pt-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#8a7b6d]">
-                    Featured Heritage Outerwear
-                  </p>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    {catalog.slice(0, 4).map((p) => (
-                      <Link
-                        key={p.slug}
-                        href={`/products/${p.slug}`}
-                        onClick={onClose}
-                        className="group flex items-center gap-3 rounded-lg border border-[#2a221a] bg-[#1a140f] p-2.5 hover:border-[#d4af37]/60 transition-colors"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={p.image || "/catalog/field-bomber.jpg"}
-                          alt={p.name}
-                          className="h-14 w-12 rounded object-cover"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <span className="block text-[10px] uppercase tracking-wider text-[#d4af37]">
-                            {p.brand}
-                          </span>
-                          <span className="block truncate text-xs font-medium text-white group-hover:underline">
-                            {p.name}
-                          </span>
-                          <span className="block text-[11px] text-[#9c8e80]">
-                            {formatPrice(p.price)}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+        {/* Results Area */}
+        <div className="max-h-[60vh] overflow-y-auto p-4 sm:p-6">
+          {query.trim() === "" && selectedCategory === "all" ? (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#7a6b5e]">
+                Popular Inquiries
+              </p>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {POPULAR_SEARCHES.map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => setQuery(term)}
+                    className="rounded-lg border border-[#ded5c7] bg-white px-3 py-1.5 text-xs font-medium text-[#3d2e24] hover:border-[#8a4d2b] hover:text-[#8a4d2b] transition-colors cursor-pointer shadow-2xs"
+                  >
+                    {term}
+                  </button>
+                ))}
               </div>
-            ) : results.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="font-serif text-base text-white">No jackets found matching &quot;{query}&quot;</p>
-                <p className="mt-1 text-xs text-[#8a7b6d]">
-                  Try searching for another cut, leather type, or select &quot;All&quot; categories.
+
+              <div className="mt-6 border-t border-[#ece6dc] pt-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#7a6b5e]">
+                  Featured Heritage Outerwear
                 </p>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between pb-3 text-[11px] text-[#8a7b6d]">
-                  <span>
-                    Found <strong className="text-white">{results.length}</strong> {results.length === 1 ? "piece" : "pieces"}
-                  </span>
-                  <span>Click to view piece</span>
-                </div>
-                <div className="divide-y divide-[#261f18]">
-                  {results.map((product) => (
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {catalog.slice(0, 4).map((p) => (
                     <Link
-                      key={product.slug}
-                      href={`/products/${product.slug}`}
+                      key={p.slug}
+                      href={`/products/${p.slug}`}
                       onClick={onClose}
-                      className="group flex items-center gap-4 py-3 hover:bg-[#1a1510] -mx-2 px-2 rounded-lg transition-colors"
+                      className="group flex items-center gap-3 rounded-lg border border-[#e5dfd5] bg-white p-2.5 hover:border-[#8a4d2b] transition-all shadow-2xs"
                     >
-                      <div className="relative h-16 w-13 shrink-0 overflow-hidden rounded bg-[#100c09] border border-[#2b221a]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={product.image || "/catalog/field-bomber.jpg"}
-                          alt={product.name}
-                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="block text-[10px] font-semibold uppercase tracking-wider text-[#d4af37]">
-                          {product.brand}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.image || "/catalog/field-bomber.jpg"}
+                        alt={p.name}
+                        className="h-14 w-12 rounded object-cover"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                          {p.brand}
                         </span>
-                        <h4 className="truncate text-xs sm:text-sm font-medium text-white group-hover:text-[#d4af37] transition-colors">
-                          {product.name}
-                        </h4>
-                        <p className="truncate text-[11px] text-[#8a7b6d] mt-0.5">
-                          {product.description}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className="block font-serif text-sm font-semibold text-white">
-                          {formatPrice(product.price)}
+                        <span className="block truncate text-xs font-semibold text-[#1e1713] group-hover:text-[#8a4d2b] transition-colors">
+                          {p.name}
                         </span>
-                        <span className="block text-[10px] text-[#22c55e]">Available</span>
+                        <span className="block text-[11px] text-[#7a6b5e] font-medium">
+                          {formatPrice(p.price)}
+                        </span>
                       </div>
                     </Link>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : results.length === 0 ? (
+            <div className="py-12 text-center">
+              <p className="text-base font-semibold text-[#2a1810]">No jackets found matching &quot;{query}&quot;</p>
+              <p className="mt-1 text-xs text-[#7a6b5e]">
+                Try searching for another cut, leather type, or select &quot;All&quot; categories.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between pb-3 text-[11px] text-[#7a6b5e]">
+                <span>
+                  Found <strong className="text-[#1e1713]">{results.length}</strong> {results.length === 1 ? "piece" : "pieces"}
+                </span>
+                <span>Select to inspect</span>
+              </div>
+              <div className="divide-y divide-[#ece6dd]">
+                {results.map((product) => (
+                  <Link
+                    key={product.slug}
+                    href={`/products/${product.slug}`}
+                    onClick={onClose}
+                    className="group flex items-center gap-4 py-3 hover:bg-white -mx-2 px-2.5 rounded-lg transition-colors"
+                  >
+                    <div className="relative h-16 w-13 shrink-0 overflow-hidden rounded bg-[#f5f1eb] border border-[#e2dcd2]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={product.image || "/catalog/field-bomber.jpg"}
+                        alt={product.name}
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                        {product.brand}
+                      </span>
+                      <h4 className="truncate text-xs sm:text-sm font-semibold text-[#1e1713] group-hover:text-[#8a4d2b] transition-colors">
+                        {product.name}
+                      </h4>
+                      <p className="truncate text-[11px] text-[#7a6b5e] mt-0.5">
+                        {product.description}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="block text-xs sm:text-sm font-bold text-[#1e1713]">
+                        {formatPrice(product.price)}
+                      </span>
+                      <span className="block text-[10px] font-medium text-emerald-700">In Stock</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

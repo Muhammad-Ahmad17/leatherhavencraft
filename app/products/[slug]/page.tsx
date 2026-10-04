@@ -41,8 +41,37 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4);
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.image ? [product.image] : [],
+    sku: product.slug,
+    brand: {
+      "@type": "Brand",
+      name: brand ? brand.name : "Leather Haven Craft",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://www.leatherhavencraft.com/products/${product.slug}`,
+      priceCurrency: "USD",
+      price: product.price,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: "Leather Haven Craft",
+      },
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       {/* ── Breadcrumb Navigation ── */}
       <nav aria-label="Breadcrumb" className="border-b border-black/10 bg-white/40">
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 text-xs sm:px-6 lg:px-8">
@@ -81,47 +110,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
             />
           </div>
 
-          {/* Right Column: Authority & Atelier Purchasing Panel */}
+          {/* Right Column: Minimalist Luxury Purchasing Panel */}
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-24">
-            {/* Brand Header Crest */}
-            {brand && (
-              <div className="flex items-center justify-between border-b border-black/10 pb-3">
+            <div>
+              {brand && (
                 <Link
                   href={`/brands/${brand.slug}`}
-                  className="group inline-flex items-center gap-2.5 transition-transform hover:scale-[1.01]"
+                  className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)] hover:text-black transition-colors"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={brand.logo}
-                    alt={brand.name}
-                    className="h-7 w-auto object-contain"
-                  />
-                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] group-hover:text-[var(--ink)]">
-                    {brand.name} Archive
-                  </span>
+                  {brand.name}
                 </Link>
-                <span className="rounded bg-black/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-                  Certified Authentic
-                </span>
-              </div>
-            )}
-
-            {/* Product Title & Stately Price */}
-            <div>
-              <h1 className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl lg:text-4xl">
+              )}
+              <h1 className="mt-1 font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
                 {product.name}
               </h1>
-              <div className="mt-2 flex items-baseline gap-3">
-                <span className="text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
-                  {formatPrice(product.price)}
-                </span>
-                <span className="text-xs font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  Complimentary Express Courier Included
-                </span>
+              <div className="mt-2 text-xl font-bold text-[var(--ink)]">
+                {formatPrice(product.price)}
               </div>
             </div>
 
-            {/* Short Narrative Lead */}
             <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
               {product.description}
             </p>
@@ -137,6 +144,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               image={product.image}
               color={product.color}
               colorName={product.colorName}
+              colors={product.colors}
               meta={product.meta}
               description={product.description}
             />
