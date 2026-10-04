@@ -109,8 +109,13 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/size-guide" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                Universal Size Guide (XS–6XL)
+              </Link>
+            </li>
+            <li>
               <Link href="/faq" className="transition-colors hover:text-[#221b16]">
-                FAQ &amp; Sizing Matrix
+                Frequently Asked Questions
               </Link>
             </li>
             <li>
@@ -155,6 +160,8 @@ export function Footer() {
             © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px]">
+            <Link href="/size-guide" className="hover:text-[#221b16] transition-colors font-medium">Size Guide</Link>
+            <span className="text-[#ded5c7]">·</span>
             <Link href="/faq" className="hover:text-[#221b16] transition-colors">FAQ</Link>
             <span className="text-[#ded5c7]">·</span>
             <Link href="/shipping" className="hover:text-[#221b16] transition-colors">Shipping</Link>

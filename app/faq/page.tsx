@@ -19,7 +19,7 @@ const faqSchemaData = [
   },
   {
     q: "How should a genuine leather jacket fit?",
-    a: "A new leather jacket should feel snug across the chest and shoulders without constricting circulation. High-grade cowhide and steerhide break in after 20 to 30 hours of wear, stretching up to half a size to mold precisely to your body contours.",
+    a: "A new leather jacket should feel snug across the chest and shoulders without constricting circulation. High-grade cowhide and steerhide break in after 20 to 30 hours of wear, stretching up to half a size to mold precisely to your body contours. Please refer to our Universal Size Guide (XS–6XL) for exact flat garment measurements across pit-to-pit chest, waist, length, shoulder, and sleeve.",
   },
   {
     q: "How do I care for and clean my leather outerwear?",
@@ -95,7 +95,13 @@ export default function FAQPage() {
               Our specialists respond within 30 minutes during business hours.
             </p>
           </div>
-          <div className="mt-6 sm:mt-0 flex gap-3 justify-center">
+          <div className="mt-6 sm:mt-0 flex flex-wrap gap-2.5 justify-center">
+            <Link
+              href="/size-guide"
+              className="inline-flex h-10 items-center justify-center rounded bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-black shadow-xs"
+            >
+              Universal Size Guide
+            </Link>
             <a
               href="mailto:support@leatherhavencraft.com"
               className="inline-flex h-10 items-center justify-center rounded bg-[#d4af37] px-5 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-white"
