@@ -41,8 +41,37 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4);
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.image ? [product.image] : [],
+    sku: product.slug,
+    brand: {
+      "@type": "Brand",
+      name: brand ? brand.name : "Leather Haven Craft",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://www.leatherhavencraft.com/products/${product.slug}`,
+      priceCurrency: "USD",
+      price: product.price,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: "Leather Haven Craft",
+      },
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       {/* ── Breadcrumb Navigation ── */}
       <nav aria-label="Breadcrumb" className="border-b border-black/10 bg-white/40">
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 text-xs sm:px-6 lg:px-8">
