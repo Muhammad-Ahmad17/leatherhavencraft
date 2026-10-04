@@ -105,7 +105,7 @@ export function BrandShowcase() {
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">
-              Authorized houses &amp; atelier
+              Heritage collections &amp; atelier
             </p>
             <h2 className="mt-2 text-3xl font-medium tracking-tight">Shop by brand &amp; category</h2>
           </div>

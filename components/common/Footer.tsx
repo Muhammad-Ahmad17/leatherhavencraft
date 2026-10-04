@@ -33,7 +33,7 @@ export function Footer() {
                 Verified Provenance
               </span>
               <p className="text-[11px] text-[#6b5c51]">
-                100% authentic hardware, tags &amp; heavy hides.
+                Heavy 1.3–1.5mm full-grain hides &amp; solid brass hardware.
               </p>
             </div>
             <div className="space-y-1">
@@ -61,7 +61,7 @@ export function Footer() {
         <div className="lg:col-span-4">
           <SiteLogo />
           <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#6b5c51]">
-            {SITE_NAME} is an authorized stockist and bespoke leather atelier. We curate authentic production runs from the world&apos;s most iconic leather houses alongside our in-house Horween pieces.
+            {SITE_NAME} is an independent leather workshop and bespoke outerwear atelier. We handcraft master tributes to the world&apos;s most iconic leather jacket silhouettes alongside our bespoke made-to-measure pieces.
           </p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <a
@@ -82,7 +82,7 @@ export function Footer() {
 
           <div className="mt-5 border-t border-[#ded5c7] pt-4">
             <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2.5">
-              Official Channels &amp; Stores
+              Social &amp; Connect
             </span>
             <SocialChannels />
           </div>
@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="lg:col-span-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Authorized Houses
+            Heritage Silhouettes
           </p>
           <ul className="mt-4 space-y-2.5 text-xs">
             {stripBrands.map((brand) => (
@@ -184,7 +184,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 text-xs text-[#6b5c51] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <p>
-              © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
+              © {new Date().getFullYear()} {SITE_NAME}. Artisan Leather Atelier. All rights reserved.
             </p>
             <div className="hidden sm:block text-[#ded5c7]">·</div>
             <SocialChannels variant="compact" />

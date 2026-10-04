@@ -18,22 +18,22 @@ import { OurProcess } from "@/components/home/OurProcess";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Leather Haven Craft | Authentic Heritage Leather Jackets & Bespoke Outerwear",
+  title: "Leather Haven Craft | Handcrafted Heritage Leather Jackets & Bespoke Atelier",
   description:
-    "Authorized stockist of authentic Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson leather jackets, plus handcrafted bespoke made-to-measure outerwear. Shipped express across Europe and America.",
+    "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear inspired by iconic heritage silhouettes. Shipped express across Europe and America.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Leather Haven Craft | Heritage Leather Outerwear",
     description:
-      "Curated authentic Schott NYC, Avirex, Pelle Pelle, and bespoke made-to-measure leather jackets.",
+      "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear.",
     images: [{ url: "/banners/home-desktop.jpg" }],
   },
 };
 
 const homeFaqSchema = [
   {
-    q: "Are all jackets authentic Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson?",
-    a: "Yes, 100% authentic. Every piece sourced from heritage houses is verified for authentic hardware (RiRi, Talon, or YKK zippers), heavyweight hides, and official brand tags. For our in-house line, pieces are handcrafted by our master artisans using full-grain Horween leathers.",
+    q: "How are your jackets constructed and sourced?",
+    a: "Our jackets are master artisan recreations and custom made-to-measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3–1.5mm full-grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy-gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
   },
   {
     q: "What leather types do you offer?",
@@ -102,8 +102,7 @@ export default async function HomePage() {
                 The brands. The cut. In stock.
               </h1>
               <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-                Authorized Avirex, Harley-Davidson, Pelle Pelle, Schott NYC, and Supreme
-                jackets, plus handcrafted Leather Haven Craft pieces and accessories, shipped across Europe and America.
+                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke custom outerwear, shipped across Europe and America.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button href="/products" variant="light">

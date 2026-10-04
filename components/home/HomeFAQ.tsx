@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const faqs = [
   {
-    q: "Are all jackets authentic Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson?",
-    a: "Yes, 100% authentic. Every piece sourced from heritage houses is verified for authentic hardware (RiRi, Talon, or YKK zippers), heavyweight hides, and official brand tags. For our in-house line, pieces are handcrafted by our master artisans using full-grain Horween leathers.",
+    q: "How are your jackets constructed and sourced?",
+    a: "Our jackets are master artisan recreations and custom made-to-measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3–1.5mm full-grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy-gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
   },
   {
     q: "What leather types do you offer?",

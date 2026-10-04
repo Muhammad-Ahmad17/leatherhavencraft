@@ -8,12 +8,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "All Leather Outerwear & Archive Jackets | Leather Haven Craft",
   description:
-    "Explore our complete collection of authentic leather jackets across Schott NYC, Avirex, Pelle Pelle, Harley-Davidson, and bespoke atelier creations. Men's sizes XS to 6XL.",
+    "Explore our complete collection of handcrafted leather outerwear, master archival tributes to Schott NYC, Avirex, Pelle Pelle, and bespoke atelier creations. Men's sizes XS to 6XL.",
   alternates: { canonical: "/products" },
   openGraph: {
     title: "All Leather Outerwear & Archive Jackets | Leather Haven Craft",
     description:
-      "Curated authentic heritage leather jackets from iconic global makers. Worldwide express shipping.",
+      "Handcrafted heritage leather jackets and bespoke made-to-measure outerwear. Worldwide express shipping.",
   },
 };
 
@@ -25,7 +25,7 @@ export default async function ProductsPage() {
     "@type": "CollectionPage",
     name: "All Leather Outerwear & Archive Jackets",
     description:
-      "Complete collection of authentic heritage leather jackets across Schott NYC, Avirex, Pelle Pelle, Harley-Davidson, and bespoke atelier creations.",
+      "Complete collection of handcrafted leather outerwear, master archival tributes, and bespoke atelier creations.",
     url: "https://www.leatherhavencraft.com/products",
   };
 
@@ -38,7 +38,7 @@ export default async function ProductsPage() {
       <div className="mx-auto max-w-6xl px-6 pb-6">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#8a4d2b]">
-            Archival Stockist &amp; Atelier
+            Heritage Atelier &amp; Workshop
           </span>
           <span className="rounded bg-[#8a4d2b]/10 px-2 py-0.5 text-[10px] font-semibold text-[#8a4d2b]">
             XS – 6XL Universal Sizing
@@ -63,10 +63,10 @@ export default async function ProductsPage() {
                 Authenticity
               </span>
               <h3 className="mt-2 font-serif text-base font-bold text-[#221b16]">
-                Verified Heritage Hardware
+                Artisan Hardware &amp; Heavy Hides
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-[#6b5c51]">
-                Every Schott NYC, Avirex, and Pelle Pelle piece is authenticated through heavy-gauge brass Talon, RiRi, and YKK zipper markings, authentic hide thickness, and provenance labels.
+                Every silhouette inspired by Schott NYC, Avirex, and Pelle Pelle is handcrafted with heavy-gauge brass Talon and YKK zipper hardware, 1.3–1.5mm full-grain hides, and reinforced stress seams.
               </p>
             </div>
 

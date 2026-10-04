@@ -7,7 +7,7 @@ import { HOW_TO_MEASURE_STEPS } from "@/data/sizeChart";
 export const metadata: Metadata = {
   title: "Universal Men's Leather Jacket Size Guide (XS–6XL) | Measurement Chart & Fit Guide",
   description:
-    "Official universal gents sizing chart for leather jackets across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft. Exact pit-to-pit chest, waist, back length, shoulder, and sleeve measurements in inches and cm.",
+    "Universal gents sizing chart for leather jackets across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft cuts. Exact pit-to-pit chest, waist, back length, shoulder, and sleeve measurements in inches and cm.",
   alternates: { canonical: "/size-guide" },
   openGraph: {
     title: "Universal Leather Jacket Size Guide (XS–6XL) | Leather Haven Craft",

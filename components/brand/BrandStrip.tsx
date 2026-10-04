@@ -32,7 +32,7 @@ export function BrandStrip() {
   return (
     <section
       className="relative flex-shrink-0 overflow-hidden border-t border-b border-[#ded5c7] bg-white py-3.5 sm:py-4 shadow-2xs"
-      aria-label="Authorized brands and workshop marquee"
+      aria-label="Heritage silhouettes and workshop marquee"
     >
       <div className="marquee-track gap-8 sm:gap-14 px-4">
         {loopItems.map((brand, idx) => {

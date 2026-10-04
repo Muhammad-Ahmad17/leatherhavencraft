@@ -69,7 +69,7 @@ interface Subscriber {
   createdAt: string;
 }
 
-const AUTHORIZED_CATEGORIES = [
+const BRAND_CATEGORIES = [
   { id: "schott-nyc", name: "Schott NYC" },
   { id: "harley-davidson", name: "Harley-Davidson" },
   { id: "pelle-pelle", name: "Pelle Pelle" },
@@ -597,7 +597,7 @@ export default function AdminDashboardPage() {
 
   const categoryCounts = useMemo(() => {
     const map: Record<string, number> = {};
-    for (const c of AUTHORIZED_CATEGORIES) map[c.id] = 0;
+    for (const c of BRAND_CATEGORIES) map[c.id] = 0;
     for (const p of products) {
       if (map[p.category] !== undefined) map[p.category]++;
     }
@@ -768,14 +768,14 @@ export default function AdminDashboardPage() {
             {/* Brand Category Breakdown Grid */}
             <div className="rounded-xl border border-[#e8e2d8] bg-white p-6 shadow-sm">
               <h3 className="font-serif text-base font-semibold tracking-wide text-[#1e1915]">
-                Catalog Distribution Across Authorized Brands
+                Catalog Distribution Across Brand Collections
               </h3>
               <p className="mt-1 text-xs text-[#706456]">
-                Leather Haven Craft strictly supports 7 verified houses without subcategories.
+                Catalog grouped across 7 signature brand collections and silhouettes.
               </p>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {AUTHORIZED_CATEGORIES.map((cat) => {
+                {BRAND_CATEGORIES.map((cat) => {
                   const count = categoryCounts[cat.id] || 0;
                   const pct = products.length ? Math.round((count / products.length) * 100) : 0;
                   return (
@@ -899,7 +899,7 @@ export default function AdminDashboardPage() {
                   className="h-10 rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
                 >
                   <option value="all">All Brands (7 Houses)</option>
-                  {AUTHORIZED_CATEGORIES.map((c) => (
+                  {BRAND_CATEGORIES.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
@@ -1282,7 +1282,7 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
                     className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
                   >
-                    {AUTHORIZED_CATEGORIES.map((c) => (
+                    {BRAND_CATEGORIES.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>

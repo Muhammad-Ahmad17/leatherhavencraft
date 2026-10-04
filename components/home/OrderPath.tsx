@@ -15,12 +15,12 @@ const steps = [
   {
     n: "03",
     title: "We ship it",
-    copy: "Authorized stock, packed and sent to addresses in Europe and the United States.",
+    copy: "Bench-crafted outerwear, inspected and sent to addresses in Europe and the United States.",
   },
 ];
 
 const trust = [
-  { title: "Authorized stockist", copy: "We carry the houses. We are not the houses." },
+  { title: "Master Atelier", copy: "Artisan-crafted master tributes and bespoke custom cuts." },
   { title: "In-stock pieces", copy: "What you see is what we can talk through today." },
   { title: "Europe & USA", copy: "Duties and transit are confirmed on the order thread." },
   { title: "Size help", copy: "Ask before you buy. We would rather get the fit right." },
