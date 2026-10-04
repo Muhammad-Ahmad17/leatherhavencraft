@@ -1,3 +1,4 @@
+import { SocialChannels } from "@/components/common/SocialChannels";
 import Link from "next/link";
 import { getBrandStrip } from "@/data/brands";
 import { SITE_NAME } from "@/lib/constants";
@@ -78,6 +79,13 @@ export function Footer() {
               Email Us
             </a>
           </div>
+
+          <div className="mt-5 border-t border-[#ded5c7] pt-4">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2.5">
+              Official Channels &amp; Stores
+            </span>
+            <SocialChannels />
+          </div>
         </div>
 
         <div className="lg:col-span-3">
@@ -156,9 +164,13 @@ export function Footer() {
       {/* ══════════ 3. BOTTOM COPYRIGHT & REGIONAL BAR ══════════ */}
       <div className="border-t border-[#ded5c7] bg-[#ede7de]">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 text-xs text-[#6b5c51] sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p>
+              © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
+            </p>
+            <div className="hidden sm:block text-[#ded5c7]">·</div>
+            <SocialChannels variant="compact" />
+          </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px]">
             <Link href="/size-guide" className="hover:text-[#221b16] transition-colors font-medium">Size Guide</Link>
             <span className="text-[#ded5c7]">·</span>

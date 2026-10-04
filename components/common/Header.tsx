@@ -1,4 +1,5 @@
 "use client";
+import { SocialChannels } from "@/components/common/SocialChannels";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -215,6 +216,11 @@ export function Header() {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-8 border-t border-[var(--line)] pt-6">
+              <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-3">Official Channels</p>
+              <SocialChannels />
+            </div>
           </nav>
         </>
       ) : null}
