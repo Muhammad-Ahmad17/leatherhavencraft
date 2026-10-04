@@ -1,7 +1,15 @@
+import { Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/common/SiteShell";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import "./globals.css";
+
+
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.leatherhavencraft.com";
 
@@ -64,7 +72,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${fontSans.variable} font-sans antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
