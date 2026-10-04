@@ -12,7 +12,7 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
-import { LeatherHeritageGuide } from "@/components/home/LeatherHeritageGuide";
+import { HomeJournalSection } from "@/components/home/HomeJournalSection";
 import { OurProcess } from "@/components/home/OurProcess";
 
 export const dynamic = "force-dynamic";
@@ -148,8 +148,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. The Master Collector & Heritage Leather Guide (High-Rank SEO Feature) ── */}
-      <LeatherHeritageGuide />
+      {/* ── 5. From The Journal (Editorial & Collector Guides) ── */}
+      <HomeJournalSection />
 
       {/* ── 6. Custom Manufacturing (Message or mail us) ── */}
       <CustomManufacturing />

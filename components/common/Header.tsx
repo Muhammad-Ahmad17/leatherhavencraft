@@ -67,6 +67,7 @@ export function Header() {
   }, []);
 
   const shopActive = pathname === "/products" || pathname.startsWith("/products/");
+  const journalActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
   return (
     <header id="site-header" className="sticky top-0 z-40">
@@ -134,6 +135,13 @@ export function Header() {
                   </ul>
                 </div>
               </div>
+              <Link
+                href="/blog"
+                aria-current={journalActive ? "page" : undefined}
+                className={`${navLink} ${journalActive ? "text-[var(--leather)]" : "text-[var(--ink)]"}`}
+              >
+                Journal
+              </Link>
             </nav>
           </div>
 
@@ -192,6 +200,18 @@ export function Header() {
               className="block border-b border-[var(--line)] py-4 text-2xl font-medium tracking-tight"
             >
               Shop all jackets
+            </Link>
+            <Link
+              href="/blog"
+              className="block border-b border-[var(--line)] py-4 text-2xl font-medium tracking-tight"
+            >
+              The Journal &amp; Guides
+            </Link>
+            <Link
+              href="/size-guide"
+              className="block border-b border-[var(--line)] py-3 text-lg font-medium tracking-tight text-[var(--leather)]"
+            >
+              Universal Size Guide
             </Link>
             <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">Brands &amp; Collections</p>
             <ul className="mt-2 border-t border-[var(--line)]">

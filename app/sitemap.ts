@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { brands } from "@/data/brands";
 import { fetchLiveProducts, products } from "@/data/products";
+import { BLOG_POSTS } from "@/data/blogPosts";
 import { getSiteUrl } from "@/lib/constants";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -19,11 +20,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: base, changeFrequency: "weekly", priority: 1.0 },
     { url: `${base}/products`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/size-guide`, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/shipping`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.5 },
+    ...BLOG_POSTS.map((post) => ({
+      url: `${base}/blog/${post.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...brands.map((brand) => ({
       url: `${base}/brands/${brand.slug}`,
       changeFrequency: "weekly" as const,
