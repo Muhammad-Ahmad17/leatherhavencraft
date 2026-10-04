@@ -68,7 +68,7 @@ export default function SizeGuidePage() {
 
         {/* ── Custom Manufacturing Section ── */}
         <div className="mt-16">
-          <CustomManufacturing />
+          <CustomManufacturing showSizeGuideLink={false} />
         </div>
       </div>
     </main>
