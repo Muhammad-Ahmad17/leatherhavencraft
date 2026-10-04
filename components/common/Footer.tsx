@@ -86,7 +86,7 @@ export function Footer() {
               <span>WhatsApp Concierge</span>
             </a>
             <a
-              href="mailto:orders@leatherhavencraft.com?subject=Jacket%20Inquiry"
+              href="mailto:support@leatherhavencraft.com?subject=Jacket%20Inquiry"
               className="inline-flex h-9 items-center justify-center rounded border border-white/20 px-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:border-white hover:bg-white/10"
             >
               Email Orders
