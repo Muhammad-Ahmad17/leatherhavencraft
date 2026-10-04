@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildOrderMessage, buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contact";
 import { formatPrice, getProductPriceForSize, isPlusSize, PLUS_SIZE_SURCHARGE } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
+import { UniversalSizeChart } from "@/components/common/UniversalSizeChart";
 
 type ProductPurchaseProps = {
   productId?: string | number;
@@ -305,121 +306,45 @@ export function ProductPurchase({
         </div>
       </div>
 
-      {/* ── Comprehensive Size Guide Modal (XS to 6XL) ── */}
+      {/* ── Universal Gents Size Guide Modal (XS to 6XL) ── */}
       {showSizeGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-xl border border-black/10 bg-white p-6 shadow-xl max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-black/10 pb-3">
-              <h3 className="font-serif text-lg font-bold text-[var(--ink)]">
-                {brandName || "Heritage"} Size Guide (XS – 6XL)
-              </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-xs">
+          <div className="w-full max-w-4xl rounded-2xl border border-[#ded5c7] bg-[#fbf9f6] p-5 sm:p-7 shadow-2xl max-h-[92vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-3 mb-4">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
+                  {brandName || "Heritage"} Atelier
+                </span>
+                <h3 className="font-serif text-xl font-bold text-[#221b16]">
+                  Universal Gents Size Guide
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowSizeGuide(false)}
-                className="text-base font-bold text-[var(--muted)] hover:text-black cursor-pointer"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-sm font-bold text-[#6b5c51] hover:text-black hover:border-black cursor-pointer shadow-2xs"
+                aria-label="Close size guide"
               >
                 ✕
               </button>
             </div>
 
-            <div className="mt-4 overflow-x-auto flex-1">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#f7f5f2] text-[11px] font-semibold uppercase tracking-wider text-[var(--ink)] sticky top-0">
-                  <tr>
-                    <th className="p-2.5">Size</th>
-                    <th className="p-2.5">Chest</th>
-                    <th className="p-2.5">Shoulder</th>
-                    <th className="p-2.5">Sleeve</th>
-                    <th className="p-2.5">Length</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-black/10">
-                  <tr>
-                    <td className="p-2.5 font-bold">XS</td>
-                    <td className="p-2.5">35 - 37&quot;</td>
-                    <td className="p-2.5">17.5&quot;</td>
-                    <td className="p-2.5">25.0&quot;</td>
-                    <td className="p-2.5">24.5&quot;</td>
-                  </tr>
-                  <tr className="bg-[#faf8f5]">
-                    <td className="p-2.5 font-bold">S</td>
-                    <td className="p-2.5">38 - 40&quot;</td>
-                    <td className="p-2.5">18.5&quot;</td>
-                    <td className="p-2.5">25.5&quot;</td>
-                    <td className="p-2.5">25.0&quot;</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold">M</td>
-                    <td className="p-2.5">41 - 43&quot;</td>
-                    <td className="p-2.5">19.2&quot;</td>
-                    <td className="p-2.5">26.0&quot;</td>
-                    <td className="p-2.5">25.5&quot;</td>
-                  </tr>
-                  <tr className="bg-[#faf8f5]">
-                    <td className="p-2.5 font-bold">L</td>
-                    <td className="p-2.5">44 - 46&quot;</td>
-                    <td className="p-2.5">20.0&quot;</td>
-                    <td className="p-2.5">26.5&quot;</td>
-                    <td className="p-2.5">26.0&quot;</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold">XL</td>
-                    <td className="p-2.5">47 - 49&quot;</td>
-                    <td className="p-2.5">20.8&quot;</td>
-                    <td className="p-2.5">27.0&quot;</td>
-                    <td className="p-2.5">26.5&quot;</td>
-                  </tr>
-                  <tr className="bg-[#faf8f5]">
-                    <td className="p-2.5 font-bold">2XL</td>
-                    <td className="p-2.5">50 - 52&quot;</td>
-                    <td className="p-2.5">21.5&quot;</td>
-                    <td className="p-2.5">27.5&quot;</td>
-                    <td className="p-2.5">27.0&quot;</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold">3XL</td>
-                    <td className="p-2.5">53 - 55&quot;</td>
-                    <td className="p-2.5">22.2&quot;</td>
-                    <td className="p-2.5">28.0&quot;</td>
-                    <td className="p-2.5">27.5&quot;</td>
-                  </tr>
-                  <tr className="bg-[#faf8f5]">
-                    <td className="p-2.5 font-bold">4XL</td>
-                    <td className="p-2.5">56 - 58&quot;</td>
-                    <td className="p-2.5">23.0&quot;</td>
-                    <td className="p-2.5">28.5&quot;</td>
-                    <td className="p-2.5">28.0&quot;</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold">5XL</td>
-                    <td className="p-2.5">59 - 61&quot;</td>
-                    <td className="p-2.5">23.8&quot;</td>
-                    <td className="p-2.5">29.0&quot;</td>
-                    <td className="p-2.5">28.5&quot;</td>
-                  </tr>
-                  <tr className="bg-[#faf8f5]">
-                    <td className="p-2.5 font-bold">6XL</td>
-                    <td className="p-2.5">62 - 64&quot;</td>
-                    <td className="p-2.5">24.5&quot;</td>
-                    <td className="p-2.5">29.5&quot;</td>
-                    <td className="p-2.5">29.0&quot;</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="overflow-y-auto flex-1 pr-1 scrollbar-thin">
+              <UniversalSizeChart
+                selectedSize={size}
+                onSelectSize={(newSize) => setSize(newSize)}
+                brandName={brandName}
+              />
             </div>
 
-            <div className="mt-3 rounded-lg border border-[#e8ded3] bg-[#faf8f5] p-2.5 text-[11px] text-[#706456]">
-              <span className="font-semibold text-[#8a4d2b]">Extended Sizing Note: </span>
-              Sizes 3XL through 6XL are handcrafted with extra hide selection and artisanal pattern scaling, incurring a standard +${PLUS_SIZE_SURCHARGE} tailoring surcharge.
-            </div>
-
-            <div className="mt-4 flex justify-end border-t border-black/10 pt-3">
+            <div className="mt-4 flex items-center justify-between border-t border-[#ded5c7] pt-3 text-xs text-[#706456]">
+              <span>Selected size: <strong className="text-[#221b16] font-bold">{size}</strong></span>
               <button
                 type="button"
                 onClick={() => setShowSizeGuide(false)}
-                className="rounded bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white cursor-pointer"
+                className="rounded-lg bg-[#221b16] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-black cursor-pointer shadow-xs"
               >
-                Close
+                Apply &amp; Return to Product
               </button>
             </div>
           </div>

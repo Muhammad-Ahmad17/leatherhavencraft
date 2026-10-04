@@ -39,6 +39,7 @@ const PRESET_LEATHER_COLORS = [
 
 interface Product {
   _id: string;
+  id?: string;
   name: string;
   slug: string;
   category: string;
@@ -97,6 +98,8 @@ export default function AdminDashboardPage() {
   // Modals & Forms
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState(false);
   const [productForm, setProductForm] = useState({
     name: "",
     category: "schott-nyc",
@@ -307,18 +310,46 @@ export default function AdminDashboardPage() {
   }
 
   async function handleDeleteProduct(id: string, name: string) {
-    if (!confirm(`Are you sure you want to permanently delete "${name}"? This will also clean up associated assets.`)) {
+    if (!id) {
+      showToast("Cannot determine product identifier", "error");
+      return;
+    }
+    setProductToDelete({ id, name });
+  }
+
+  async function executeDeleteProduct(id: string, name: string) {
+    if (!id) {
+      showToast("Cannot determine product identifier to delete", "error");
       return;
     }
 
+    setDeletingProduct(true);
     try {
-      const res = await adminFetch(`/api/products/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Delete failed");
-      showToast("Product deleted successfully");
+      const res = await adminFetch(`/api/products/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || `Server returned ${res.status}: Delete failed`);
+      }
+
+      // Optimistically remove from state immediately
+      setProducts((prev) =>
+        prev.filter((p) => p._id !== id && p.id !== id && p.slug !== id)
+      );
+
+      setProductToDelete(null);
+      if (editingProduct && (editingProduct._id === id || editingProduct.slug === id)) {
+        setShowProductModal(false);
+      }
+
+      showToast(`Product "${name}" deleted successfully.`);
       loadProducts();
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : "Error deleting product", "error");
+    } finally {
+      setDeletingProduct(false);
     }
   }
 
@@ -989,7 +1020,7 @@ export default function AdminDashboardPage() {
                                 Edit
                               </button>
                               <button
-                                onClick={() => handleDeleteProduct(prod._id, prod.name)}
+                                type="button" onClick={() => handleDeleteProduct(prod._id || prod.id || prod.slug, prod.name)}
                                 className="rounded border border-rose-200 bg-white px-2.5 py-1 text-[11px] font-medium text-rose-600 transition-colors hover:bg-rose-50"
                               >
                                 Delete
@@ -1669,22 +1700,91 @@ export default function AdminDashboardPage() {
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowProductModal(false)}
-                  className="rounded-lg border border-[#d8d0c4] bg-white px-4 py-2 text-xs font-semibold text-[#6b6052] hover:bg-[#f4efe8]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-md hover:brightness-105 active:scale-[0.99]"
-                >
-                  {editingProduct ? "Save Changes" : "Publish to Catalog"}
-                </button>
+              <div className="flex items-center justify-between gap-3 pt-4 border-t border-[#eee7de]">
+                {editingProduct ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProductToDelete({
+                        id: editingProduct._id || editingProduct.id || editingProduct.slug,
+                        name: editingProduct.name,
+                      });
+                    }}
+                    className="rounded-lg border border-rose-200 bg-white px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>🗑️</span>
+                    <span>Delete Piece</span>
+                  </button>
+                ) : <div />}
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowProductModal(false)}
+                    className="rounded-lg border border-[#d8d0c4] bg-white px-4 py-2 text-xs font-semibold text-[#6b6052] hover:bg-[#f4efe8] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-md hover:brightness-105 active:scale-[0.99] cursor-pointer"
+                  >
+                    {editingProduct ? "Save Changes" : "Publish to Catalog"}
+                  </button>
+                </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Confirm Delete Product Modal ── */}
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 font-bold text-lg">
+                ⚠️
+              </span>
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Delete Product
+                </h3>
+                <p className="text-xs text-[#827668]">Permanent Removal</p>
+              </div>
+            </div>
+
+            <p className="text-xs leading-relaxed text-[#52453c] mt-2">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-[#1e1915]">&quot;{productToDelete.name}&quot;</strong>?
+              This action cannot be undone and will delete all associated Cloudinary images from storage.
+            </p>
+
+            <div className="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-[#ede7df]">
+              <button
+                type="button"
+                disabled={deletingProduct}
+                onClick={() => setProductToDelete(null)}
+                className="rounded-lg border border-[#dcd4c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#52453c] hover:bg-[#faf7f2] disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deletingProduct}
+                onClick={() => executeDeleteProduct(productToDelete.id, productToDelete.name)}
+                className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-rose-700 disabled:opacity-50 cursor-pointer shadow-xs flex items-center gap-2"
+              >
+                {deletingProduct ? (
+                  <>
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Permanently Delete"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
