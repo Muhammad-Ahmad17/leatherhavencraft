@@ -9,6 +9,7 @@ export interface CartItem {
   brandName?: string;
   price: number;
   size: string;
+  color?: string;
   image: string;
   quantity: number;
 }
@@ -20,8 +21,8 @@ interface CartContextType {
   closeCart: () => void;
   toggleCart: () => void;
   addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
-  removeItem: (id: string | number, size: string) => void;
-  updateQuantity: (id: string | number, size: string, quantity: number) => void;
+  removeItem: (id: string | number, size: string, color?: string) => void;
+  updateQuantity: (id: string | number, size: string, quantity: number, color?: string) => void;
   clearCart: () => void;
   totalPrice: number;
   totalItems: number;
@@ -30,6 +31,9 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const STORAGE_KEY = "lhc_cart_items_v1";
+
+const isSameCartItem = (it: CartItem, id: string | number, size: string, color?: string) =>
+  String(it.id) === String(id) && it.size === size && (it.color || "") === (color || "");
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -67,8 +71,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = (newItem: Omit<CartItem, "quantity">, qty: number = 1) => {
     setItems((prev) => {
-      const existingIdx = prev.findIndex(
-        (it) => String(it.id) === String(newItem.id) && it.size === newItem.size
+      const existingIdx = prev.findIndex((it) =>
+        isSameCartItem(it, newItem.id, newItem.size, newItem.color)
       );
       if (existingIdx > -1) {
         const updated = [...prev];
@@ -83,20 +87,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(true);
   };
 
-  const removeItem = (id: string | number, size: string) => {
+  const removeItem = (id: string | number, size: string, color?: string) => {
     setItems((prev) =>
-      prev.filter((it) => !(String(it.id) === String(id) && it.size === size))
+      prev.filter((it) => !isSameCartItem(it, id, size, color))
     );
   };
 
-  const updateQuantity = (id: string | number, size: string, quantity: number) => {
+  const updateQuantity = (id: string | number, size: string, quantity: number, color?: string) => {
     if (quantity <= 0) {
-      removeItem(id, size);
+      removeItem(id, size, color);
       return;
     }
     setItems((prev) =>
       prev.map((it) =>
-        String(it.id) === String(id) && it.size === size ? { ...it, quantity } : it
+        isSameCartItem(it, id, size, color) ? { ...it, quantity } : it
       )
     );
   };

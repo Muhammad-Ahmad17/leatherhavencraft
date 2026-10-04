@@ -27,17 +27,47 @@ export function ProductCatalog({ products }: { products: Product[] }) {
     for (const product of products) {
       for (const value of product.sizes || []) found.add(value);
     }
-    return ["S", "M", "L", "XL", "One Size"].filter((value) => found.has(value));
+    const STANDARD_ORDER = [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL",
+      "One Size",
+    ];
+    const ordered = STANDARD_ORDER.filter((value) => found.has(value));
+    const extra = Array.from(found).filter((v) => !STANDARD_ORDER.includes(v)).sort();
+    return [...ordered, ...extra];
   }, [products]);
 
   const colors = useMemo(() => {
-    return [...new Set(products.map((product) => product.colorName).filter(Boolean))].sort();
+    const found = new Set<string>();
+    for (const product of products) {
+      if (Array.isArray(product.colors) && product.colors.length > 0) {
+        for (const c of product.colors) {
+          if (c && c.name) found.add(c.name);
+        }
+      } else if (product.colorName) {
+        found.add(product.colorName);
+      }
+    }
+    return Array.from(found).sort();
   }, [products]);
 
   const visible = useMemo(() => {
     const filtered = products.filter((product) => {
       if (size !== "all" && !(product.sizes || []).includes(size)) return false;
-      if (color !== "all" && product.colorName !== color) return false;
+      if (color !== "all") {
+        const prodColors = Array.isArray(product.colors) && product.colors.length > 0
+          ? product.colors.map((c) => c.name.toLowerCase())
+          : [product.colorName?.toLowerCase()].filter(Boolean);
+        if (!prodColors.includes(color.toLowerCase())) return false;
+      }
       return true;
     });
 

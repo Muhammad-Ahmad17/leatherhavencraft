@@ -12,6 +12,31 @@ import {
   getBackendUrl,
 } from "@/lib/adminAuth";
 
+const ALL_AVAILABLE_SIZES = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "2XL",
+  "3XL",
+  "4XL",
+  "5XL",
+  "6XL",
+  "One Size",
+];
+
+const PRESET_LEATHER_COLORS = [
+  { name: "Black", hex: "#1a1a1a" },
+  { name: "Dark Brown", hex: "#3a2318" },
+  { name: "Cognac", hex: "#8c4a2f" },
+  { name: "Tan", hex: "#b98d5c" },
+  { name: "Oxblood", hex: "#4a0e17" },
+  { name: "Olive", hex: "#5f7040" },
+  { name: "Navy", hex: "#243044" },
+  { name: "Cream", hex: "#e6dcc8" },
+];
+
 interface Product {
   _id: string;
   name: string;
@@ -22,6 +47,7 @@ interface Product {
   meta?: string;
   color?: string;
   colorName: string;
+  colors?: Array<{ name: string; hex?: string }>;
   sizes: string[];
   featured: boolean;
   inStock: boolean;
@@ -79,6 +105,7 @@ export default function AdminDashboardPage() {
     meta: "",
     color: "#1a1a1a",
     colorName: "Black",
+    colors: [] as Array<{ name: string; hex?: string }>,
     sizes: "S, M, L, XL",
     featured: false,
     inStock: true,
@@ -88,6 +115,8 @@ export default function AdminDashboardPage() {
     imagePublicId: "",
     imagesPublicIds: [] as string[],
   });
+  const [customColorName, setCustomColorName] = useState("");
+  const [customColorHex, setCustomColorHex] = useState("#1a1a1a");
   const [manualImageUrl, setManualImageUrl] = useState("");
 
   // Media Upload State
@@ -163,6 +192,7 @@ export default function AdminDashboardPage() {
       meta: "Full-grain, satin lining",
       color: "#1a1a1a",
       colorName: "Black",
+      colors: [{ name: "Black", hex: "#1a1a1a" }],
       sizes: "S, M, L, XL",
       featured: false,
       inStock: true,
@@ -172,6 +202,8 @@ export default function AdminDashboardPage() {
       imagePublicId: "",
       imagesPublicIds: [],
     });
+    setCustomColorName("");
+    setCustomColorHex("#1a1a1a");
     setManualImageUrl("");
     setShowProductModal(true);
   }
@@ -183,14 +215,19 @@ export default function AdminDashboardPage() {
         ? [...prod.images]
         : ([prod.image, prod.imageHover].filter(Boolean) as string[]);
 
+    const initialColors = Array.isArray(prod.colors) && prod.colors.length > 0
+      ? [...prod.colors]
+      : (prod.colorName ? [{ name: prod.colorName, hex: prod.color || "#1a1a1a" }] : [{ name: "Black", hex: "#1a1a1a" }]);
+
     setProductForm({
       name: prod.name,
       category: prod.category,
       price: prod.price,
       description: prod.description,
       meta: prod.meta || "",
-      color: prod.color || "#1a1a1a",
-      colorName: prod.colorName,
+      color: prod.color || initialColors[0]?.hex || "#1a1a1a",
+      colorName: prod.colorName || initialColors[0]?.name || "Black",
+      colors: initialColors,
       sizes: (prod.sizes || []).join(", "),
       featured: prod.featured,
       inStock: prod.inStock,
@@ -200,6 +237,8 @@ export default function AdminDashboardPage() {
       imagePublicId: prod.imagePublicId || "",
       imagesPublicIds: prod.imagesPublicIds || [],
     });
+    setCustomColorName("");
+    setCustomColorHex("#1a1a1a");
     setManualImageUrl("");
     setShowProductModal(true);
   }
@@ -217,13 +256,25 @@ export default function AdminDashboardPage() {
         return;
       }
 
+      const parsedSizes = productForm.sizes
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const finalColors = productForm.colors.length > 0
+        ? productForm.colors
+        : [{ name: productForm.colorName || "Black", hex: productForm.color || "#1a1a1a" }];
+
       const payload = {
         ...productForm,
         images: finalImages,
         image: finalImages[0] || "",
         imageHover: finalImages[1] || finalImages[0] || "",
         price: Number(productForm.price),
-        sizes: productForm.sizes.split(",").map((s) => s.trim()).filter(Boolean),
+        colors: finalColors,
+        colorName: finalColors[0]?.name || productForm.colorName || "Black",
+        color: finalColors[0]?.hex || productForm.color || "#1a1a1a",
+        sizes: parsedSizes.length > 0 ? parsedSizes : ["S", "M", "L", "XL"],
       };
 
       if (editingProduct) {
@@ -270,6 +321,64 @@ export default function AdminDashboardPage() {
       showToast(err instanceof Error ? err.message : "Error deleting product", "error");
     }
   }
+
+  const handleToggleSize = (sizeStr: string) => {
+    const current = productForm.sizes
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    let updated: string[];
+    if (current.includes(sizeStr)) {
+      updated = current.filter((s) => s !== sizeStr);
+    } else {
+      const set = new Set([...current, sizeStr]);
+      updated = ALL_AVAILABLE_SIZES.filter((s) => set.has(s));
+      for (const s of current) {
+        if (!updated.includes(s)) updated.push(s);
+      }
+    }
+    setProductForm({ ...productForm, sizes: updated.join(", ") });
+  };
+
+  const handleSetPresetSizes = (preset: "standard" | "all" | "accessories" | "clear") => {
+    if (preset === "all") {
+      setProductForm({ ...productForm, sizes: "XS, S, M, L, XL, 2XL, 3XL, 4XL, 5XL, 6XL" });
+    } else if (preset === "standard") {
+      setProductForm({ ...productForm, sizes: "S, M, L, XL" });
+    } else if (preset === "accessories") {
+      setProductForm({ ...productForm, sizes: "One Size" });
+    } else if (preset === "clear") {
+      setProductForm({ ...productForm, sizes: "" });
+    }
+  };
+
+  const handleAddColor = (name: string, hex: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const current = productForm.colors || [];
+    if (current.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+      showToast(`Color "${trimmed}" is already added`, "error");
+      return;
+    }
+    const updated = [...current, { name: trimmed, hex: hex || "#1a1a1a" }];
+    setProductForm({
+      ...productForm,
+      colors: updated,
+      colorName: updated[0]?.name || "Black",
+      color: updated[0]?.hex || "#1a1a1a",
+    });
+    setCustomColorName("");
+  };
+
+  const handleRemoveColor = (indexToRemove: number) => {
+    const updated = (productForm.colors || []).filter((_, idx) => idx !== indexToRemove);
+    setProductForm({
+      ...productForm,
+      colors: updated,
+      colorName: updated[0]?.name || "Black",
+      color: updated[0]?.hex || "#1a1a1a",
+    });
+  };
 
   async function handleToggleStock(prod: Product) {
     try {
@@ -828,7 +937,29 @@ export default function AdminDashboardPage() {
                             ${prod.price.toLocaleString()}
                           </td>
                           <td className="px-4 py-3 text-[#706456]">
-                            {(prod.sizes || []).join(", ") || "—"}
+                            <div className="flex flex-col gap-1">
+                              <span className="text-xs font-semibold text-[#1e1915]">
+                                {(prod.sizes || []).join(", ") || "—"}
+                              </span>
+                              {prod.colors && prod.colors.length > 0 ? (
+                                <div className="flex flex-wrap items-center gap-1">
+                                  {prod.colors.slice(0, 3).map((c, i) => (
+                                    <span key={i} className="inline-flex items-center gap-1 text-[10px] text-[#8a7a6c]">
+                                      <span
+                                        className="h-2 w-2 rounded-full border border-black/20 shrink-0"
+                                        style={{ backgroundColor: c.hex || "#1a1a1a" }}
+                                      />
+                                      {c.name}
+                                    </span>
+                                  ))}
+                                  {prod.colors.length > 3 && (
+                                    <span className="text-[9px] text-[#8a7a6c]">+{prod.colors.length - 3}</span>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-[#8a7a6c]">{prod.colorName || "—"}</span>
+                              )}
+                            </div>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
@@ -1325,42 +1456,193 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-3">
+              {/* ── DEDICATED COLORS SECTION ── */}
+              <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-4 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6b6052]">
+                      Product Colors (Dedicated Colorway Array)
+                    </label>
+                    <span className="text-[11px] text-[#8a7a6c]">
+                      Add multiple colorways according to your product catalog
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-[#8a4d2b]">
+                    {productForm.colors.length} {productForm.colors.length === 1 ? "color added" : "colors added"}
+                  </span>
+                </div>
+
+                {/* Added Colors Badges */}
+                <div className="flex flex-wrap items-center gap-2 min-h-[36px] p-2 rounded-lg bg-white border border-[#ded5c7]">
+                  {productForm.colors.length === 0 ? (
+                    <span className="text-xs text-[#9c9183] italic">No colors added yet. Select a preset below or type a custom color.</span>
+                  ) : (
+                    productForm.colors.map((c, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#d6cdbf] bg-[#faf8f5] px-3 py-1 text-xs font-medium text-[#241e1a]"
+                      >
+                        <span
+                          className="h-3.5 w-3.5 rounded-full border border-black/20 shrink-0"
+                          style={{ backgroundColor: c.hex || "#1a1a1a" }}
+                          aria-hidden="true"
+                        />
+                        <span>{c.name}</span>
+                        <span className="text-[10px] text-[#8a7a6c]">({c.hex})</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveColor(idx)}
+                          className="ml-1 text-[#9c9183] hover:text-rose-600 transition-colors cursor-pointer text-sm font-bold"
+                          title="Remove color"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))
+                  )}
+                </div>
+
+                {/* Quick Presets */}
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                    Color Name
-                  </label>
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8a7a6c] mb-1.5">
+                    Quick Add Leather Presets:
+                  </span>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {PRESET_LEATHER_COLORS.map((preset) => {
+                      const alreadyAdded = (productForm.colors || []).some(
+                        (c) => c.name.toLowerCase() === preset.name.toLowerCase()
+                      );
+                      return (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          disabled={alreadyAdded}
+                          onClick={() => handleAddColor(preset.name, preset.hex)}
+                          className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                            alreadyAdded
+                              ? "opacity-40 cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400"
+                              : "border-[#ded5c7] bg-white text-[#241e1a] hover:border-[#8a4d2b] hover:bg-[#f4efe8] cursor-pointer"
+                          }`}
+                        >
+                          <span
+                            className="h-2.5 w-2.5 rounded-full border border-black/20 shrink-0"
+                            style={{ backgroundColor: preset.hex }}
+                          />
+                          <span>{preset.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Custom Color Input */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-[#eee7de]">
                   <input
                     type="text"
-                    required
-                    value={productForm.colorName}
-                    onChange={(e) => setProductForm({ ...productForm, colorName: e.target.value })}
-                    placeholder="e.g. Cognac Brown"
-                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                    value={customColorName}
+                    onChange={(e) => setCustomColorName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddColor(customColorName, customColorHex);
+                      }
+                    }}
+                    placeholder="Custom color name (e.g. Distressed Whiskey)"
+                    className="h-9 flex-1 min-w-[180px] rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:outline-none"
                   />
+                  <div className="flex items-center gap-1.5 rounded-lg border border-[#d6cdbf] bg-white px-2 h-9">
+                    <input
+                      type="color"
+                      value={customColorHex}
+                      onChange={(e) => setCustomColorHex(e.target.value)}
+                      className="h-6 w-6 rounded border-0 bg-transparent cursor-pointer p-0"
+                      title="Pick hex color"
+                    />
+                    <span className="text-xs font-mono text-[#5c5246]">{customColorHex}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAddColor(customColorName, customColorHex)}
+                    className="h-9 rounded-lg border border-[#8a4d2b] bg-[#8a4d2b] px-4 text-xs font-semibold text-white hover:bg-[#6e3d22] transition-colors cursor-pointer"
+                  >
+                    + Add Color
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                    Mannequin Hex
-                  </label>
-                  <input
-                    type="text"
-                    value={productForm.color}
-                    onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
-                    placeholder="#1a1a1a"
-                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
-                  />
+              </div>
+
+              {/* ── SIZES SECTION [XS to 6XL] ── */}
+              <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-4 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6b6052]">
+                      Available Sizes [XS to 6XL]
+                    </label>
+                    <span className="text-[11px] text-[#8a7a6c]">
+                      Click pills to toggle sizes on/off or use quick presets
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
+                    <button
+                      type="button"
+                      onClick={() => handleSetPresetSizes("all")}
+                      className="rounded border border-[#d6cdbf] bg-white px-2 py-1 font-semibold text-[#8a4d2b] hover:bg-[#ede3d5] transition-colors cursor-pointer"
+                    >
+                      All (XS–6XL)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetPresetSizes("standard")}
+                      className="rounded border border-[#d6cdbf] bg-white px-2 py-1 font-semibold text-[#8a4d2b] hover:bg-[#ede3d5] transition-colors cursor-pointer"
+                    >
+                      Standard (S–XL)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetPresetSizes("accessories")}
+                      className="rounded border border-[#d6cdbf] bg-white px-2 py-1 font-semibold text-[#8a4d2b] hover:bg-[#ede3d5] transition-colors cursor-pointer"
+                    >
+                      Accessories (One Size)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetPresetSizes("clear")}
+                      className="rounded border border-[#d6cdbf] bg-white px-2 py-1 font-semibold text-[#706456] hover:bg-rose-50 hover:text-rose-600 transition-colors cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  </div>
                 </div>
+
+                {/* Size toggle chips */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {ALL_AVAILABLE_SIZES.map((sz) => {
+                    const parsedSizesList = productForm.sizes.split(",").map((s) => s.trim()).filter(Boolean);
+                    const isSelected = parsedSizesList.includes(sz);
+                    return (
+                      <button
+                        key={sz}
+                        type="button"
+                        onClick={() => handleToggleSize(sz)}
+                        className={`h-8 px-3 rounded-md text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[#2a1810] text-white shadow-xs border border-[#2a1810]"
+                            : "bg-white text-[#241e1a] border border-[#d6cdbf] hover:border-[#8a4d2b] hover:bg-[#f5f1eb]"
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Editable manual input below */}
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                    Available Sizes
-                  </label>
                   <input
                     type="text"
                     value={productForm.sizes}
                     onChange={(e) => setProductForm({ ...productForm, sizes: e.target.value })}
-                    placeholder="S, M, L, XL"
-                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                    placeholder="e.g. XS, S, M, L, XL, 2XL, 3XL, 4XL, 5XL, 6XL"
+                    className="h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:outline-none"
                   />
                 </div>
               </div>

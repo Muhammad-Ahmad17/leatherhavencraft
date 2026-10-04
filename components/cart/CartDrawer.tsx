@@ -25,7 +25,7 @@ export function CartDrawer() {
   const orderSummaryText = items
     .map(
       (it, idx) =>
-        `${idx + 1}. ${it.name}${it.brandName ? ` (${it.brandName})` : ""}\n   Size: ${it.size} | Qty: ${it.quantity} | ${formatPrice(it.price * it.quantity)}`
+        `${idx + 1}. ${it.name}${it.brandName ? ` (${it.brandName})` : ""}\n   ${it.color ? `Color: ${it.color} | ` : ""}Size: ${it.size} | Qty: ${it.quantity} | ${formatPrice(it.price * it.quantity)}`
     )
     .join("\n\n");
 
@@ -102,7 +102,7 @@ export function CartDrawer() {
             </div>
           ) : (
             items.map((it) => (
-              <div key={`${it.id}-${it.size}`} className="flex gap-4 py-4">
+              <div key={`${it.id}-${it.size}-${it.color || ""}`} className="flex gap-4 py-4">
                 {/* Thumbnail */}
                 <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-white border border-[#e5ded3] shadow-xs">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -126,7 +126,13 @@ export function CartDrawer() {
                         {it.name}
                       </Link>
                     </h4>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-[#7a6b5e]">
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[#7a6b5e]">
+                      {it.color && (
+                        <>
+                          <span>Color: <strong className="text-[#1e1713] font-semibold">{it.color}</strong></span>
+                          <span>·</span>
+                        </>
+                      )}
                       <span>Size: <strong className="text-[#1e1713] font-semibold">{it.size}</strong></span>
                       <span>·</span>
                       <span className="text-[#1e1713] font-bold">{formatPrice(it.price)}</span>
@@ -138,7 +144,7 @@ export function CartDrawer() {
                     <div className="flex items-center rounded-md border border-[#ded5c7] bg-white shadow-xs">
                       <button
                         type="button"
-                        onClick={() => updateQuantity(it.id, it.size, it.quantity - 1)}
+                        onClick={() => updateQuantity(it.id, it.size, it.quantity - 1, it.color)}
                         className="flex h-6 w-6 items-center justify-center text-xs text-[#5a3828] hover:bg-[#f5f1eb] transition-colors cursor-pointer"
                         aria-label="Decrease quantity"
                       >
@@ -149,7 +155,7 @@ export function CartDrawer() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => updateQuantity(it.id, it.size, it.quantity + 1)}
+                        onClick={() => updateQuantity(it.id, it.size, it.quantity + 1, it.color)}
                         className="flex h-6 w-6 items-center justify-center text-xs text-[#5a3828] hover:bg-[#f5f1eb] transition-colors cursor-pointer"
                         aria-label="Increase quantity"
                       >
@@ -159,7 +165,7 @@ export function CartDrawer() {
 
                     <button
                       type="button"
-                      onClick={() => removeItem(it.id, it.size)}
+                      onClick={() => removeItem(it.id, it.size, it.color)}
                       className="text-[11px] font-medium text-[#994d38] hover:text-[#732918] transition-colors cursor-pointer"
                     >
                       Remove

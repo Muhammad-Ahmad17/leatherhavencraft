@@ -144,6 +144,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               image={product.image}
               color={product.color}
               colorName={product.colorName}
+              colors={product.colors}
               meta={product.meta}
               description={product.description}
             />

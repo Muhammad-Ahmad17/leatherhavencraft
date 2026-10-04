@@ -1,5 +1,10 @@
 import { getBrand } from "@/data/brands";
 
+export interface ProductColor {
+  name: string;
+  hex?: string;
+}
+
 export interface Product {
   id: number | string;
   slug: string;
@@ -13,6 +18,8 @@ export interface Product {
   darkColor: string;
   /** Plain-language colour used by the filter bar. */
   colorName: string;
+  /** Dedicated colorways available for this product. */
+  colors?: ProductColor[];
   sizes: string[];
   /** Shown in the home edit and brand best-sellers strip. */
   featured: boolean;
@@ -366,6 +373,7 @@ export interface BackendProduct {
   color?: string;
   darkColor?: string;
   colorName?: string;
+  colors?: Array<{ name: string; hex?: string } | string>;
   sizes?: string[];
   featured?: boolean;
   image?: string;
@@ -381,6 +389,16 @@ export function mapBackendProduct(p: BackendProduct): Product {
     ? p.images
     : ([p.image, p.imageHover].filter(Boolean) as string[]);
 
+  const parsedColors: ProductColor[] = Array.isArray(p.colors) && p.colors.length > 0
+    ? p.colors.map((c) =>
+        typeof c === "string"
+          ? { name: c, hex: "#1a1a1a" }
+          : { name: c.name || "Black", hex: c.hex || "#1a1a1a" }
+      )
+    : p.colorName
+    ? [{ name: p.colorName, hex: p.color || "#1a1a1a" }]
+    : [];
+
   return {
     id: p._id || p.id || p.slug,
     slug: p.slug,
@@ -392,6 +410,7 @@ export function mapBackendProduct(p: BackendProduct): Product {
     color: p.color || "#1a1a1a",
     darkColor: p.darkColor || "#0f0f0f",
     colorName: p.colorName || "Black",
+    colors: parsedColors,
     sizes: Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"],
     featured: Boolean(p.featured),
     image: p.image || images[0] || "/catalog/field-bomber.jpg",
