@@ -125,13 +125,17 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/faq" className="transition-colors hover:text-white">
+                FAQ &amp; Sizing Guide
+              </Link>
+            </li>
+            <li>
+              <Link href="/shipping" className="transition-colors hover:text-white">
+                Shipping &amp; Returns
+              </Link>
+            </li>
+            <li>
               <span className="text-white/90">Direct Concierge Ordering</span>
-            </li>
-            <li>
-              <span className="text-white/60">Worldwide Tracked Express</span>
-            </li>
-            <li>
-              <span className="text-white/60">Individual Fit Consultation</span>
             </li>
             <li>
               <span className="text-white/60">Authenticity Guarantee</span>
@@ -167,10 +171,14 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px]">
-            <span>Curated in London · Ships Worldwide</span>
-            <span className="text-white/20">|</span>
-            <span className="text-[#d4af37]">European Union &amp; North America</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px]">
+            <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
+            <span className="text-white/20">·</span>
+            <Link href="/shipping" className="hover:text-white transition-colors">Shipping</Link>
+            <span className="text-white/20">·</span>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <span className="text-white/20">·</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </div>
