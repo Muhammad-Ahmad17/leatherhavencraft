@@ -5,9 +5,10 @@ import { BlogPost } from "@/data/blogPosts";
 interface BlogCardProps {
   post: BlogPost;
   variant?: "standard" | "compact" | "featured";
+  cardBg?: string;
 }
 
-export function BlogCard({ post, variant = "standard" }: BlogCardProps) {
+export function BlogCard({ post, variant = "standard", cardBg = "bg-white" }: BlogCardProps) {
   const isFeatured = variant === "featured";
 
   if (isFeatured) {
@@ -79,7 +80,7 @@ export function BlogCard({ post, variant = "standard" }: BlogCardProps) {
   }
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl border border-[#ded5c7] bg-white transition-all duration-300 hover:border-[#8a4d2b]/50 hover:shadow-md">
+    <article className={`group relative flex flex-col overflow-hidden rounded-xl border border-[#ded5c7] ${cardBg} transition-all duration-300 hover:border-[#8a4d2b]/50 hover:shadow-md`}>
       <div className="relative aspect-[16/10] overflow-hidden bg-[#1f1a16]">
         <Image
           src={post.coverImage}

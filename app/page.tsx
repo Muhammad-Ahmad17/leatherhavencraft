@@ -120,7 +120,7 @@ export default async function HomePage() {
       </div>
 
       {/* ── 2. Scroll the collection (Brand animation stage swapped here) ── */}
-      <section aria-labelledby="scroll-collection">
+      <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
@@ -133,12 +133,17 @@ export default async function HomePage() {
       <BrandShowcase />
 
       {/* ── 4. Featured picks ── */}
-      <section className="border-t border-[var(--line)] px-6 py-16 sm:py-20">
+      <section className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="text-3xl font-medium tracking-tight">The edit</h2>
-            <Link href="/products" className="text-sm underline underline-offset-4">
-              Shop all jackets
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                Curated Selection
+              </p>
+              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">The edit</h2>
+            </div>
+            <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
+              Shop all jackets &rarr;
             </Link>
           </div>
           <div className="mt-10">

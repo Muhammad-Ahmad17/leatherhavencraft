@@ -6,7 +6,7 @@ export function HomeJournalSection() {
   const latestPosts = BLOG_POSTS.slice(0, 3);
 
   return (
-    <section className="border-t border-[#ded5c7] bg-[#f7f4ef] px-6 py-16 sm:py-20">
+    <section className="border-t border-[#ded5c7] bg-white px-6 py-16 sm:py-20">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
@@ -31,7 +31,7 @@ export function HomeJournalSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {latestPosts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
+            <BlogCard key={post.slug} post={post} cardBg="bg-[#faf8f5]" />
           ))}
         </div>
       </div>
