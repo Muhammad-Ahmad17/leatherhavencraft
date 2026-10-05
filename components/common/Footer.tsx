@@ -4,6 +4,7 @@ import { getBrandStrip } from "@/data/brands";
 import { SITE_NAME } from "@/lib/constants";
 import { SiteLogo } from "@/components/common/SiteLogo";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
+import { buildWhatsAppUrl } from "@/lib/contact";
 
 export function Footer() {
   const stripBrands = getBrandStrip();
@@ -33,7 +34,7 @@ export function Footer() {
                 Verified Provenance
               </span>
               <p className="text-[11px] text-[#6b5c51]">
-                100% authentic hardware, tags &amp; heavy hides.
+                Heavy 1.3–1.5mm full-grain hides &amp; solid brass hardware.
               </p>
             </div>
             <div className="space-y-1">
@@ -61,11 +62,11 @@ export function Footer() {
         <div className="lg:col-span-4">
           <SiteLogo />
           <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#6b5c51]">
-            {SITE_NAME} is an authorized stockist and bespoke leather atelier. We curate authentic production runs from the world&apos;s most iconic leather houses alongside our in-house Horween pieces.
+            {SITE_NAME} is an independent leather workshop and bespoke outerwear atelier. We handcraft master tributes to the world&apos;s most iconic leather jacket silhouettes alongside our bespoke made-to-measure pieces.
           </p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <a
-              href="https://wa.me/?text=Hi%20Leather%20Haven%20Craft%20%E2%80%94%20I%20would%20like%20to%20inquire%20about%20a%20jacket"
+              href={buildWhatsAppUrl("Hi Leather Haven Craft — I would like to inquire about a jacket.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-9 items-center justify-center rounded bg-[#25D366] px-4 text-xs font-semibold uppercase tracking-wider text-black transition-opacity hover:opacity-90 shadow-2xs"
@@ -82,7 +83,7 @@ export function Footer() {
 
           <div className="mt-5 border-t border-[#ded5c7] pt-4">
             <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2.5">
-              Official Channels &amp; Stores
+              Social &amp; Connect
             </span>
             <SocialChannels />
           </div>
@@ -90,7 +91,7 @@ export function Footer() {
 
         <div className="lg:col-span-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Authorized Houses
+            Heritage Silhouettes
           </p>
           <ul className="mt-4 space-y-2.5 text-xs">
             {stripBrands.map((brand) => (
@@ -114,6 +115,11 @@ export function Footer() {
             <li>
               <Link href="/products" className="transition-colors hover:text-[#221b16]">
                 All Leather Outerwear
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                The Journal &amp; Guides
               </Link>
             </li>
             <li>
@@ -157,6 +163,19 @@ export function Footer() {
               <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Response Time</span>
               <span className="text-[#8a4d2b] font-semibold">Within 30 minutes</span>
             </div>
+            <div>
+              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Atelier &amp; Workshop</span>
+              <a
+                href="https://maps.app.goo.gl/JPg45EsFFu8Y5Qa69?g_st=aw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#221b16] font-medium hover:text-[#8a4d2b] transition-colors inline-flex items-center gap-1 group"
+                title="View atelier on Google Maps"
+              >
+                <span>Kashmir Road, Sialkot</span>
+                <span aria-hidden="true" className="text-[10px] text-[#8a4d2b] group-hover:translate-x-0.5 transition-transform">↗</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -166,12 +185,14 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 text-xs text-[#6b5c51] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <p>
-              © {new Date().getFullYear()} {SITE_NAME}. Authorized stockist. All rights reserved.
+              © {new Date().getFullYear()} {SITE_NAME}. Artisan Leather Atelier. All rights reserved.
             </p>
             <div className="hidden sm:block text-[#ded5c7]">·</div>
             <SocialChannels variant="compact" />
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px]">
+            <Link href="/blog" className="hover:text-[#221b16] transition-colors font-medium">Journal</Link>
+            <span className="text-[#ded5c7]">·</span>
             <Link href="/size-guide" className="hover:text-[#221b16] transition-colors font-medium">Size Guide</Link>
             <span className="text-[#ded5c7]">·</span>
             <Link href="/faq" className="hover:text-[#221b16] transition-colors">FAQ</Link>

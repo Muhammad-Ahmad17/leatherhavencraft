@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { buildWhatsAppUrl } from "@/lib/contact";
 import {
   UNIVERSAL_SIZE_CHART,
   MEASUREMENT_ROWS,
@@ -653,7 +654,7 @@ export function UniversalSizeChart({
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <a
-                  href="https://wa.me/?text=Hi%20Leather%20Haven%20Craft%20%E2%80%94%20I%20need%20assistance%20with%20sizing%20or%20a%20custom%20order"
+                  href={buildWhatsAppUrl("Hi Leather Haven Craft — I need assistance with sizing or a custom order.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex h-8 items-center justify-center rounded bg-[#25D366] px-3 text-[11px] font-semibold uppercase tracking-wider text-black hover:opacity-90 shadow-2xs"

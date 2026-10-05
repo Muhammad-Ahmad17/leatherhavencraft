@@ -67,11 +67,12 @@ export function Header() {
   }, []);
 
   const shopActive = pathname === "/products" || pathname.startsWith("/products/");
+  const journalActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
   return (
     <header id="site-header" className="sticky top-0 z-40">
       <div className="flex min-h-[var(--announcement-h)] items-center justify-center bg-[var(--leather-dark)] px-4 py-1 text-center text-[10px] tracking-[0.12em] text-white/90 uppercase sm:text-[11px]">
-        Authorized jackets · Ships to Europe &amp; the United States
+        Handcrafted Leather Outerwear · Ships to Europe &amp; the United States
       </div>
 
       <div className="border-b border-[var(--line)] bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
@@ -134,6 +135,13 @@ export function Header() {
                   </ul>
                 </div>
               </div>
+              <Link
+                href="/blog"
+                aria-current={journalActive ? "page" : undefined}
+                className={`${navLink} ${journalActive ? "text-[var(--leather)]" : "text-[var(--ink)]"}`}
+              >
+                Journal
+              </Link>
             </nav>
           </div>
 
@@ -193,6 +201,18 @@ export function Header() {
             >
               Shop all jackets
             </Link>
+            <Link
+              href="/blog"
+              className="block border-b border-[var(--line)] py-4 text-2xl font-medium tracking-tight"
+            >
+              The Journal &amp; Guides
+            </Link>
+            <Link
+              href="/size-guide"
+              className="block border-b border-[var(--line)] py-3 text-lg font-medium tracking-tight text-[var(--leather)]"
+            >
+              Universal Size Guide
+            </Link>
             <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">Brands &amp; Collections</p>
             <ul className="mt-2 border-t border-[var(--line)]">
               {stripBrands.map((brand) => (
@@ -218,7 +238,7 @@ export function Header() {
             </ul>
 
             <div className="mt-8 border-t border-[var(--line)] pt-6">
-              <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-3">Official Channels</p>
+              <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-3">Social &amp; Connect</p>
               <SocialChannels />
             </div>
           </nav>

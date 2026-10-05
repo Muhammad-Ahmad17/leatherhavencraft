@@ -39,9 +39,9 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-medium text-[#221b16]">2. Authenticity &amp; Sourcing</h2>
+            <h2 className="text-lg font-medium text-[#221b16]">2. Independent Atelier &amp; Trademark Notice</h2>
             <p className="mt-2">
-              We operate as an independent luxury stockist and bespoke leather workshop. Heritage label items (including Schott NYC, Avirex, Pelle Pelle, Supreme, and Harley-Davidson) are 100% verified authentic, featuring original manufacturer hardware, leathers, and branding. Leather Haven Craft signature pieces are crafted in-house.
+              We operate as an independent artisan leather workshop and custom outerwear atelier. All garments inspired by archival cuts and heritage silhouettes (including designs referencing Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson styles) are master handcrafted tributes bench-built using heavyweight full-grain hides, period-accurate brass hardware, and custom anatomical tailoring. Leather Haven Craft is an independent atelier and does not claim official affiliation, sponsorship, or licensing from these respective trademark holders; all brand names and model designations are utilized strictly for descriptive style and silhouette identification.
             </p>
           </section>
 
