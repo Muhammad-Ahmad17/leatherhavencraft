@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BLOG_POSTS, fetchLiveBlogBySlug, fetchLiveBlogs } from "@/data/blogPosts";
-import { getProduct } from "@/data/products";
+import { getProduct, fetchLiveProducts } from "@/data/products";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { ProductCard } from "@/components/product/ProductCard";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
@@ -68,8 +68,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     .filter((p) => p.slug !== post.slug)
     .slice(0, 3);
 
+  const allLiveProducts = await fetchLiveProducts();
   const relatedProducts = (post.relatedProductSlugs || [])
-    .map((s) => getProduct(s))
+    .map((s) => allLiveProducts.find((p) => p.slug === s) || getProduct(s))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   const authorName = post.author?.name || "Leather Haven Craft Atelier";
