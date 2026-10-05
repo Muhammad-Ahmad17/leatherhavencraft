@@ -472,3 +472,23 @@ export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
   const featured = live.filter((p) => p.featured);
   return featured.length > 0 ? featured : live.slice(0, 8);
 }
+
+export async function fetchLiveScrollProducts(limit = 6): Promise<Product[]> {
+  const live = await fetchLiveProducts();
+  const featured = live.filter((p) => p.featured);
+
+  const seen = new Set<string>();
+  const curated: Product[] = [];
+  const pool = [...featured, ...live];
+
+  for (const p of pool) {
+    if (!seen.has(p.name)) {
+      seen.add(p.name);
+      curated.push(p);
+    }
+    if (curated.length === limit) break;
+  }
+
+  return curated.length > 0 ? curated : live.slice(0, limit);
+}
+

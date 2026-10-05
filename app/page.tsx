@@ -1,7 +1,7 @@
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { fetchLiveFeaturedProducts, fetchLiveProducts } from "@/data/products";
+import { fetchLiveFeaturedProducts, fetchLiveScrollProducts } from "@/data/products";
 import { SITE_DESCRIPTION } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
@@ -54,8 +54,8 @@ const homeFaqSchema = [
 ];
 
 export default async function HomePage() {
-  const allProducts = await fetchLiveProducts();
   const featuredProducts = await fetchLiveFeaturedProducts();
+  const scrollProducts = await fetchLiveScrollProducts(6);
 
   const homePageSchema = {
     "@context": "https://schema.org",
@@ -119,12 +119,12 @@ export default async function HomePage() {
         <BrandStrip />
       </div>
 
-      {/* ── 2. Scroll the collection (Brand animation stage swapped here) ── */}
+      {/* ── 2. Scroll the collection (Curated 6 flagship pieces for 5–6 smooth scrolls) ── */}
       <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
-        <ScrollAnimationContainer products={allProducts}>
+        <ScrollAnimationContainer products={scrollProducts}>
           <ProductCarousel />
         </ScrollAnimationContainer>
       </section>
