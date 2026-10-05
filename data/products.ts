@@ -10,6 +10,7 @@ export interface Product {
   slug: string;
   name: string;
   brand: string;
+  category?: string;
   description: string;
   price: number;
   /** Short line shown under the name while scrolling. */
@@ -23,7 +24,8 @@ export interface Product {
   sizes: string[];
   /** Shown in the home edit and brand best-sellers strip. */
   featured: boolean;
-  /** Card photo, 900×1200. */
+  inStock?: boolean;
+  /** Card photo. */
   image: string;
   /** Second photo shown on hover. */
   imageHover: string;
@@ -33,446 +35,2544 @@ export interface Product {
   hem: number;
   /** Sleeve cuff, in SVG units. */
   cuff: number;
-  /** Extra marks: stitching, pockets, quilting. Trusted mock markup only. */
+  /** Extra marks: stitching, pockets, quilting. */
   svgExtra: string;
 }
 
 export const products: Product[] = [
   {
-    id: 1,
-    slug: "field-bomber",
-    name: "Field Bomber",
-    image: "/catalog/field-bomber.jpg",
-    imageHover: "/catalog/field-bomber-alt.jpg",
-    brand: "avirex",
-    description:
-      "Olive cotton twill with a ribbed hem and a collar that stands up to weather.",
-    price: 248,
-    meta: "Olive cotton twill",
-    color: "#5f7040",
-    darkColor: "#3f4d2a",
-    colorName: "Olive",
-    sizes: ["S", "M", "L", "XL"],
-    featured: true,
-    hem: 400,
-    cuff: 416,
-    svgExtra: `<path d="M200 160 L200 400" stroke="#2c361c" stroke-width="3"/>
-      <rect x="132" y="386" width="136" height="16" rx="3" fill="#3f4d2a"/>
-      <path d="M168 160 Q200 190 232 160 L232 148 Q200 160 168 148 Z" fill="#3f4d2a"/>
-      <rect x="150" y="300" width="34" height="5" rx="2" fill="#2c361c"/>
-      <rect x="216" y="300" width="34" height="5" rx="2" fill="#2c361c"/>
-      <rect x="84" y="404" width="34" height="14" rx="3" fill="#3f4d2a"/>
-      <rect x="282" y="404" width="34" height="14" rx="3" fill="#3f4d2a"/>`,
+    "id": 1,
+    "slug": "avirex-avirex-b-3-sheepskin-shearling-bomber-300-1",
+    "name": "Avirex B-3 Sheepskin Shearling Bomber",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#3e271a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Dark Brown",
+    "colors": [
+      {
+        "name": "Dark Brown",
+        "hex": "#3e271a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/1/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/1/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/1/01.jpg",
+      "/catalog/items/avirex/300/1/02.jpg",
+      "/catalog/items/avirex/300/1/03.jpg",
+      "/catalog/items/avirex/300/1/04.jpg",
+      "/catalog/items/avirex/300/1/05.jpg",
+      "/catalog/items/avirex/300/1/06.jpg",
+      "/catalog/items/avirex/300/1/07.jpg",
+      "/catalog/items/avirex/300/1/08.jpg",
+      "/catalog/items/avirex/300/1/09.webp",
+      "/catalog/items/avirex/300/1/10.webp",
+      "/catalog/items/avirex/300/1/11.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 2,
-    slug: "camel-overcoat",
-    name: "Camel Overcoat",
-    image: "/catalog/camel-overcoat.jpg",
-    imageHover: "/catalog/camel-overcoat-alt.jpg",
-    brand: "schott-nyc",
-    description: "A long wool-blend coat with a notched lapel and horn buttons.",
-    price: 420,
-    meta: "Wool blend, long cut",
-    color: "#b98d5c",
-    darkColor: "#96703f",
-    colorName: "Camel",
-    sizes: ["M", "L", "XL"],
-    featured: true,
-    hem: 540,
-    cuff: 424,
-    svgExtra: `<path d="M172 158 L200 300 L228 158 L214 150 L200 200 L186 150 Z" fill="#a37a4b"/>
-      <path d="M156 164 L200 330 L172 158 Z" fill="#c7a074"/>
-      <path d="M244 164 L200 330 L228 158 Z" fill="#c7a074"/>
-      <circle cx="205" cy="340" r="4" fill="#5b4326"/>
-      <circle cx="205" cy="400" r="4" fill="#5b4326"/>
-      <circle cx="205" cy="460" r="4" fill="#5b4326"/>
-      <rect x="150" y="420" width="38" height="6" rx="3" fill="#96703f"/>
-      <rect x="212" y="420" width="38" height="6" rx="3" fill="#96703f"/>`,
+    "id": 2,
+    "slug": "avirex-avirex-b-3-sheepskin-shearling-bomber-300-2",
+    "name": "Avirex B-3 Sheepskin Shearling Bomber",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#3e271a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Dark Brown",
+    "colors": [
+      {
+        "name": "Dark Brown",
+        "hex": "#3e271a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/2/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/2/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/2/01.jpg",
+      "/catalog/items/avirex/300/2/02.jpg",
+      "/catalog/items/avirex/300/2/03.jpg",
+      "/catalog/items/avirex/300/2/04.jpg",
+      "/catalog/items/avirex/300/2/05.jpg",
+      "/catalog/items/avirex/300/2/06.jpg",
+      "/catalog/items/avirex/300/2/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 3,
-    slug: "indigo-denim",
-    name: "Indigo Denim",
-    image: "/catalog/indigo-denim.jpg",
-    imageHover: "/catalog/indigo-denim-alt.jpg",
-    brand: "supreme",
-    description: "Washed denim with contrast stitching and two chest pockets.",
-    price: 198,
-    meta: "Washed, chest pockets",
-    color: "#38597f",
-    darkColor: "#28425f",
-    colorName: "Indigo",
-    sizes: ["S", "M", "L", "XL"],
-    featured: true,
-    hem: 392,
-    cuff: 414,
-    svgExtra: `<path d="M200 162 L200 392" stroke="#22374f" stroke-width="2"/>
-      <path d="M168 160 L200 190 L232 160 L232 148 L200 158 L168 148 Z" fill="#28425f"/>
-      <rect x="146" y="214" width="38" height="36" rx="3" fill="none" stroke="#e0b25a" stroke-width="1.6" stroke-dasharray="4 3"/>
-      <rect x="216" y="214" width="38" height="36" rx="3" fill="none" stroke="#e0b25a" stroke-width="1.6" stroke-dasharray="4 3"/>
-      <path d="M135 350 L265 350" stroke="#e0b25a" stroke-width="1.4" stroke-dasharray="4 3"/>
-      <circle cx="200" cy="230" r="3" fill="#e0b25a"/>
-      <circle cx="200" cy="290" r="3" fill="#e0b25a"/>
-      <rect x="84" y="402" width="34" height="14" rx="3" fill="#28425f"/>
-      <rect x="282" y="402" width="34" height="14" rx="3" fill="#28425f"/>`,
+    "id": 3,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-4-300-4",
+    "name": "Avirex Icon Squadron Pilot Jacket #4",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/4/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/4/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/4/01.jpg",
+      "/catalog/items/avirex/300/4/02.jpg",
+      "/catalog/items/avirex/300/4/03.jpg",
+      "/catalog/items/avirex/300/4/04.jpg",
+      "/catalog/items/avirex/300/4/05.jpg",
+      "/catalog/items/avirex/300/4/06.jpg",
+      "/catalog/items/avirex/300/4/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 4,
-    slug: "quilted-puffer",
-    name: "Quilted Puffer",
-    image: "/catalog/quilted-puffer.jpg",
-    imageHover: "/catalog/quilted-puffer-alt.jpg",
-    brand: "pelle-pelle",
-    description: "Brick-red shell with a light fill and horizontal baffle lines.",
-    price: 310,
-    meta: "Brick red, light fill",
-    color: "#a8433a",
-    darkColor: "#7f2f28",
-    colorName: "Brick",
-    sizes: ["S", "M", "L"],
-    featured: true,
-    hem: 420,
-    cuff: 420,
-    svgExtra: `<g stroke="#7f2f28" stroke-width="3" opacity=".8">
-      <path d="M134 220 Q200 232 266 220"/><path d="M134 268 Q200 280 266 268"/>
-      <path d="M134 316 Q200 328 266 316"/><path d="M134 364 Q200 376 266 364"/>
-      <path d="M100 250 L128 254"/><path d="M96 310 L124 312"/><path d="M92 370 L120 370"/>
-      <path d="M300 250 L272 254"/><path d="M304 310 L276 312"/><path d="M308 370 L280 370"/></g>
-      <path d="M200 160 L200 420" stroke="#5c211c" stroke-width="3"/>
-      <path d="M166 160 Q200 176 234 160 L234 138 Q200 150 166 138 Z" fill="#7f2f28"/>`,
+    "id": 4,
+    "slug": "avirex-avirex-heritage-racing-leather-jacket-300-5",
+    "name": "Avirex Heritage Racing Leather Jacket",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1e1e1e",
+    "darkColor": "#0a0a0a",
+    "colorName": "Black & White",
+    "colors": [
+      {
+        "name": "Black & White",
+        "hex": "#1e1e1e"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/5/01.png",
+    "imageHover": "/catalog/items/avirex/300/5/02.png",
+    "images": [
+      "/catalog/items/avirex/300/5/01.png",
+      "/catalog/items/avirex/300/5/02.png",
+      "/catalog/items/avirex/300/5/03.png",
+      "/catalog/items/avirex/300/5/04.png",
+      "/catalog/items/avirex/300/5/05.png",
+      "/catalog/items/avirex/300/5/06.png",
+      "/catalog/items/avirex/300/5/07.png"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 5,
-    slug: "saddle-leather",
-    name: "Saddle Leather",
-    image: "/catalog/saddle-leather.jpg",
-    imageHover: "/catalog/saddle-leather-alt.jpg",
-    brand: "harley-davidson",
-    description:
-      "Full-grain leather with brass snaps and a collar that breaks in with wear.",
-    price: 560,
-    meta: "Full-grain, brass hardware",
-    color: "#6b3e2e",
-    darkColor: "#4a291d",
-    colorName: "Brown",
-    sizes: ["M", "L", "XL"],
-    featured: true,
-    hem: 410,
-    cuff: 418,
-    svgExtra: `<path d="M200 162 L200 410" stroke="#3a2018" stroke-width="2.5"/>
-      <path d="M168 160 Q200 188 232 160 L226 146 Q200 158 174 146 Z" fill="#4a291d"/>
-      <circle cx="200" cy="250" r="4" fill="#c6a15b"/>
-      <circle cx="200" cy="310" r="4" fill="#c6a15b"/>
-      <circle cx="200" cy="370" r="4" fill="#c6a15b"/>
-      <rect x="148" y="220" width="36" height="28" rx="2" fill="none" stroke="#c6a15b" stroke-width="1.4"/>
-      <rect x="216" y="220" width="36" height="28" rx="2" fill="none" stroke="#c6a15b" stroke-width="1.4"/>
-      <rect x="84" y="406" width="34" height="14" rx="3" fill="#4a291d"/>
-      <rect x="282" y="406" width="34" height="14" rx="3" fill="#4a291d"/>`,
+    "id": 5,
+    "slug": "avirex-avirex-icon-flight-leather-jacket-6-300-6",
+    "name": "Avirex Icon Flight Leather Jacket #6",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/6/01.webp",
+    "imageHover": "/catalog/items/avirex/300/6/02.webp",
+    "images": [
+      "/catalog/items/avirex/300/6/01.webp",
+      "/catalog/items/avirex/300/6/02.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 6,
-    slug: "cognac-rider",
-    name: "Cognac Rider",
-    image: "/catalog/cognac-rider.jpg",
-    imageHover: "/catalog/cognac-rider-alt.jpg",
-    brand: "schott-nyc",
-    description: "Horsehide rider with an asymmetric brass zip and a belted waist.",
-    price: 640,
-    meta: "Horsehide, asymmetric zip",
-    color: "#8c4a2f",
-    darkColor: "#6a3420",
-    colorName: "Cognac",
-    sizes: ["S", "M", "L", "XL"],
-    featured: false,
-    hem: 430,
-    cuff: 422,
-    svgExtra: `<path d="M168 168 L232 210 L232 156 L200 168 L168 150 Z" fill="#6a3420"/>
-      <path d="M156 200 L248 250" stroke="#2a1812" stroke-width="3"/>
-      <rect x="210" y="248" width="22" height="10" rx="2" fill="#c6a15b"/>
-      <path d="M140 300 Q200 312 260 300" stroke="#6a3420" stroke-width="6" fill="none"/>
-      <rect x="84" y="410" width="34" height="14" rx="3" fill="#6a3420"/>
-      <rect x="282" y="410" width="34" height="14" rx="3" fill="#6a3420"/>`,
+    "id": 6,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-7-300-7",
+    "name": "Avirex Icon Squadron Pilot Jacket #7",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/7/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/7/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/7/01.jpg",
+      "/catalog/items/avirex/300/7/02.jpg",
+      "/catalog/items/avirex/300/7/03.jpg",
+      "/catalog/items/avirex/300/7/04.jpg",
+      "/catalog/items/avirex/300/7/05.jpg",
+      "/catalog/items/avirex/300/7/06.jpg",
+      "/catalog/items/avirex/300/7/07.jpg",
+      "/catalog/items/avirex/300/7/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 7,
-    slug: "navy-flight",
-    name: "Navy Flight",
-    image: "/catalog/navy-flight.jpg",
-    imageHover: "/catalog/navy-flight-alt.jpg",
-    brand: "avirex",
-    description: "A nylon flight jacket with a knit collar, cuffs, and a flap pocket.",
-    price: 275,
-    meta: "Nylon flight, knit trim",
-    color: "#243044",
-    darkColor: "#17202e",
-    colorName: "Navy",
-    sizes: ["S", "M", "L", "XL"],
-    featured: false,
-    hem: 405,
-    cuff: 416,
-    svgExtra: `<path d="M168 158 Q200 186 232 158 L226 146 Q200 156 174 146 Z" fill="#17202e"/>
-      <rect x="146" y="220" width="40" height="32" rx="2" fill="#17202e"/>
-      <rect x="84" y="404" width="34" height="14" rx="3" fill="#17202e"/>
-      <rect x="282" y="404" width="34" height="14" rx="3" fill="#17202e"/>
-      <rect x="132" y="390" width="136" height="16" rx="3" fill="#17202e"/>`,
+    "id": 7,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-8-300-8",
+    "name": "Avirex Icon Squadron Pilot Jacket #8",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/8/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/8/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/8/01.jpg",
+      "/catalog/items/avirex/300/8/02.jpg",
+      "/catalog/items/avirex/300/8/03.jpg",
+      "/catalog/items/avirex/300/8/04.jpg",
+      "/catalog/items/avirex/300/8/05.jpg",
+      "/catalog/items/avirex/300/8/06.jpg",
+      "/catalog/items/avirex/300/8/07.jpg",
+      "/catalog/items/avirex/300/8/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 8,
-    slug: "black-bar-shield",
-    name: "Black Bar & Shield",
-    image: "/catalog/black-bar-shield.jpg",
-    imageHover: "/catalog/black-bar-shield-alt.jpg",
-    brand: "harley-davidson",
-    description: "Black leather rider with a tall collar and brass snaps down the front.",
-    price: 590,
-    meta: "Black leather rider",
-    color: "#2a2e33",
-    darkColor: "#16191c",
-    colorName: "Black",
-    sizes: ["M", "L", "XL"],
-    featured: false,
-    hem: 418,
-    cuff: 420,
-    svgExtra: `<path d="M200 162 L200 418" stroke="#111" stroke-width="2.5"/>
-      <circle cx="206" cy="240" r="3.5" fill="#c6a15b"/>
-      <circle cx="206" cy="300" r="3.5" fill="#c6a15b"/>
-      <circle cx="206" cy="360" r="3.5" fill="#c6a15b"/>
-      <path d="M166 160 Q200 178 234 160 L230 146 Q200 156 170 146 Z" fill="#16191c"/>
-      <rect x="84" y="408" width="34" height="14" rx="3" fill="#16191c"/>
-      <rect x="282" y="408" width="34" height="14" rx="3" fill="#16191c"/>`,
+    "id": 8,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-9-300-9",
+    "name": "Avirex Icon Squadron Pilot Jacket #9",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/9/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/9/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/9/01.jpg",
+      "/catalog/items/avirex/300/9/02.jpg",
+      "/catalog/items/avirex/300/9/03.jpg",
+      "/catalog/items/avirex/300/9/04.jpg",
+      "/catalog/items/avirex/300/9/05.jpg",
+      "/catalog/items/avirex/300/9/06.jpg",
+      "/catalog/items/avirex/300/9/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 9,
-    slug: "cream-varsity",
-    name: "Cream Varsity",
-    image: "/catalog/cream-varsity.jpg",
-    imageHover: "/catalog/cream-varsity-alt.jpg",
-    brand: "pelle-pelle",
-    description: "Wool body, leather sleeves, and striped rib at the collar and hem.",
-    price: 340,
-    meta: "Wool body, leather sleeves",
-    color: "#e6dcc8",
-    darkColor: "#6b3e2e",
-    colorName: "Cream",
-    sizes: ["S", "M", "L", "XL"],
-    featured: false,
-    hem: 400,
-    cuff: 414,
-    svgExtra: `<path d="M140 168 L112 176 Q88 300 84 414 L118 418 Q126 330 148 250 Z" fill="#6b3e2e"/>
-      <path d="M260 168 L288 176 Q312 300 316 414 L282 418 Q274 330 252 250 Z" fill="#6b3e2e"/>
-      <rect x="132" y="386" width="136" height="16" rx="3" fill="#6b3e2e"/>
-      <path d="M168 160 Q200 184 232 160 L232 148 Q200 158 168 148 Z" fill="#6b3e2e"/>
-      <rect x="84" y="402" width="34" height="14" rx="3" fill="#c6a15b"/>
-      <rect x="282" y="402" width="34" height="14" rx="3" fill="#c6a15b"/>`,
+    "id": 9,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-10-300-10",
+    "name": "Avirex Icon Squadron Pilot Jacket #10",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/10/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/10/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/10/01.jpg",
+      "/catalog/items/avirex/300/10/02.jpg",
+      "/catalog/items/avirex/300/10/03.jpg",
+      "/catalog/items/avirex/300/10/04.jpg",
+      "/catalog/items/avirex/300/10/05.jpg",
+      "/catalog/items/avirex/300/10/06.jpg",
+      "/catalog/items/avirex/300/10/07.jpg",
+      "/catalog/items/avirex/300/10/08.webp",
+      "/catalog/items/avirex/300/10/09.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 10,
-    slug: "red-box-coach",
-    name: "Red Box Coach",
-    image: "/catalog/red-box-coach.jpg",
-    imageHover: "/catalog/red-box-coach-alt.jpg",
-    brand: "supreme",
-    description: "A short coach jacket in red nylon with a snap placket and slash pockets.",
-    price: 220,
-    meta: "Red nylon coach",
-    color: "#c4312e",
-    darkColor: "#8d1e1c",
-    colorName: "Red",
-    sizes: ["S", "M", "L", "XL"],
-    featured: false,
-    hem: 388,
-    cuff: 410,
-    svgExtra: `<path d="M200 160 L200 388" stroke="#8d1e1c" stroke-width="3"/>
-      <circle cx="206" cy="230" r="3" fill="#f4f1ea"/>
-      <circle cx="206" cy="280" r="3" fill="#f4f1ea"/>
-      <circle cx="206" cy="330" r="3" fill="#f4f1ea"/>
-      <path d="M168 158 Q200 176 232 158 L232 146 Q200 156 168 146 Z" fill="#8d1e1c"/>
-      <rect x="84" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>
-      <rect x="282" y="398" width="34" height="14" rx="3" fill="#8d1e1c"/>`,
+    "id": 10,
+    "slug": "avirex-avirex-icon-squadron-pilot-jacket-11-300-11",
+    "name": "Avirex Icon Squadron Pilot Jacket #11",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 300,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/300/11/01.jpg",
+    "imageHover": "/catalog/items/avirex/300/11/02.jpg",
+    "images": [
+      "/catalog/items/avirex/300/11/01.jpg",
+      "/catalog/items/avirex/300/11/02.jpg",
+      "/catalog/items/avirex/300/11/03.jpg",
+      "/catalog/items/avirex/300/11/04.jpg",
+      "/catalog/items/avirex/300/11/05.jpg",
+      "/catalog/items/avirex/300/11/06.jpg",
+      "/catalog/items/avirex/300/11/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 11,
-    slug: "artisan-steerhide-rider",
-    name: "Artisan Steerhide Rider",
-    image: "/catalog/cognac-rider.jpg",
-    imageHover: "/catalog/cognac-rider-alt.jpg",
-    brand: "leather-haven-craft",
-    description: "Hand-burnished steerhide double rider with brass hardware, crafted in our atelier.",
-    price: 680,
-    meta: "Handcrafted atelier steerhide",
-    color: "#543022",
-    darkColor: "#371c14",
-    colorName: "Cognac",
-    sizes: ["S", "M", "L", "XL"],
-    featured: true,
-    hem: 425,
-    cuff: 420,
-    svgExtra: `<path d="M168 168 L232 210 L232 156 L200 168 L168 150 Z" fill="#371c14"/>
-      <path d="M156 200 L248 250" stroke="#1d0d08" stroke-width="3"/>
-      <rect x="210" y="248" width="22" height="10" rx="2" fill="#c6a15b"/>
-      <rect x="84" y="410" width="34" height="14" rx="3" fill="#371c14"/>
-      <rect x="282" y="410" width="34" height="14" rx="3" fill="#371c14"/>`,
+    "id": 11,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-1-450-1",
+    "name": "Avirex Limited Edition Flight Jacket #1",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/1/01.png",
+    "imageHover": "/catalog/items/avirex/450/1/02.png",
+    "images": [
+      "/catalog/items/avirex/450/1/01.png",
+      "/catalog/items/avirex/450/1/02.png",
+      "/catalog/items/avirex/450/1/03.png",
+      "/catalog/items/avirex/450/1/04.png",
+      "/catalog/items/avirex/450/1/05.png",
+      "/catalog/items/avirex/450/1/06.png"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
   {
-    id: 12,
-    slug: "heritage-leather-duffle",
-    name: "Heritage Duffle Bag",
-    image: "/catalog/saddle-leather.jpg",
-    imageHover: "/catalog/saddle-leather-alt.jpg",
-    brand: "accessories",
-    description: "Heavyweight pull-up leather weekender bag with solid brass fittings and reinforced handles.",
-    price: 340,
-    meta: "Full-grain leather luggage",
-    color: "#6b3e2e",
-    darkColor: "#4a291d",
-    colorName: "Brown",
-    sizes: ["One Size"],
-    featured: true,
-    hem: 410,
-    cuff: 418,
-    svgExtra: `<rect x="140" y="240" width="120" height="90" rx="6" fill="#4a291d"/>
-      <path d="M160 240 Q200 200 240 240" stroke="#c6a15b" stroke-width="3" fill="none"/>`,
+    "id": 12,
+    "slug": "avirex-avirex-limited-tactical-bomber-2-450-2",
+    "name": "Avirex Limited Tactical Bomber #2",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/2/01.jpg",
+    "imageHover": "/catalog/items/avirex/450/2/02.jpg",
+    "images": [
+      "/catalog/items/avirex/450/2/01.jpg",
+      "/catalog/items/avirex/450/2/02.jpg",
+      "/catalog/items/avirex/450/2/03.jpg",
+      "/catalog/items/avirex/450/2/04.jpg",
+      "/catalog/items/avirex/450/2/05.jpg",
+      "/catalog/items/avirex/450/2/06.jpg",
+      "/catalog/items/avirex/450/2/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
   },
+  {
+    "id": 13,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-3-450-3",
+    "name": "Avirex Limited Edition Flight Jacket #3",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/3/01.webp",
+    "imageHover": "/catalog/items/avirex/450/3/02.webp",
+    "images": [
+      "/catalog/items/avirex/450/3/01.webp",
+      "/catalog/items/avirex/450/3/02.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 14,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-4-450-4",
+    "name": "Avirex Limited Edition Flight Jacket #4",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/4/01.jpg",
+    "imageHover": "/catalog/items/avirex/450/4/02.jpg",
+    "images": [
+      "/catalog/items/avirex/450/4/01.jpg",
+      "/catalog/items/avirex/450/4/02.jpg",
+      "/catalog/items/avirex/450/4/03.jpg",
+      "/catalog/items/avirex/450/4/04.jpg",
+      "/catalog/items/avirex/450/4/05.jpg",
+      "/catalog/items/avirex/450/4/06.jpg",
+      "/catalog/items/avirex/450/4/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 15,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-5-450-5",
+    "name": "Avirex Limited Edition Flight Jacket #5",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/5/01.jpg",
+    "imageHover": "/catalog/items/avirex/450/5/02.jpg",
+    "images": [
+      "/catalog/items/avirex/450/5/01.jpg",
+      "/catalog/items/avirex/450/5/02.jpg",
+      "/catalog/items/avirex/450/5/03.jpg",
+      "/catalog/items/avirex/450/5/04.jpg",
+      "/catalog/items/avirex/450/5/05.jpg",
+      "/catalog/items/avirex/450/5/06.jpg",
+      "/catalog/items/avirex/450/5/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 16,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-6-450-6",
+    "name": "Avirex Limited Edition Flight Jacket #6",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/6/01.jpg",
+    "imageHover": "/catalog/items/avirex/450/6/02.jpg",
+    "images": [
+      "/catalog/items/avirex/450/6/01.jpg",
+      "/catalog/items/avirex/450/6/02.jpg",
+      "/catalog/items/avirex/450/6/03.jpg",
+      "/catalog/items/avirex/450/6/04.jpg",
+      "/catalog/items/avirex/450/6/05.jpg",
+      "/catalog/items/avirex/450/6/06.jpg",
+      "/catalog/items/avirex/450/6/07.jpg",
+      "/catalog/items/avirex/450/6/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 17,
+    "slug": "avirex-avirex-limited-edition-flight-jacket-7-450-7",
+    "name": "Avirex Limited Edition Flight Jacket #7",
+    "brand": "avirex",
+    "category": "avirex",
+    "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
+    "price": 450,
+    "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/avirex/450/7/01.jpg",
+    "imageHover": "/catalog/items/avirex/450/7/02.webp",
+    "images": [
+      "/catalog/items/avirex/450/7/01.jpg",
+      "/catalog/items/avirex/450/7/02.webp",
+      "/catalog/items/avirex/450/7/03.webp",
+      "/catalog/items/avirex/450/7/04.webp",
+      "/catalog/items/avirex/450/7/05.jpg",
+      "/catalog/items/avirex/450/7/06.jpg",
+      "/catalog/items/avirex/450/7/07.jpg",
+      "/catalog/items/avirex/450/7/08.jpg",
+      "/catalog/items/avirex/450/7/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 18,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-1-350-1",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #1",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/1/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/350/1/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/350/1/01.webp",
+      "/catalog/items/pelle-pelle/350/1/02.webp",
+      "/catalog/items/pelle-pelle/350/1/03.webp",
+      "/catalog/items/pelle-pelle/350/1/04.webp",
+      "/catalog/items/pelle-pelle/350/1/05.webp",
+      "/catalog/items/pelle-pelle/350/1/06.webp",
+      "/catalog/items/pelle-pelle/350/1/07.webp",
+      "/catalog/items/pelle-pelle/350/1/08.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 19,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-2-350-2",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #2",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/2/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/350/2/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/350/2/01.webp",
+      "/catalog/items/pelle-pelle/350/2/02.webp",
+      "/catalog/items/pelle-pelle/350/2/03.webp",
+      "/catalog/items/pelle-pelle/350/2/04.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 20,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-3-350-3",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #3",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/3/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/350/3/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/350/3/01.webp",
+      "/catalog/items/pelle-pelle/350/3/02.webp",
+      "/catalog/items/pelle-pelle/350/3/03.webp",
+      "/catalog/items/pelle-pelle/350/3/04.webp",
+      "/catalog/items/pelle-pelle/350/3/05.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 21,
+    "slug": "pelle-pelle-pelle-pelle-soda-club-yellow-edition-350-4",
+    "name": "Pelle Pelle Soda Club Yellow Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#c99a2c",
+    "darkColor": "#0a0a0a",
+    "colorName": "Mustard Yellow",
+    "colors": [
+      {
+        "name": "Mustard Yellow",
+        "hex": "#c99a2c"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/4/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/350/4/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/350/4/01.jpg",
+      "/catalog/items/pelle-pelle/350/4/02.webp",
+      "/catalog/items/pelle-pelle/350/4/03.webp",
+      "/catalog/items/pelle-pelle/350/4/04.jpg",
+      "/catalog/items/pelle-pelle/350/4/05.jpg",
+      "/catalog/items/pelle-pelle/350/4/06.jpg",
+      "/catalog/items/pelle-pelle/350/4/07.jpg",
+      "/catalog/items/pelle-pelle/350/4/08.jpg",
+      "/catalog/items/pelle-pelle/350/4/09.jpg",
+      "/catalog/items/pelle-pelle/350/4/10.jpg",
+      "/catalog/items/pelle-pelle/350/4/11.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 22,
+    "slug": "pelle-pelle-pelle-pelle-burgundy-plush-edition-350-5",
+    "name": "Pelle Pelle Burgundy Plush Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#5c1324",
+    "darkColor": "#0a0a0a",
+    "colorName": "Burgundy Red",
+    "colors": [
+      {
+        "name": "Burgundy Red",
+        "hex": "#5c1324"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/5/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/350/5/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/350/5/01.jpg",
+      "/catalog/items/pelle-pelle/350/5/02.jpg",
+      "/catalog/items/pelle-pelle/350/5/03.jpg",
+      "/catalog/items/pelle-pelle/350/5/04.jpg",
+      "/catalog/items/pelle-pelle/350/5/05.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 23,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-6-350-6",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #6",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/6/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/350/6/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/350/6/01.jpg",
+      "/catalog/items/pelle-pelle/350/6/02.jpg",
+      "/catalog/items/pelle-pelle/350/6/03.jpg",
+      "/catalog/items/pelle-pelle/350/6/04.jpg",
+      "/catalog/items/pelle-pelle/350/6/05.jpg",
+      "/catalog/items/pelle-pelle/350/6/06.jpg",
+      "/catalog/items/pelle-pelle/350/6/07.jpg",
+      "/catalog/items/pelle-pelle/350/6/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 24,
+    "slug": "pelle-pelle-pelle-pelle-midnight-navy-plush-edition-350-7",
+    "name": "Pelle Pelle Midnight Navy Plush Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 350,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1b263b",
+    "darkColor": "#0a0a0a",
+    "colorName": "Midnight Navy",
+    "colors": [
+      {
+        "name": "Midnight Navy",
+        "hex": "#1b263b"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/350/7/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/350/7/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/350/7/01.jpg",
+      "/catalog/items/pelle-pelle/350/7/02.jpg",
+      "/catalog/items/pelle-pelle/350/7/03.jpg",
+      "/catalog/items/pelle-pelle/350/7/04.jpg",
+      "/catalog/items/pelle-pelle/350/7/05.jpg",
+      "/catalog/items/pelle-pelle/350/7/06.jpg",
+      "/catalog/items/pelle-pelle/350/7/07.jpg",
+      "/catalog/items/pelle-pelle/350/7/08.jpg",
+      "/catalog/items/pelle-pelle/350/7/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 25,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-1-450-1",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #1",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/1/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/1/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/1/01.webp",
+      "/catalog/items/pelle-pelle/450/1/02.webp",
+      "/catalog/items/pelle-pelle/450/1/03.webp",
+      "/catalog/items/pelle-pelle/450/1/04.webp",
+      "/catalog/items/pelle-pelle/450/1/05.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 26,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-2-450-2",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #2",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/2/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/2/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/2/01.jpg",
+      "/catalog/items/pelle-pelle/450/2/02.webp",
+      "/catalog/items/pelle-pelle/450/2/03.jpg",
+      "/catalog/items/pelle-pelle/450/2/04.webp",
+      "/catalog/items/pelle-pelle/450/2/05.webp",
+      "/catalog/items/pelle-pelle/450/2/06.webp",
+      "/catalog/items/pelle-pelle/450/2/07.webp",
+      "/catalog/items/pelle-pelle/450/2/08.webp",
+      "/catalog/items/pelle-pelle/450/2/09.webp",
+      "/catalog/items/pelle-pelle/450/2/10.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 27,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-3-450-3",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #3",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/3/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/3/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/3/01.webp",
+      "/catalog/items/pelle-pelle/450/3/02.webp",
+      "/catalog/items/pelle-pelle/450/3/03.webp",
+      "/catalog/items/pelle-pelle/450/3/04.webp",
+      "/catalog/items/pelle-pelle/450/3/05.webp",
+      "/catalog/items/pelle-pelle/450/3/06.webp",
+      "/catalog/items/pelle-pelle/450/3/07.webp",
+      "/catalog/items/pelle-pelle/450/3/08.webp",
+      "/catalog/items/pelle-pelle/450/3/09.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 28,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-4-450-4",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #4",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/4/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/4/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/4/01.webp",
+      "/catalog/items/pelle-pelle/450/4/02.webp",
+      "/catalog/items/pelle-pelle/450/4/03.webp",
+      "/catalog/items/pelle-pelle/450/4/04.webp",
+      "/catalog/items/pelle-pelle/450/4/05.webp",
+      "/catalog/items/pelle-pelle/450/4/06.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 29,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-5-450-5",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #5",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/5/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/5/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/5/01.webp",
+      "/catalog/items/pelle-pelle/450/5/02.webp",
+      "/catalog/items/pelle-pelle/450/5/03.webp",
+      "/catalog/items/pelle-pelle/450/5/04.webp",
+      "/catalog/items/pelle-pelle/450/5/05.webp",
+      "/catalog/items/pelle-pelle/450/5/06.webp",
+      "/catalog/items/pelle-pelle/450/5/07.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 30,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-6-450-6",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #6",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/6/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/6/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/6/01.webp",
+      "/catalog/items/pelle-pelle/450/6/02.webp",
+      "/catalog/items/pelle-pelle/450/6/03.webp",
+      "/catalog/items/pelle-pelle/450/6/04.webp",
+      "/catalog/items/pelle-pelle/450/6/05.webp",
+      "/catalog/items/pelle-pelle/450/6/06.webp",
+      "/catalog/items/pelle-pelle/450/6/07.webp",
+      "/catalog/items/pelle-pelle/450/6/08.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 31,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-7-450-7",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #7",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/7/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/7/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/7/01.webp",
+      "/catalog/items/pelle-pelle/450/7/02.webp",
+      "/catalog/items/pelle-pelle/450/7/03.webp",
+      "/catalog/items/pelle-pelle/450/7/04.jpg",
+      "/catalog/items/pelle-pelle/450/7/05.jpg",
+      "/catalog/items/pelle-pelle/450/7/06.jpg",
+      "/catalog/items/pelle-pelle/450/7/07.jpg",
+      "/catalog/items/pelle-pelle/450/7/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 32,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-8-450-8",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #8",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/8/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/8/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/8/01.webp",
+      "/catalog/items/pelle-pelle/450/8/02.webp",
+      "/catalog/items/pelle-pelle/450/8/03.webp",
+      "/catalog/items/pelle-pelle/450/8/04.jpg",
+      "/catalog/items/pelle-pelle/450/8/05.jpg",
+      "/catalog/items/pelle-pelle/450/8/06.jpg",
+      "/catalog/items/pelle-pelle/450/8/07.jpg",
+      "/catalog/items/pelle-pelle/450/8/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 33,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-9-450-9",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #9",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/9/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/9/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/9/01.webp",
+      "/catalog/items/pelle-pelle/450/9/02.webp",
+      "/catalog/items/pelle-pelle/450/9/03.webp",
+      "/catalog/items/pelle-pelle/450/9/04.webp",
+      "/catalog/items/pelle-pelle/450/9/05.webp",
+      "/catalog/items/pelle-pelle/450/9/06.webp",
+      "/catalog/items/pelle-pelle/450/9/07.webp",
+      "/catalog/items/pelle-pelle/450/9/08.webp",
+      "/catalog/items/pelle-pelle/450/9/09.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 34,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-10-450-10",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #10",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/10/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/10/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/10/01.webp",
+      "/catalog/items/pelle-pelle/450/10/02.webp",
+      "/catalog/items/pelle-pelle/450/10/03.webp",
+      "/catalog/items/pelle-pelle/450/10/04.webp",
+      "/catalog/items/pelle-pelle/450/10/05.webp",
+      "/catalog/items/pelle-pelle/450/10/06.webp",
+      "/catalog/items/pelle-pelle/450/10/07.webp",
+      "/catalog/items/pelle-pelle/450/10/08.webp",
+      "/catalog/items/pelle-pelle/450/10/09.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 35,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-11-450-11",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #11",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/11/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/11/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/11/01.jpg",
+      "/catalog/items/pelle-pelle/450/11/02.webp",
+      "/catalog/items/pelle-pelle/450/11/03.jpg",
+      "/catalog/items/pelle-pelle/450/11/04.jpg",
+      "/catalog/items/pelle-pelle/450/11/05.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 36,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-12-450-12",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #12",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/12/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/12/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/12/01.webp",
+      "/catalog/items/pelle-pelle/450/12/02.webp",
+      "/catalog/items/pelle-pelle/450/12/03.webp",
+      "/catalog/items/pelle-pelle/450/12/04.webp",
+      "/catalog/items/pelle-pelle/450/12/05.webp",
+      "/catalog/items/pelle-pelle/450/12/06.webp",
+      "/catalog/items/pelle-pelle/450/12/07.webp",
+      "/catalog/items/pelle-pelle/450/12/08.webp",
+      "/catalog/items/pelle-pelle/450/12/09.webp",
+      "/catalog/items/pelle-pelle/450/12/10.webp"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 37,
+    "slug": "pelle-pelle-pelle-pelle-black-copper-studded-edition-450-13",
+    "name": "Pelle Pelle Black Copper Studded Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#241d17",
+    "darkColor": "#0a0a0a",
+    "colorName": "Black & Copper",
+    "colors": [
+      {
+        "name": "Black & Copper",
+        "hex": "#241d17"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/13/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/13/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/13/01.jpg",
+      "/catalog/items/pelle-pelle/450/13/02.webp",
+      "/catalog/items/pelle-pelle/450/13/03.webp",
+      "/catalog/items/pelle-pelle/450/13/04.jpg",
+      "/catalog/items/pelle-pelle/450/13/05.jpg",
+      "/catalog/items/pelle-pelle/450/13/06.jpg",
+      "/catalog/items/pelle-pelle/450/13/07.jpg",
+      "/catalog/items/pelle-pelle/450/13/08.jpg",
+      "/catalog/items/pelle-pelle/450/13/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 38,
+    "slug": "pelle-pelle-pelle-pelle-ash-grey-limited-edition-450-14",
+    "name": "Pelle Pelle Ash Grey Limited Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#606060",
+    "darkColor": "#0a0a0a",
+    "colorName": "Ash Grey",
+    "colors": [
+      {
+        "name": "Ash Grey",
+        "hex": "#606060"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/14/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/14/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/14/01.jpg",
+      "/catalog/items/pelle-pelle/450/14/02.jpg",
+      "/catalog/items/pelle-pelle/450/14/03.jpg",
+      "/catalog/items/pelle-pelle/450/14/04.jpg",
+      "/catalog/items/pelle-pelle/450/14/05.jpg",
+      "/catalog/items/pelle-pelle/450/14/06.jpg",
+      "/catalog/items/pelle-pelle/450/14/07.jpg",
+      "/catalog/items/pelle-pelle/450/14/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 39,
+    "slug": "pelle-pelle-pelle-pelle-two-tone-brown-teal-edition-450-15",
+    "name": "Pelle Pelle Two-Tone Brown Teal Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#3a2618",
+    "darkColor": "#0a0a0a",
+    "colorName": "Brown & Teal",
+    "colors": [
+      {
+        "name": "Brown & Teal",
+        "hex": "#3a2618"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/15/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/15/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/15/01.jpg",
+      "/catalog/items/pelle-pelle/450/15/02.jpg",
+      "/catalog/items/pelle-pelle/450/15/03.jpg",
+      "/catalog/items/pelle-pelle/450/15/04.jpg",
+      "/catalog/items/pelle-pelle/450/15/05.jpg",
+      "/catalog/items/pelle-pelle/450/15/06.jpg",
+      "/catalog/items/pelle-pelle/450/15/07.jpg",
+      "/catalog/items/pelle-pelle/450/15/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 40,
+    "slug": "pelle-pelle-pelle-pelle-black-crimson-red-plush-edition-450-16",
+    "name": "Pelle Pelle Black & Crimson Red Plush Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Black & Red",
+    "colors": [
+      {
+        "name": "Black & Red",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/16/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/16/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/16/01.jpg",
+      "/catalog/items/pelle-pelle/450/16/02.jpg",
+      "/catalog/items/pelle-pelle/450/16/03.jpg",
+      "/catalog/items/pelle-pelle/450/16/04.jpg",
+      "/catalog/items/pelle-pelle/450/16/05.jpg",
+      "/catalog/items/pelle-pelle/450/16/06.jpg",
+      "/catalog/items/pelle-pelle/450/16/07.jpg",
+      "/catalog/items/pelle-pelle/450/16/08.jpg",
+      "/catalog/items/pelle-pelle/450/16/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 41,
+    "slug": "pelle-pelle-pelle-pelle-vintage-brown-leather-edition-450-17",
+    "name": "Pelle Pelle Vintage Brown Leather Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#442b1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Espresso Brown",
+    "colors": [
+      {
+        "name": "Espresso Brown",
+        "hex": "#442b1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/17/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/17/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/17/01.jpg",
+      "/catalog/items/pelle-pelle/450/17/02.jpg",
+      "/catalog/items/pelle-pelle/450/17/03.jpg",
+      "/catalog/items/pelle-pelle/450/17/04.jpg",
+      "/catalog/items/pelle-pelle/450/17/05.jpg",
+      "/catalog/items/pelle-pelle/450/17/06.jpg",
+      "/catalog/items/pelle-pelle/450/17/07.jpg",
+      "/catalog/items/pelle-pelle/450/17/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 42,
+    "slug": "pelle-pelle-pelle-pelle-olive-cabaret-edition-450-18",
+    "name": "Pelle Pelle Olive Cabaret Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#484f33",
+    "darkColor": "#0a0a0a",
+    "colorName": "Olive Green",
+    "colors": [
+      {
+        "name": "Olive Green",
+        "hex": "#484f33"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/18/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/18/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/18/01.jpg",
+      "/catalog/items/pelle-pelle/450/18/02.jpg",
+      "/catalog/items/pelle-pelle/450/18/03.jpg",
+      "/catalog/items/pelle-pelle/450/18/04.jpg",
+      "/catalog/items/pelle-pelle/450/18/05.jpg",
+      "/catalog/items/pelle-pelle/450/18/06.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 43,
+    "slug": "pelle-pelle-pelle-pelle-rolling-loud-special-edition-450-19",
+    "name": "Pelle Pelle Rolling Loud Special Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Black",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/19/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/450/19/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/450/19/01.jpg",
+      "/catalog/items/pelle-pelle/450/19/02.jpg",
+      "/catalog/items/pelle-pelle/450/19/03.jpg",
+      "/catalog/items/pelle-pelle/450/19/04.jpg",
+      "/catalog/items/pelle-pelle/450/19/05.jpg",
+      "/catalog/items/pelle-pelle/450/19/06.jpg",
+      "/catalog/items/pelle-pelle/450/19/07.jpg",
+      "/catalog/items/pelle-pelle/450/19/08.jpg",
+      "/catalog/items/pelle-pelle/450/19/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 44,
+    "slug": "pelle-pelle-pelle-pelle-limited-edition-plush-jacket-20-450-20",
+    "name": "Pelle Pelle Limited Edition Plush Jacket #20",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 450,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/450/20/01.webp",
+    "imageHover": "/catalog/items/pelle-pelle/450/20/02.webp",
+    "images": [
+      "/catalog/items/pelle-pelle/450/20/01.webp",
+      "/catalog/items/pelle-pelle/450/20/02.webp",
+      "/catalog/items/pelle-pelle/450/20/03.jpg",
+      "/catalog/items/pelle-pelle/450/20/04.jpg",
+      "/catalog/items/pelle-pelle/450/20/05.jpg",
+      "/catalog/items/pelle-pelle/450/20/06.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 45,
+    "slug": "pelle-pelle-pelle-pelle-collector-heavyweight-plush-1-500-1",
+    "name": "Pelle Pelle Collector Heavyweight Plush #1",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/1/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/1/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/1/01.jpg",
+      "/catalog/items/pelle-pelle/500/1/02.jpg",
+      "/catalog/items/pelle-pelle/500/1/03.jpg",
+      "/catalog/items/pelle-pelle/500/1/04.jpg",
+      "/catalog/items/pelle-pelle/500/1/05.jpg",
+      "/catalog/items/pelle-pelle/500/1/06.jpg",
+      "/catalog/items/pelle-pelle/500/1/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 46,
+    "slug": "pelle-pelle-pelle-pelle-collector-heavyweight-plush-2-500-2",
+    "name": "Pelle Pelle Collector Heavyweight Plush #2",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Classic Black",
+    "colors": [
+      {
+        "name": "Classic Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": true,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/2/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/2/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/2/01.jpg",
+      "/catalog/items/pelle-pelle/500/2/02.jpg",
+      "/catalog/items/pelle-pelle/500/2/03.jpg",
+      "/catalog/items/pelle-pelle/500/2/04.jpg",
+      "/catalog/items/pelle-pelle/500/2/05.jpg",
+      "/catalog/items/pelle-pelle/500/2/06.jpg",
+      "/catalog/items/pelle-pelle/500/2/07.jpg",
+      "/catalog/items/pelle-pelle/500/2/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 47,
+    "slug": "pelle-pelle-pelle-pelle-black-cabaret-collector-edition-500-3",
+    "name": "Pelle Pelle Black Cabaret Collector Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1a1a1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Black",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/3/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/3/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/3/01.jpg",
+      "/catalog/items/pelle-pelle/500/3/02.jpg",
+      "/catalog/items/pelle-pelle/500/3/03.jpg",
+      "/catalog/items/pelle-pelle/500/3/04.jpg",
+      "/catalog/items/pelle-pelle/500/3/05.jpg",
+      "/catalog/items/pelle-pelle/500/3/06.jpg",
+      "/catalog/items/pelle-pelle/500/3/07.jpg",
+      "/catalog/items/pelle-pelle/500/3/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 48,
+    "slug": "pelle-pelle-pelle-pelle-ivory-cream-limited-edition-500-4",
+    "name": "Pelle Pelle Ivory Cream Limited Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#ede8dc",
+    "darkColor": "#0a0a0a",
+    "colorName": "Ivory Cream",
+    "colors": [
+      {
+        "name": "Ivory Cream",
+        "hex": "#ede8dc"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/4/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/4/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/4/01.jpg",
+      "/catalog/items/pelle-pelle/500/4/02.jpg",
+      "/catalog/items/pelle-pelle/500/4/03.jpg",
+      "/catalog/items/pelle-pelle/500/4/04.jpg",
+      "/catalog/items/pelle-pelle/500/4/05.jpg",
+      "/catalog/items/pelle-pelle/500/4/06.jpg",
+      "/catalog/items/pelle-pelle/500/4/07.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 49,
+    "slug": "pelle-pelle-pelle-pelle-midnight-navy-plush-edition-500-5",
+    "name": "Pelle Pelle Midnight Navy Plush Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#1b263b",
+    "darkColor": "#0a0a0a",
+    "colorName": "Midnight Navy",
+    "colors": [
+      {
+        "name": "Midnight Navy",
+        "hex": "#1b263b"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/5/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/5/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/5/01.jpg",
+      "/catalog/items/pelle-pelle/500/5/02.jpg",
+      "/catalog/items/pelle-pelle/500/5/03.jpg",
+      "/catalog/items/pelle-pelle/500/5/04.jpg",
+      "/catalog/items/pelle-pelle/500/5/05.jpg",
+      "/catalog/items/pelle-pelle/500/5/06.jpg",
+      "/catalog/items/pelle-pelle/500/5/07.jpg",
+      "/catalog/items/pelle-pelle/500/5/08.jpg",
+      "/catalog/items/pelle-pelle/500/5/09.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 50,
+    "slug": "pelle-pelle-pelle-pelle-military-olive-edition-500-6",
+    "name": "Pelle Pelle Military Olive Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#484f33",
+    "darkColor": "#0a0a0a",
+    "colorName": "Olive Green",
+    "colors": [
+      {
+        "name": "Olive Green",
+        "hex": "#484f33"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/6/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/6/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/6/01.jpg",
+      "/catalog/items/pelle-pelle/500/6/02.jpg",
+      "/catalog/items/pelle-pelle/500/6/03.jpg",
+      "/catalog/items/pelle-pelle/500/6/04.jpg",
+      "/catalog/items/pelle-pelle/500/6/05.jpg",
+      "/catalog/items/pelle-pelle/500/6/06.jpg",
+      "/catalog/items/pelle-pelle/500/6/07.jpg",
+      "/catalog/items/pelle-pelle/500/6/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  },
+  {
+    "id": 51,
+    "slug": "pelle-pelle-pelle-pelle-vintage-brown-leather-edition-500-7",
+    "name": "Pelle Pelle Vintage Brown Leather Edition",
+    "brand": "pelle-pelle",
+    "category": "pelle-pelle",
+    "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
+    "price": 500,
+    "meta": "Supple plush leather, hand-cut embroidered appliques, satin lining",
+    "color": "#442b1a",
+    "darkColor": "#0a0a0a",
+    "colorName": "Espresso Brown",
+    "colors": [
+      {
+        "name": "Espresso Brown",
+        "hex": "#442b1a"
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "featured": false,
+    "inStock": true,
+    "image": "/catalog/items/pelle-pelle/500/7/01.jpg",
+    "imageHover": "/catalog/items/pelle-pelle/500/7/02.jpg",
+    "images": [
+      "/catalog/items/pelle-pelle/500/7/01.jpg",
+      "/catalog/items/pelle-pelle/500/7/02.jpg",
+      "/catalog/items/pelle-pelle/500/7/03.jpg",
+      "/catalog/items/pelle-pelle/500/7/04.jpg",
+      "/catalog/items/pelle-pelle/500/7/05.jpg",
+      "/catalog/items/pelle-pelle/500/7/06.jpg",
+      "/catalog/items/pelle-pelle/500/7/07.jpg",
+      "/catalog/items/pelle-pelle/500/7/08.jpg"
+    ],
+    "hem": 410,
+    "cuff": 418,
+    "svgExtra": ""
+  }
 ];
 
-export function getProductsByBrand(slug: string): Product[] {
-  const normalized = slug.toLowerCase();
-  if (normalized === "leather-heaven-craft") {
-    return products.filter((product) => product.brand === "leather-haven-craft");
-  }
-  if (normalized === "accessory") {
-    return products.filter((product) => product.brand === "accessories");
-  }
-  return products.filter((product) => product.brand === normalized);
+export function getProduct(slug: string): Product | undefined {
+  return products.find((p) => p.slug === slug);
 }
 
-export function getProduct(slug: string): Product | undefined {
-  return products.find((product) => product.slug === slug);
+export function getProductsByBrand(brandSlug: string): Product[] {
+  return products.filter((p) => p.brand === brandSlug);
 }
 
 export function getFeaturedProducts(): Product[] {
-  return products.filter((product) => product.featured);
+  const featured = products.filter((p) => p.featured);
+  return featured.length > 0 ? featured : products.slice(0, 8);
+}
+
+export function getAllColors(): string[] {
+  const set = new Set<string>();
+  for (const p of products) {
+    if (p.colorName) set.add(p.colorName);
+  }
+  return Array.from(set);
+}
+
+export async function fetchLiveProducts(category?: string): Promise<Product[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const url =
+      category && category !== "all"
+        ? `${backendUrl}/api/products?category=${category}&limit=100`
+        : `${backendUrl}/api/products?limit=100`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((raw: any) => ({
+          id: raw._id || raw.id,
+          slug: raw.slug,
+          name: raw.name,
+          brand: raw.category,
+          description: raw.description,
+          price: raw.price,
+          meta: raw.meta || "",
+          color: raw.color || "#1a1a1a",
+          darkColor: raw.darkColor || "#0f0f0f",
+          colorName: raw.colorName || "Black",
+          colors: Array.isArray(raw.colors) && raw.colors.length > 0 ? raw.colors : [{ name: raw.colorName || "Black", hex: raw.color || "#1a1a1a" }],
+          sizes: Array.isArray(raw.sizes) && raw.sizes.length > 0 ? raw.sizes : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+          featured: Boolean(raw.featured),
+          image: raw.image,
+          imageHover: raw.imageHover || raw.image,
+          images: Array.isArray(raw.images) && raw.images.length > 0 ? raw.images : [raw.image, raw.imageHover].filter(Boolean),
+          hem: raw.hem || 410,
+          cuff: raw.cuff || 418,
+          svgExtra: raw.svgExtra || "",
+        }));
+      }
+    }
+  } catch {
+    // Smooth fallback to local catalog
+  }
+  return category && category !== "all"
+    ? products.filter((p) => p.brand === category)
+    : products;
+}
+
+export async function fetchLiveProductBySlug(slug: string): Promise<Product | undefined> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const res = await fetch(`${backendUrl}/api/products/${slug}`, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        const raw = json.data;
+        return {
+          id: raw._id || raw.id,
+          slug: raw.slug,
+          name: raw.name,
+          brand: raw.category,
+          description: raw.description,
+          price: raw.price,
+          meta: raw.meta || "",
+          color: raw.color || "#1a1a1a",
+          darkColor: raw.darkColor || "#0f0f0f",
+          colorName: raw.colorName || "Black",
+          colors: Array.isArray(raw.colors) && raw.colors.length > 0 ? raw.colors : [{ name: raw.colorName || "Black", hex: raw.color || "#1a1a1a" }],
+          sizes: Array.isArray(raw.sizes) && raw.sizes.length > 0 ? raw.sizes : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+          featured: Boolean(raw.featured),
+          image: raw.image,
+          imageHover: raw.imageHover || raw.image,
+          images: Array.isArray(raw.images) && raw.images.length > 0 ? raw.images : [raw.image, raw.imageHover].filter(Boolean),
+          hem: raw.hem || 410,
+          cuff: raw.cuff || 418,
+          svgExtra: raw.svgExtra || "",
+        };
+      }
+    }
+  } catch {
+    // Smooth fallback
+  }
+  return getProduct(slug);
+}
+
+export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
+  const live = await fetchLiveProducts();
+  const featured = live.filter((p) => p.featured);
+  return featured.length > 0 ? featured : live.slice(0, 8);
 }
 
 export function getBrandLabel(slug: string): string {
   return getBrand(slug)?.name ?? slug;
 }
 
-
-export interface BackendProduct {
-  _id?: string;
-  id?: number | string;
-  slug: string;
-  name: string;
-  category?: string;
-  brand?: string;
-  description?: string;
-  price: number;
-  meta?: string;
-  color?: string;
-  darkColor?: string;
-  colorName?: string;
-  colors?: Array<{ name: string; hex?: string } | string>;
-  sizes?: string[];
-  featured?: boolean;
-  image?: string;
-  imageHover?: string;
-  images?: string[];
-  hem?: number;
-  cuff?: number;
-  svgExtra?: string;
-}
-
-export function mapBackendProduct(p: BackendProduct): Product {
-  const images = Array.isArray(p.images) && p.images.length > 0
-    ? p.images
-    : ([p.image, p.imageHover].filter(Boolean) as string[]);
-
-  const parsedColors: ProductColor[] = Array.isArray(p.colors) && p.colors.length > 0
-    ? p.colors.map((c) =>
-        typeof c === "string"
-          ? { name: c, hex: "#1a1a1a" }
-          : { name: c.name || "Black", hex: c.hex || "#1a1a1a" }
-      )
-    : p.colorName
-    ? [{ name: p.colorName, hex: p.color || "#1a1a1a" }]
-    : [];
-
-  return {
-    id: p._id || p.id || p.slug,
-    slug: p.slug,
-    name: p.name,
-    brand: p.category || p.brand || "accessories",
-    description: p.description || "",
-    price: Number(p.price) || 0,
-    meta: p.meta || "",
-    color: p.color || "#1a1a1a",
-    darkColor: p.darkColor || "#0f0f0f",
-    colorName: p.colorName || "Black",
-    colors: parsedColors,
-    sizes: Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"],
-    featured: Boolean(p.featured),
-    image: p.image || images[0] || "/catalog/field-bomber.jpg",
-    imageHover: p.imageHover || images[1] || p.image || images[0] || "/catalog/field-bomber.jpg",
-    images,
-    hem: typeof p.hem === "number" ? p.hem : 410,
-    cuff: typeof p.cuff === "number" ? p.cuff : 418,
-    svgExtra: p.svgExtra || "",
-  };
-}
-
-export async function fetchLiveProducts(): Promise<Product[]> {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-  try {
-    const res = await fetch(`${backendUrl}/api/products?limit=100`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return products;
-    const json = await res.json();
-    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-      return json.data.map(mapBackendProduct);
-    }
-  } catch {
-    // If backend is unreachable, smoothly use static catalog fallback
-  }
-  return products;
-}
-
-export async function fetchLiveProductBySlug(slug: string): Promise<Product | undefined> {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-  try {
-    const res = await fetch(`${backendUrl}/api/products/${slug}`, {
-      cache: "no-store",
-    });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success && json.data) {
-        return mapBackendProduct(json.data);
-      }
-    }
-  } catch {
-    // Fall back to local search
-  }
-  return getProduct(slug);
-}
-
 export async function fetchLiveProductsByBrand(brandSlug: string): Promise<Product[]> {
-  const all = await fetchLiveProducts();
-  const normalized = brandSlug.toLowerCase();
-  return all.filter((p) => {
-    const b = (p.brand || "").toLowerCase();
-    if (normalized === "leather-haven-craft" || normalized === "leather-heaven-craft") {
-      return b === "leather-haven-craft" || b === "leather-heaven-craft";
-    }
-    if (normalized === "accessory" || normalized === "accessories") {
-      return b === "accessories" || b === "accessory";
-    }
-    return b === normalized;
-  });
-}
-
-export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
-  const all = await fetchLiveProducts();
-  return all.filter((p) => p.featured);
+  return fetchLiveProducts(brandSlug);
 }
