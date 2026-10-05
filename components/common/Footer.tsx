@@ -180,6 +180,16 @@ export function Footer() {
         </div>
       </div>
 
+      {/* ══════════ 2.5 LEGAL NOTICE & NON-AFFILIATION DISCLAIMER ══════════ */}
+      <div className="border-t border-[#ded5c7] bg-[#f4eee6]/60 px-6 py-4">
+        <div className="mx-auto max-w-6xl text-[11px] leading-relaxed text-[#7a6b5e]">
+          <p>
+            <span className="font-semibold text-[#221b16]">Legal &amp; Trademark Notice: </span>
+            {SITE_NAME} is an independent custom leathercraft workshop and bespoke outerwear atelier based in Sialkot, Pakistan. Outerwear pieces referencing historical or archival silhouettes (such as cuts popularized by Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson) are handcrafted master tributes bench-built using genuine full-grain hides, authentic brass hardware, and custom anatomical tailoring. All third-party trademarks, brand names, and model designations belong strictly to their respective owners and are used under nominative fair use for descriptive silhouette and historical style identification. Leather Haven Craft is not affiliated with, endorsed by, sponsored by, or an authorized distributor of any referenced brand.
+          </p>
+        </div>
+      </div>
+
       {/* ══════════ 3. BOTTOM COPYRIGHT & REGIONAL BAR ══════════ */}
       <div className="border-t border-[#ded5c7] bg-[#ede7de]">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 text-xs text-[#6b5c51] sm:flex-row sm:items-center sm:justify-between">

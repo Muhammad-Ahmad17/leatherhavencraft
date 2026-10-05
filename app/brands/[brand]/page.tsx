@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
 
   return {
     title: `${brand.name} Leather Jackets & Outerwear Archive | Leather Haven Craft`,
-    description: `Explore authentic ${brand.name} leather jackets: ${brand.tagline} Verified vintage hardware, heavy full-grain hides, and heritage cuts. Express shipping to US, UK, and Europe.`,
+    description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made-to-measure tailoring. Express shipping to US, UK, and Europe.`,
     alternates: { canonical: `/brands/${brand.slug}` },
     openGraph: {
       title: `${brand.name} Leather Jackets | Leather Haven Craft`,
@@ -105,7 +105,8 @@ export default async function BrandPage({ params }: BrandPageProps) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={brand.logo} alt="" className="h-8 w-auto max-w-[140px] object-contain" />
             </span>
-            <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">{brand.name}</h1>
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-white/70">Archival Tributes &amp; Silhouettes</p>
+            <h1 className="mt-1 text-4xl font-medium tracking-tight sm:text-5xl">{brand.name}</h1>
             <p className="mt-3 max-w-lg text-base leading-7 text-white/80">{brand.tagline}</p>
           </div>
           <p className="text-[11px] uppercase tracking-[0.18em] text-white/75">
@@ -113,6 +114,15 @@ export default async function BrandPage({ params }: BrandPageProps) {
           </p>
         </div>
       </section>
+
+      {brand.slug !== "leather-haven-craft" && (
+        <div className="mx-auto max-w-6xl px-6 pt-6">
+          <div className="rounded-lg border border-[#ded5c7] bg-[#faf7f2] p-3 text-xs text-[#706456] leading-relaxed">
+            <span className="font-semibold text-[#221b16]">Atelier Notice: </span>
+            Pieces in this section are master handcrafted tributes and custom made-to-measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
+          </div>
+        </div>
+      )}
 
       <BrandBestSellers products={items} />
       <ProductCatalog products={items} />

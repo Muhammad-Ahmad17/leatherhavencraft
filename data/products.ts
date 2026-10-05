@@ -49,7 +49,7 @@ export interface Product {
 export const products: Product[] = [
   {
     "id": 1,
-    "name": "Avirex B-3 Sheepskin Shearling Bomber",
+    "name": "WWII Military Spec Heavy B-3 Sheepskin Shearling Bomber",
     "slug": "avirex-avirex-b-3-sheepskin-shearling-bomber-300-1",
     "category": "avirex",
     "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
@@ -115,7 +115,7 @@ export const products: Product[] = [
   },
   {
     "id": 4,
-    "name": "Avirex Heritage Racing Leather Jacket",
+    "name": "Heritage Speedway Racing Leather Jacket",
     "slug": "avirex-avirex-heritage-racing-leather-jacket-300-5",
     "category": "avirex",
     "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
@@ -173,7 +173,7 @@ export const products: Product[] = [
   },
   {
     "id": 21,
-    "name": "Pelle Pelle Soda Club Yellow Edition",
+    "name": "Soda Club Archival Plush Leather Jacket — Vibrant Yellow",
     "slug": "pelle-pelle-pelle-pelle-soda-club-yellow-edition-350-4",
     "category": "pelle-pelle",
     "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
@@ -239,7 +239,7 @@ export const products: Product[] = [
   },
   {
     "id": 22,
-    "name": "Pelle Pelle Burgundy Plush Edition",
+    "name": "Archival Plush Leather Bomber — Burgundy Edition",
     "slug": "pelle-pelle-pelle-pelle-burgundy-plush-edition-350-5",
     "category": "pelle-pelle",
     "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",
@@ -293,7 +293,7 @@ export const products: Product[] = [
   },
   {
     "id": 46,
-    "name": "Pelle Pelle Collector Heavyweight Plush #2",
+    "name": "Collector Heavyweight Plush Leather Jacket #2",
     "slug": "pelle-pelle-pelle-pelle-collector-heavyweight-plush-2-500-2",
     "category": "pelle-pelle",
     "description": "Authentic master tribute to Marc Buchanan's legendary Pelle Pelle plush leather silhouette. Featuring heavyweight hand-cut embroidered leather letterform appliques, studded accents, custom hardware, and comfortable anatomical drape.",

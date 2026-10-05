@@ -293,14 +293,14 @@ export function ProductPurchase({
             onClick={() => setActiveTab(activeTab === "shipping" ? null : "shipping")}
             className="w-full py-3 flex items-center justify-between font-medium text-[var(--ink)] hover:text-black cursor-pointer"
           >
-            <span>Shipping &amp; Authenticity</span>
+            <span>Shipping &amp; Workshop Guarantee</span>
             <span className="text-base text-[var(--muted)]">{activeTab === "shipping" ? "−" : "+"}</span>
           </button>
           {activeTab === "shipping" && (
             <div className="pb-3 text-[var(--muted)] space-y-1.5 text-xs leading-relaxed">
-              <p>• 100% verified authentic with original heritage hardware &amp; tags.</p>
+              <p>• 100% genuine full-grain leather bench-crafted with heavy heritage brass hardware.</p>
               <p>• Express air courier (DHL/FedEx 3–5 business days to US &amp; Europe).</p>
-              <p>• 14-day exchange and return window on catalog pieces.</p>
+              <p>• 14-day exchange and fit guarantee on all bespoke and catalog pieces.</p>
             </div>
           )}
         </div>
