@@ -278,6 +278,42 @@ export const brands: Brand[] = [
         "Belts are sized based on your standard pant waist size plus 2 inches (e.g., if you wear size 34 pants, select a size 36 belt to accommodate the middle buckle hole).",
     },
   },
+  {
+    slug: "others",
+    name: "Others",
+    logo: "/logo.png",
+    tagline: "Archival varsity outerwear, European café racers, and custom bespoke commissions.",
+    accent: "#3a2618",
+    heroDesktop: "/banners/home-desktop.jpg",
+    heroMobile: "/banners/home-mobile.jpg",
+    heritage: {
+      originYear: "Archive",
+      originPlace: "Global Heritage Silhouettes",
+      signatureSilhouettes: [
+        "Vintage Melton Wool & Leather Varsity Jackets",
+        "Classic Stand-Collar Café Racers",
+        "Double-Breasted Car Coats & Peacoats",
+        "Custom Made-to-Measure Specialty Outerwear",
+      ],
+      primaryHides:
+        "Full-Grain Cowhide, Melton Wool Body with Steerhide Sleeves, and Supple Suede.",
+      hardwareNotes:
+        "Heavy-gauge Talon & YKK Excella zippers, enamelled snap fasteners, and wool worsted rib-knit trims.",
+      heritageStory: [
+        "The Others collection curates eclectic archival silhouettes, vintage college varsity jackets, minimalist European café racers, and custom client commissions that transcend single-house categorizations.",
+        "From heavyweight 24 oz Melton wool varsity jackets with top-grain steerhide sleeves to streamlined minimalist car coats, every garment in this collection is handcrafted with the same uncompromising anatomical cut and heavy leather standards as our flagship lines.",
+        "This category also serves as the launchpad for custom client commissions and one-of-a-kind bespoke creations tailored directly from client-submitted sketches and references.",
+      ],
+      authenticityPoints: [
+        "Full-grain leather sleeves and trims paired with dense 24 oz genuine Melton wool.",
+        "Artisan patternmaking with high-mount armholes and natural shoulder articulation.",
+        "Heavy-gauge metal hardware and reinforced pocket besoms with double bar-tack stitching.",
+        "Fully lined in breathable satin, quilted thermal insulation, or heritage cotton twill.",
+      ],
+      fitAndSizingGuide:
+        "Available across our Universal Sizing Matrix (XS–6XL). Most archival varsity and car coat silhouettes feature a relaxed, comfortable cut suitable for mid-layer sweaters.",
+    },
+  },
 ];
 
 export const brandStripSlugs = [
@@ -288,6 +324,7 @@ export const brandStripSlugs = [
   "avirex",
   "leather-haven-craft",
   "accessories",
+  "others",
 ] as const;
 
 export function getBrand(slug: string): Brand | undefined {

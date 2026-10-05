@@ -15,12 +15,14 @@ export interface BlogSection {
 }
 
 export interface BlogPost {
+  _id?: string;
+  id?: string;
   slug: string;
   title: string;
   subtitle: string;
   excerpt: string;
   coverImage: string;
-  category: "Heritage & History" | "Materials & Tannages" | "Collector Verification" | "Care & Longevity" | "Bespoke Atelier";
+  category: string;
   tags: string[];
   publishedAt: string;
   readingTime: string;
@@ -30,9 +32,11 @@ export interface BlogPost {
     avatar?: string;
   };
   featured?: boolean;
+  isPublished?: boolean;
   metaTitle: string;
   metaDescription: string;
-  sections: BlogSection[];
+  content?: string;
+  sections?: BlogSection[];
   relatedProductSlugs?: string[];
   relatedPostSlugs?: string[];
 }
@@ -421,4 +425,67 @@ export function getRelatedPosts(currentSlug: string, limit = 3): BlogPost[] {
 
 export function getAllCategories(): string[] {
   return Array.from(new Set(BLOG_POSTS.map((p) => p.category)));
+}
+
+export function mapBackendBlog(raw: any): BlogPost {
+  return {
+    _id: raw._id ? String(raw._id) : undefined,
+    id: raw._id ? String(raw._id) : raw.id || raw.slug,
+    slug: raw.slug,
+    title: raw.title,
+    subtitle: raw.subtitle || "",
+    excerpt: raw.excerpt || raw.title,
+    coverImage: raw.coverImage || "/banners/home-desktop.jpg",
+    category: raw.category || "Heritage & History",
+    tags: Array.isArray(raw.tags) ? raw.tags : [],
+    publishedAt: raw.createdAt ? new Date(raw.createdAt).toISOString() : raw.publishedAt || new Date().toISOString(),
+    readingTime: raw.readingTime || "5 min read",
+    author: raw.author || { name: "Leather Haven Craft Atelier", role: "Master Leather Artisan" },
+    featured: Boolean(raw.featured),
+    isPublished: raw.isPublished !== undefined ? Boolean(raw.isPublished) : true,
+    metaTitle: raw.metaTitle || raw.title,
+    metaDescription: raw.metaDescription || raw.excerpt || raw.title,
+    content: raw.content || "",
+    sections: raw.sections || [],
+    relatedProductSlugs: raw.relatedProductSlugs || [],
+    relatedPostSlugs: raw.relatedPostSlugs || [],
+  };
+}
+
+export async function fetchLiveBlogs(category?: string): Promise<BlogPost[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const url =
+      category && category !== "All"
+        ? `${backendUrl}/api/blogs?category=${encodeURIComponent(category)}`
+        : `${backendUrl}/api/blogs`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map(mapBackendBlog);
+      }
+    }
+  } catch {
+    // Smooth fallback to static catalog if backend is offline or during static compilation
+  }
+  return category && category !== "All"
+    ? BLOG_POSTS.filter((p) => p.category === category)
+    : BLOG_POSTS;
+}
+
+export async function fetchLiveBlogBySlug(slug: string): Promise<BlogPost | undefined> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  try {
+    const res = await fetch(`${backendUrl}/api/blogs/${slug}`, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return mapBackendBlog(json.data);
+      }
+    }
+  } catch {
+    // Smooth fallback
+  }
+  return getBlogPost(slug);
 }

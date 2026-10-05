@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BLOG_POSTS, getAllCategories } from "@/data/blogPosts";
+import { BLOG_POSTS, fetchLiveBlogs } from "@/data/blogPosts";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { BlogCategoryFilter } from "@/components/blog/BlogCategoryFilter";
 import { SITE_NAME } from "@/lib/constants";
@@ -18,10 +18,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogIndexPage() {
-  const categories = getAllCategories();
-  const featuredPost = BLOG_POSTS.find((p) => p.featured) || BLOG_POSTS[0];
-  const regularPosts = BLOG_POSTS.filter((p) => p.slug !== featuredPost.slug);
+export const dynamic = "force-dynamic";
+
+export default async function BlogIndexPage() {
+  const allBlogs = await fetchLiveBlogs();
+  const categories = Array.from(new Set(allBlogs.map((p) => p.category)));
+  const featuredPost = allBlogs.find((p) => p.featured) || allBlogs[0] || BLOG_POSTS[0];
+  const regularPosts = allBlogs.filter((p) => p.slug !== featuredPost?.slug);
 
   const blogSchema = {
     "@context": "https://schema.org",
@@ -38,7 +41,7 @@ export default function BlogIndexPage() {
           url: "https://www.leatherhavencraft.com",
           logo: "https://www.leatherhavencraft.com/logo.png",
         },
-        blogPost: BLOG_POSTS.map((post) => ({
+        blogPost: allBlogs.map((post) => ({
           "@type": "BlogPosting",
           headline: post.title,
           description: post.excerpt,

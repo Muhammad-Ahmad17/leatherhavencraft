@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 import {
   getAdminToken,
   getAdminUser,
@@ -77,12 +78,46 @@ const BRAND_CATEGORIES = [
   { id: "avirex", name: "Avirex" },
   { id: "leather-haven-craft", name: "Leather Haven Craft" },
   { id: "accessories", name: "Accessories" },
+  { id: "others", name: "Others" },
 ];
+
+const BLOG_PRESET_CATEGORIES = [
+  "Heritage & History",
+  "Care & Restoration",
+  "Brand Spotlights",
+  "Craftsmanship & Atelier",
+  "Style & Fit Guides",
+  "Others",
+];
+
+interface AdminBlog {
+  _id: string;
+  id?: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  excerpt?: string;
+  content: string;
+  coverImage: string;
+  category: string;
+  tags: string[];
+  readingTime: string;
+  author: {
+    name: string;
+    role: string;
+  };
+  featured: boolean;
+  isPublished: boolean;
+  metaTitle?: string;
+  metaDescription?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 export default function AdminDashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<AdminUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "catalog" | "subscribers" | "media" | "system">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "catalog" | "blogs" | "subscribers" | "media" | "system">("overview");
 
   // Catalog State
   const [products, setProducts] = useState<Product[]>([]);
@@ -121,6 +156,38 @@ export default function AdminDashboardPage() {
   const [customColorName, setCustomColorName] = useState("");
   const [customColorHex, setCustomColorHex] = useState("#1a1a1a");
   const [manualImageUrl, setManualImageUrl] = useState("");
+
+  // Blogs State
+  const [blogs, setBlogs] = useState<AdminBlog[]>([]);
+  const [loadingBlogs, setLoadingBlogs] = useState(true);
+  const [blogSearch, setBlogSearch] = useState("");
+  const [blogCategoryFilter, setBlogCategoryFilter] = useState("all");
+
+  // Blog Modals & Forms
+  const [showBlogModal, setShowBlogModal] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<AdminBlog | null>(null);
+  const [blogToDelete, setBlogToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [deletingBlog, setDeletingBlog] = useState(false);
+  const [blogPreviewMode, setBlogPreviewMode] = useState(false);
+  const [uploadingBlogCover, setUploadingBlogCover] = useState(false);
+
+  const [blogForm, setBlogForm] = useState({
+    title: "",
+    subtitle: "",
+    slug: "",
+    category: "Heritage & History",
+    excerpt: "",
+    content: "",
+    coverImage: "",
+    tags: "leather, craftsmanship, vintage, outerwear",
+    readingTime: "5 min read",
+    authorName: "Leather Haven Craft Atelier",
+    authorRole: "Master Leather Artisan",
+    featured: false,
+    isPublished: true,
+    metaTitle: "",
+    metaDescription: "",
+  });
 
   // Media Upload State
   const [uploadingMedia, setUploadingMedia] = useState(false);
@@ -166,6 +233,21 @@ export default function AdminDashboardPage() {
     }
   }, [showToast]);
 
+  const loadBlogs = useCallback(async () => {
+    setLoadingBlogs(true);
+    try {
+      const res = await adminFetch("/api/blogs");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setBlogs(data.data);
+      }
+    } catch {
+      showToast("Could not load journal articles", "error");
+    } finally {
+      setLoadingBlogs(false);
+    }
+  }, [showToast]);
+
   // Auth Guard
   useEffect(() => {
     const token = getAdminToken();
@@ -177,7 +259,8 @@ export default function AdminDashboardPage() {
     setUser(storedUser);
     loadProducts();
     loadSubscribers();
-  }, [router, loadProducts, loadSubscribers]);
+    loadBlogs();
+  }, [router, loadProducts, loadSubscribers, loadBlogs]);
 
   function handleLogout() {
     clearAdminSession();
@@ -553,6 +636,172 @@ export default function AdminDashboardPage() {
     });
   }
 
+  // Blog CRUD Handlers
+  function openCreateBlogModal() {
+    setEditingBlog(null);
+    setBlogPreviewMode(false);
+    setBlogForm({
+      title: "",
+      subtitle: "",
+      slug: "",
+      category: "Heritage & History",
+      excerpt: "",
+      content: `## The Heritage of Craftsmanship\n\nEvery piece of vintage leather carries a history embedded in grain, tannage, and anatomical drape.\n\n### Construction Forensics\n\n- Full-grain steerhide cut to period patterns\n- Authentic heavy brass hardware\n- Reinforced double-needle structural stitching\n\n> "True craftsmanship is not about artificial perfection, but authentic character that matures with age."\n\n| Feature | Vintage Master Spec | Modern Mass-Market |\n| --- | --- | --- |\n| Tannage | Pure Vegetable & Chrome | Synthetic Bonded |\n| Stitching | Heavy Ticket 30 Bonded Nylon | Lightweight Polyester |`,
+      coverImage: "/banners/home-desktop.jpg",
+      tags: "leather, craftsmanship, vintage, outerwear",
+      readingTime: "5 min read",
+      authorName: "Leather Haven Craft Atelier",
+      authorRole: "Master Leather Artisan",
+      featured: false,
+      isPublished: true,
+      metaTitle: "",
+      metaDescription: "",
+    });
+    setShowBlogModal(true);
+  }
+
+  function openEditBlogModal(blog: AdminBlog) {
+    setEditingBlog(blog);
+    setBlogPreviewMode(false);
+    setBlogForm({
+      title: blog.title,
+      subtitle: blog.subtitle || "",
+      slug: blog.slug,
+      category: blog.category || "Heritage & History",
+      excerpt: blog.excerpt || "",
+      content: blog.content || "",
+      coverImage: blog.coverImage || "",
+      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
+      readingTime: blog.readingTime || "5 min read",
+      authorName: blog.author?.name || "Leather Haven Craft Atelier",
+      authorRole: blog.author?.role || "Master Leather Artisan",
+      featured: Boolean(blog.featured),
+      isPublished: blog.isPublished !== undefined ? Boolean(blog.isPublished) : true,
+      metaTitle: blog.metaTitle || blog.title,
+      metaDescription: blog.metaDescription || blog.excerpt || "",
+    });
+    setShowBlogModal(true);
+  }
+
+  function handleBlogTitleChange(title: string) {
+    setBlogForm((prev) => ({
+      ...prev,
+      title,
+      slug: !editingBlog
+        ? title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "")
+        : prev.slug,
+      metaTitle: !editingBlog && !prev.metaTitle ? title : prev.metaTitle,
+    }));
+  }
+
+  async function handleBlogCoverUpload(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setUploadingBlogCover(true);
+    try {
+      const formData = new FormData();
+      formData.append("images", file);
+      formData.append("folder", "blogs");
+
+      const res = await adminFetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success || !data.data?.[0]?.url) {
+        throw new Error(data.message || "Failed to upload cover image");
+      }
+      const uploadedUrl = data.data[0].url;
+      setBlogForm((prev) => ({ ...prev, coverImage: uploadedUrl }));
+      showToast("Cover image uploaded to Cloudinary!");
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Cover upload failed", "error");
+    } finally {
+      setUploadingBlogCover(false);
+    }
+  }
+
+  async function handleBlogFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!blogForm.title.trim()) {
+      showToast("Blog title is required", "error");
+      return;
+    }
+    if (!blogForm.content.trim()) {
+      showToast("Blog content is required", "error");
+      return;
+    }
+
+    const payload = {
+      title: blogForm.title.trim(),
+      subtitle: blogForm.subtitle.trim(),
+      slug: blogForm.slug.trim() || blogForm.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+      category: blogForm.category.trim(),
+      excerpt: blogForm.excerpt.trim() || blogForm.title.trim(),
+      content: blogForm.content,
+      coverImage: blogForm.coverImage.trim() || "/banners/home-desktop.jpg",
+      tags: blogForm.tags.split(",").map((t) => t.trim()).filter(Boolean),
+      readingTime: blogForm.readingTime.trim() || "5 min read",
+      author: {
+        name: blogForm.authorName.trim() || "Leather Haven Craft Atelier",
+        role: blogForm.authorRole.trim() || "Master Leather Artisan",
+      },
+      featured: blogForm.featured,
+      isPublished: blogForm.isPublished,
+      metaTitle: blogForm.metaTitle.trim() || blogForm.title.trim(),
+      metaDescription: blogForm.metaDescription.trim() || blogForm.excerpt.trim() || blogForm.title.trim(),
+    };
+
+    try {
+      const isEdit = Boolean(editingBlog);
+      const endpoint = isEdit ? `/api/blogs/${editingBlog!._id || editingBlog!.slug}` : "/api/blogs";
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await adminFetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to save blog post");
+      }
+
+      showToast(isEdit ? "Article updated successfully!" : "New article published!");
+      setShowBlogModal(false);
+      loadBlogs();
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Error saving article", "error");
+    }
+  }
+
+  async function executeDeleteBlog(id: string, title: string) {
+    setDeletingBlog(true);
+    try {
+      const res = await adminFetch(`/api/blogs/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to delete article");
+      }
+      showToast(`Article "${title}" deleted successfully`);
+      setBlogToDelete(null);
+      if (editingBlog && (editingBlog._id === id || editingBlog.slug === id)) {
+        setShowBlogModal(false);
+      }
+      loadBlogs();
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Error deleting article", "error");
+    } finally {
+      setDeletingBlog(false);
+    }
+  }
+
   // Export Subscribers CSV
   function exportSubscribersCSV() {
     if (subscribers.length === 0) {
@@ -589,6 +838,20 @@ export default function AdminDashboardPage() {
   const filteredSubscribers = useMemo(() => {
     return subscribers.filter((s) => s.email.toLowerCase().includes(subscriberSearch.toLowerCase()));
   }, [subscribers, subscriberSearch]);
+
+  // Filtered Blogs
+  const filteredBlogs = useMemo(() => {
+    return blogs.filter((b) => {
+      const q = blogSearch.toLowerCase();
+      const matchesSearch =
+        b.title.toLowerCase().includes(q) ||
+        (b.subtitle && b.subtitle.toLowerCase().includes(q)) ||
+        (b.category && b.category.toLowerCase().includes(q)) ||
+        (Array.isArray(b.tags) && b.tags.some((t) => t.toLowerCase().includes(q)));
+      const matchesCategory = blogCategoryFilter === "all" || b.category === blogCategoryFilter;
+      return matchesSearch && matchesCategory;
+    });
+  }, [blogs, blogSearch, blogCategoryFilter]);
 
   // Catalog Valuation & Metrics
   const totalValuation = useMemo(() => {
@@ -686,6 +949,7 @@ export default function AdminDashboardPage() {
           {[
             { id: "overview", label: "Overview & Analytics" },
             { id: "catalog", label: `Catalog (${products.length})` },
+            { id: "blogs", label: `Journal / Blogs (${blogs.length})` },
             { id: "subscribers", label: `Audience (${subscribers.length})` },
             { id: "media", label: "Media Studio" },
             { id: "system", label: "System Status" },
@@ -711,7 +975,7 @@ export default function AdminDashboardPage() {
         {activeTab === "overview" && (
           <div className="space-y-8">
             {/* Top 4 KPI Metrics */}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               <div className="rounded-xl border border-[#e8e2d8] bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#7a6f62]">
                   <span>Total Catalog Pieces</span>
@@ -748,6 +1012,19 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="mt-2 text-[11px] font-medium text-emerald-700">
                   {subscribers.filter((s) => s.status === "active").length} active collectors
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-[#e8e2d8] bg-white p-5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#7a6f62]">
+                  <span>Journal &amp; Blogs</span>
+                  <span className="text-[#8a4d2b]">Editorial</span>
+                </div>
+                <div className="mt-2 font-serif text-3xl font-bold text-[#1e1915]">
+                  {blogs.length}
+                </div>
+                <div className="mt-2 text-[11px] text-[#827668]">
+                  {blogs.filter((b) => b.isPublished).length} published · {blogs.filter((b) => b.featured).length} featured
                 </div>
               </div>
 
@@ -1044,6 +1321,180 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+                {/* ================= TAB: BLOGS & JOURNAL ================= */}
+        {activeTab === "blogs" && (
+          <div className="space-y-6">
+            {/* Action Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-[#e8e2d8] bg-white p-5 shadow-sm">
+              <div>
+                <h2 className="font-serif text-xl font-bold text-[#1e1915]">
+                  The Journal &amp; Editorial Management
+                </h2>
+                <p className="text-xs text-[#786c5f]">
+                  Publish handcrafted guides, brand forensics, and tannage analyses to /blog
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={openCreateBlogModal}
+                  className="rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-md hover:brightness-105 active:scale-[0.99] cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>✍️</span>
+                  <span>Write New Article</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm">
+              <div className="relative w-full sm:max-w-md">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[#9c9183]">🔍</span>
+                <input
+                  type="text"
+                  value={blogSearch}
+                  onChange={(e) => setBlogSearch(e.target.value)}
+                  placeholder="Search articles by title, category, or tag..."
+                  className="h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] pl-10 pr-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div className="w-full sm:w-auto">
+                <select
+                  value={blogCategoryFilter}
+                  onChange={(e) => setBlogCategoryFilter(e.target.value)}
+                  className="h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                >
+                  <option value="all">All Categories</option>
+                  {Array.from(new Set(blogs.map((b) => b.category).filter(Boolean))).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="text-xs text-[#786c5f] ml-auto">
+                Showing <strong className="text-[#1e1915]">{filteredBlogs.length}</strong> of {blogs.length} articles
+              </div>
+            </div>
+
+            {/* Articles Table */}
+            <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
+              {loadingBlogs ? (
+                <div className="py-16 text-center text-xs text-[#786c5f]">
+                  <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#8a4d2b] border-t-transparent mb-3" />
+                  <p>Loading journal articles...</p>
+                </div>
+              ) : filteredBlogs.length === 0 ? (
+                <div className="py-16 text-center text-xs text-[#786c5f]">
+                  <p className="font-serif text-base font-bold text-[#1e1915] mb-1">No articles found</p>
+                  <p>No posts match your current search or category filter.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="border-b border-[#eee7de] bg-[#fbf9f6] text-[11px] font-semibold uppercase tracking-wider text-[#786c5f]">
+                      <tr>
+                        <th className="px-5 py-3.5">Article</th>
+                        <th className="px-4 py-3.5">Category</th>
+                        <th className="px-4 py-3.5">Status</th>
+                        <th className="px-4 py-3.5">Read Time</th>
+                        <th className="px-4 py-3.5">Published Date</th>
+                        <th className="px-5 py-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#eee7de]">
+                      {filteredBlogs.map((b) => (
+                        <tr key={b._id || b.slug} className="hover:bg-[#faf7f2]/60 transition-colors">
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-[#e8e2d8] bg-[#1f1a16]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={b.coverImage || "/banners/home-desktop.jpg"}
+                                  alt={b.title}
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <div className="min-w-0 max-w-md">
+                                <p className="font-semibold text-[#1e1915] truncate">{b.title}</p>
+                                <p className="text-[11px] text-[#786c5f] truncate font-mono">/blog/{b.slug}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <span className="inline-block rounded-full bg-[#f4eee6] border border-[#e5dcd0] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                              {b.category}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className={`h-2 w-2 rounded-full ${
+                                  b.isPublished ? "bg-emerald-500" : "bg-gray-400"
+                                }`}
+                              />
+                              <span
+                                className={`text-[11px] font-semibold ${
+                                  b.isPublished ? "text-emerald-700" : "text-gray-500"
+                                }`}
+                              >
+                                {b.isPublished ? "Published" : "Draft"}
+                              </span>
+                              {b.featured && (
+                                <span className="rounded bg-amber-100 border border-amber-300 px-1.5 py-0.2 text-[9px] font-bold text-amber-800 uppercase">
+                                  Featured
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-[#786c5f] whitespace-nowrap">
+                            {b.readingTime || "5 min read"}
+                          </td>
+                          <td className="px-4 py-4 text-[#786c5f] whitespace-nowrap">
+                            {b.createdAt ? new Date(b.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric"
+                            }) : "—"}
+                          </td>
+                          <td className="px-5 py-4 text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-2">
+                              <Link
+                                href={`/blog/${b.slug}`}
+                                target="_blank"
+                                className="rounded-md border border-[#ded6ca] bg-white px-2.5 py-1 text-[11px] font-medium text-[#5c5246] hover:border-[#8a4d2b] hover:text-[#1e1915]"
+                              >
+                                View ↗
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => openEditBlogModal(b)}
+                                className="rounded-md border border-[#ded6ca] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#8a4d2b] hover:bg-[#faf7f2] cursor-pointer"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setBlogToDelete({ id: b._id || b.slug, title: b.title })}
+                                className="rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-100 cursor-pointer"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ================= TAB 3: AUDIENCE & SUBSCRIBERS ================= */}
         {activeTab === "subscribers" && (
           <div className="space-y-6">
@@ -1275,7 +1726,7 @@ export default function AdminDashboardPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                    Category (Strict 7 Brands)
+                    Category (Brands & Others)
                   </label>
                   <select
                     value={productForm.category}
@@ -1788,6 +2239,404 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
-    </div>
+          {/* ================= BLOG CREATE / EDIT MODAL ================= */}
+      {showBlogModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-[#e2dad0] bg-white p-6 shadow-2xl text-[#1e1915]">
+            <div className="flex items-center justify-between border-b border-[#eee7de] pb-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold tracking-wide text-[#1e1915]">
+                  {editingBlog ? "Edit Journal Article" : "Compose New Journal Article"}
+                </h3>
+                <p className="text-xs text-[#786c5f]">
+                  Write rich markdown articles with headers, blockquotes, comparisons, and images.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowBlogModal(false)}
+                className="text-xs font-semibold text-[#7d7162] hover:text-[#1e1915] cursor-pointer"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <form onSubmit={handleBlogFormSubmit} className="mt-5 space-y-5 text-xs">
+              {/* Title & Subtitle */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Article Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={blogForm.title}
+                    onChange={(e) => handleBlogTitleChange(e.target.value)}
+                    placeholder="e.g. The Schott NYC 618 Perfecto Guide"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Subtitle / Catchphrase
+                  </label>
+                  <input
+                    type="text"
+                    value={blogForm.subtitle}
+                    onChange={(e) => setBlogForm({ ...blogForm, subtitle: e.target.value })}
+                    placeholder="e.g. History, Tannage Forensics & Sizing Anatomy"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Slug & Category */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    URL Slug (/blog/[slug]) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={blogForm.slug}
+                    onChange={(e) => setBlogForm({ ...blogForm, slug: e.target.value })}
+                    placeholder="e.g. schott-nyc-618-perfecto-guide"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs font-mono text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Editorial Category
+                  </label>
+                  <div className="mt-1 flex items-center gap-2">
+                    <select
+                      value={blogForm.category}
+                      onChange={(e) => setBlogForm({ ...blogForm, category: e.target.value })}
+                      className="h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                    >
+                      {BLOG_PRESET_CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      value={blogForm.category}
+                      onChange={(e) => setBlogForm({ ...blogForm, category: e.target.value })}
+                      placeholder="Custom category"
+                      className="h-10 w-44 rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Image URL & Direct Cloudinary Upload */}
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Cover Image URL &amp; Direct Cloudinary Upload
+                </label>
+                <div className="mt-1 flex flex-col sm:flex-row items-center gap-3">
+                  <input
+                    type="text"
+                    value={blogForm.coverImage}
+                    onChange={(e) => setBlogForm({ ...blogForm, coverImage: e.target.value })}
+                    placeholder="https://images.unsplash.com/... or Cloudinary URL"
+                    className="h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                  <label className="relative shrink-0 cursor-pointer rounded-lg border border-[#d6cdbf] bg-white px-4 py-2 text-xs font-semibold text-[#8a4d2b] hover:bg-[#faf7f2] flex items-center gap-1.5 shadow-2xs">
+                    <span>{uploadingBlogCover ? "Uploading..." : "📷 Upload Image"}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={uploadingBlogCover}
+                      onChange={(e) => handleBlogCoverUpload(e.target.files)}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                  </label>
+                </div>
+                {blogForm.coverImage && (
+                  <div className="mt-2 flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={blogForm.coverImage}
+                      alt="Cover Preview"
+                      className="h-14 w-24 rounded-lg border border-[#e8e2d8] object-cover"
+                    />
+                    <span className="text-[11px] text-[#786c5f]">Cover Preview</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Excerpt / Summary */}
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Article Excerpt / Lead Paragraph
+                </label>
+                <textarea
+                  rows={2}
+                  value={blogForm.excerpt}
+                  onChange={(e) => setBlogForm({ ...blogForm, excerpt: e.target.value })}
+                  placeholder="A concise synopsis shown on the /blog listing page and search engine snippets..."
+                  className="mt-1 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] p-3 text-xs text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                />
+              </div>
+
+              {/* Content Editor with Markdown Preview Toggle */}
+              <div>
+                <div className="flex items-center justify-between pb-1.5">
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Article Content (Markdown Supported) *
+                  </label>
+                  <div className="flex items-center gap-1 rounded-lg border border-[#d6cdbf] bg-[#faf8f5] p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setBlogPreviewMode(false)}
+                      className={`rounded px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                        !blogPreviewMode ? "bg-[#8a4d2b] text-white" : "text-[#786c5f] hover:text-[#1e1915]"
+                      }`}
+                    >
+                      ✏️ Write Markdown
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBlogPreviewMode(true)}
+                      className={`rounded px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                        blogPreviewMode ? "bg-[#8a4d2b] text-white" : "text-[#786c5f] hover:text-[#1e1915]"
+                      }`}
+                    >
+                      👁️ Live Preview
+                    </button>
+                  </div>
+                </div>
+
+                {blogPreviewMode ? (
+                  <div className="rounded-xl border border-[#ded5c7] bg-[#f7f4ef] p-6 max-h-[460px] overflow-y-auto">
+                    <MarkdownRenderer content={blogForm.content} />
+                  </div>
+                ) : (
+                  <div>
+                    <textarea
+                      rows={14}
+                      required
+                      value={blogForm.content}
+                      onChange={(e) => setBlogForm({ ...blogForm, content: e.target.value })}
+                      placeholder="Write your article in Markdown. Use ## for headings, > for blockquotes, - for bullet lists, and | for comparison tables..."
+                      className="w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] p-3 text-xs font-mono text-[#1e1915] placeholder-[#9c9183] focus:border-[#8a4d2b] focus:bg-white focus:outline-none leading-relaxed"
+                    />
+                    <div className="mt-1.5 flex flex-wrap items-center gap-3 text-[10px] text-[#786c5f]">
+                      <span className="font-semibold text-[#8a4d2b]">Syntax Cheatsheet:</span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">## Heading 2</code></span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">### Heading 3</code></span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">**bold**</code></span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">&gt; Blockquote</code></span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">- Bullet point</code></span>
+                      <span><code className="bg-[#ede7de] px-1 rounded">| Header 1 | Header 2 |</code></span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Author, Reading Time & Tags */}
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Author Name
+                  </label>
+                  <input
+                    type="text"
+                    value={blogForm.authorName}
+                    onChange={(e) => setBlogForm({ ...blogForm, authorName: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Author Role / Title
+                  </label>
+                  <input
+                    type="text"
+                    value={blogForm.authorRole}
+                    onChange={(e) => setBlogForm({ ...blogForm, authorRole: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Estimated Reading Time
+                  </label>
+                  <input
+                    type="text"
+                    value={blogForm.readingTime}
+                    onChange={(e) => setBlogForm({ ...blogForm, readingTime: e.target.value })}
+                    placeholder="e.g. 6 min read"
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Tags & Status Checkboxes */}
+              <div className="grid gap-4 sm:grid-cols-2 items-center border-t border-[#eee7de] pt-3">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Tags (Comma Separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={blogForm.tags}
+                    onChange={(e) => setBlogForm({ ...blogForm, tags: e.target.value })}
+                    placeholder="schott, perfecto, sizing, patina"
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-6 mt-4">
+                  <label className="flex items-center gap-2 text-xs font-medium text-[#241e1a] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={blogForm.isPublished}
+                      onChange={(e) => setBlogForm({ ...blogForm, isPublished: e.target.checked })}
+                      className="h-4 w-4 rounded border-[#d6cdbf] text-[#8a4d2b] focus:ring-[#8a4d2b]"
+                    />
+                    <span>Publish Article Live</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 text-xs font-medium text-[#241e1a] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={blogForm.featured}
+                      onChange={(e) => setBlogForm({ ...blogForm, featured: e.target.checked })}
+                      className="h-4 w-4 rounded border-[#d6cdbf] text-[#8a4d2b] focus:ring-[#8a4d2b]"
+                    />
+                    <span>Featured in Journal Hero</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* SEO Meta Fields */}
+              <div className="rounded-xl border border-[#e8e2d8] bg-[#faf8f5] p-4 space-y-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                  Search Engine Optimization (SEO Meta)
+                </span>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-[#6b6052]">Meta Title Tag</label>
+                    <input
+                      type="text"
+                      value={blogForm.metaTitle}
+                      onChange={(e) => setBlogForm({ ...blogForm, metaTitle: e.target.value })}
+                      placeholder="Title tag for Google results"
+                      className="mt-1 h-8 w-full rounded-md border border-[#d6cdbf] bg-white px-2.5 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-[#6b6052]">Meta Description</label>
+                    <input
+                      type="text"
+                      value={blogForm.metaDescription}
+                      onChange={(e) => setBlogForm({ ...blogForm, metaDescription: e.target.value })}
+                      placeholder="Search engine snippet summary"
+                      className="mt-1 h-8 w-full rounded-md border border-[#d6cdbf] bg-white px-2.5 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Action Buttons */}
+              <div className="flex items-center justify-between gap-3 pt-4 border-t border-[#eee7de]">
+                {editingBlog ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBlogToDelete({
+                        id: editingBlog._id || editingBlog.slug,
+                        title: editingBlog.title,
+                      });
+                    }}
+                    className="rounded-lg border border-rose-200 bg-white px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>🗑️</span>
+                    <span>Delete Article</span>
+                  </button>
+                ) : <div />}
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowBlogModal(false)}
+                    className="rounded-lg border border-[#d8d0c4] bg-white px-4 py-2 text-xs font-semibold text-[#6b6052] hover:bg-[#f4efe8] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-md hover:brightness-105 active:scale-[0.99] cursor-pointer"
+                  >
+                    {editingBlog ? "Save Changes" : "Publish Article"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Confirm Delete Blog Modal ── */}
+      {blogToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 font-bold text-lg">
+                ⚠️
+              </span>
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Delete Journal Article
+                </h3>
+                <p className="text-xs text-[#827668]">Permanent Removal</p>
+              </div>
+            </div>
+
+            <p className="text-xs leading-relaxed text-[#52453c] mt-2">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-[#1e1915]">&quot;{blogToDelete.title}&quot;</strong>?
+              This article will immediately be removed from /blog and sitemap indexes.
+            </p>
+
+            <div className="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-[#ede7df]">
+              <button
+                type="button"
+                disabled={deletingBlog}
+                onClick={() => setBlogToDelete(null)}
+                className="rounded-lg border border-[#dcd4c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#52453c] hover:bg-[#faf7f2] disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deletingBlog}
+                onClick={() => executeDeleteBlog(blogToDelete.id, blogToDelete.title)}
+                className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-rose-700 disabled:opacity-50 cursor-pointer shadow-xs flex items-center gap-2"
+              >
+                {deletingBlog ? (
+                  <>
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Permanently Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+</div>
   );
 }
