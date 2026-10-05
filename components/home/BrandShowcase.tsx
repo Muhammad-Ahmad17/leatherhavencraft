@@ -3,11 +3,10 @@ import { getBrandStrip } from "@/data/brands";
 
 /**
  * Editorial "Shop by brand & category" showcase.
- * Each authorized house and in-house collection has its own dedicated row (one per row)
- * on BOTH mobile and desktop, displaying the house logo, tagline,
- * and a direct link to explore that collection.
+ * End-to-end panoramic long banners arranged in an expansive 2-per-row grid
+ * on desktop, offering cinematic scale and instant brand recognition.
  */
-function BrandRow({
+function BrandBanner({
   slug,
   name,
   logo,
@@ -32,61 +31,62 @@ function BrandRow({
   return (
     <Link
       href={`/brands/${slug}`}
-      className="group relative block w-full overflow-hidden bg-[var(--bg2)] transition-all duration-300"
+      className="group relative block w-full overflow-hidden rounded-2xl border border-[#ded5c7]/80 bg-[#1a1512] shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-[#8a4d2b]/60"
     >
-      <div className="relative flex min-h-[220px] sm:min-h-[260px] md:min-h-[280px] lg:min-h-[300px] w-full flex-col justify-end p-6 sm:p-8 md:p-10">
-        {/* Responsive Background Banner */}
+      <div className="relative flex min-h-[280px] sm:min-h-[320px] lg:min-h-[360px] xl:min-h-[390px] w-full flex-col justify-between p-6 sm:p-8 lg:p-10">
+        {/* Full-Bleed Panoramic Background Image */}
         <picture className="absolute inset-0">
           <source media="(min-width: 768px)" srcSet={heroDesktop} />
           <img
             src={heroMobile}
-            alt=""
-            className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            alt={name}
+            className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.05]"
           />
         </picture>
 
-        {/* Ambient Dark Overlays for Readability */}
+        {/* Ambient Luxury Dark Overlays for High-Contrast Readability */}
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20 md:bg-gradient-to-r md:from-black/90 md:via-black/55 md:to-black/25"
+          className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/25 md:bg-gradient-to-r md:from-black/95 md:via-black/60 md:to-black/20"
         />
 
-        {/* Content Container: 1 brand/category per row on all screen sizes */}
-        <div className="relative flex w-full flex-col gap-4 sm:gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-fit items-center bg-white px-3 sm:h-10 sm:px-3.5 shadow-sm">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={logo}
-                  alt={name}
-                  className={`max-h-5 w-auto object-contain sm:max-h-6 ${
-                    isHarley
-                      ? "max-h-6 sm:max-h-7 max-w-[115px]"
-                      : isLHC
-                      ? "max-h-6 sm:max-h-7 max-w-[130px] sm:max-w-[150px]"
-                      : "max-w-[95px] sm:max-w-[115px]"
-                  }`}
-                />
-              </span>
-              <span className="text-[11px] font-medium tracking-[0.16em] text-white/60 uppercase">
-                {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-              </span>
-            </div>
+        {/* Top Bar: Brand Logo Inset + Index Counter */}
+        <div className="relative z-10 flex items-center justify-between">
+          <span className="flex h-9 sm:h-10 items-center rounded-lg bg-white px-3 sm:px-3.5 shadow-md">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logo}
+              alt={name}
+              className={`max-h-5 sm:max-h-6 w-auto object-contain ${
+                isHarley
+                  ? "max-w-[110px] sm:max-w-[125px]"
+                  : isLHC
+                  ? "max-w-[130px] sm:max-w-[145px]"
+                  : "max-w-[95px] sm:max-w-[110px]"
+              }`}
+            />
+          </span>
+          <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-md border border-white/15">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
+        </div>
 
-            <h3 className="mt-3 text-2xl font-medium tracking-tight text-white sm:text-3xl lg:text-4xl">
+        {/* Bottom Content: House Name, Tagline & Action CTA */}
+        <div className="relative z-10 mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-md">
+            <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
               {name}
             </h3>
-            <p className="mt-1 text-xs text-white/80 sm:text-sm">
+            <p className="mt-1.5 text-xs text-white/80 sm:text-sm leading-relaxed line-clamp-2">
               {tagline}
             </p>
           </div>
 
           <div className="shrink-0">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.14em] text-white backdrop-blur-sm transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black">
-              Shop {name}
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white backdrop-blur-md transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black shadow-lg">
+              Explore
               <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
-                →
+                &rarr;
               </span>
             </span>
           </div>
@@ -100,25 +100,30 @@ export function BrandShowcase() {
   const brands = getBrandStrip();
 
   return (
-    <section aria-label="Shop by brand and category" className="border-t border-[#ded5c7] bg-white px-6 py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex items-end justify-between gap-4">
+    <section aria-label="Shop by brand and category" className="border-t border-[#ded5c7] bg-white px-4 sm:px-6 lg:px-10 xl:px-14 py-16 sm:py-24">
+      <div className="mx-auto max-w-[1920px] w-full">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">
-              Heritage collections &amp; atelier
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#8a4d2b]">
+              Heritage Collections &amp; Atelier
             </p>
-            <h2 className="mt-2 text-3xl font-medium tracking-tight">Shop by brand &amp; category</h2>
+            <h2 className="mt-2 text-3xl font-medium tracking-tight text-[#221b16] sm:text-4xl lg:text-5xl">
+              Shop by brand &amp; category
+            </h2>
           </div>
-          <Link href="/products" className="shrink-0 text-sm underline underline-offset-4">
-            All jackets
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4"
+          >
+            Explore All Jackets &rarr;
           </Link>
         </div>
 
-        {/* Stacked list: exactly ONE brand/category per row on BOTH mobile and desktop */}
-        <ul className="mt-8 flex flex-col gap-4 sm:mt-10 sm:gap-5">
+        {/* Expansive Full-Screen 2-per-row Long Banners */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-7">
           {brands.map((brand, index) => (
-            <li key={brand.slug} className="w-full">
-              <BrandRow
+            <div key={brand.slug} className="w-full">
+              <BrandBanner
                 slug={brand.slug}
                 name={brand.name}
                 logo={brand.logo}
@@ -128,9 +133,9 @@ export function BrandShowcase() {
                 index={index}
                 total={brands.length}
               />
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   );
