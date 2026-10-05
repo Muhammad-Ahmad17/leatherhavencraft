@@ -47,3 +47,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# No local product photos in git repo
+public/catalog/items/
+public/catalog/items

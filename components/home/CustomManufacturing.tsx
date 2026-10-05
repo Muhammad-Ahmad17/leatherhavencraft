@@ -29,7 +29,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
 
   return (
     <section
-      className="border-t border-[#ded5c7] bg-[#fbf9f6] px-6 py-16 sm:py-24"
+      className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-24"
       aria-labelledby="custom-manufacturing-heading"
     >
       <div className="mx-auto max-w-6xl">

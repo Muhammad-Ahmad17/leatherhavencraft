@@ -30,7 +30,7 @@ export function HomeFAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section className="border-t border-[#ded5c7] bg-[#faf8f5] text-[#221b16] px-6 py-20">
+    <section className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#221b16] px-6 py-20">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBrand } from "@/data/brands";
-import { fetchLiveProductBySlug, fetchLiveProductsByBrand, products } from "@/data/products";
+import { fetchLiveProductBySlug, fetchLiveProductsByBrand, fetchLiveProducts, products } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -13,8 +13,10 @@ type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
+export async function generateStaticParams() {
+  const live = await fetchLiveProducts();
+  const list = live && live.length > 0 ? live : products;
+  return list.map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {

@@ -1,7 +1,7 @@
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { fetchLiveFeaturedProducts, fetchLiveProducts } from "@/data/products";
+import { fetchLiveFeaturedProducts, fetchLiveScrollProducts } from "@/data/products";
 import { SITE_DESCRIPTION } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
@@ -54,8 +54,8 @@ const homeFaqSchema = [
 ];
 
 export default async function HomePage() {
-  const allProducts = await fetchLiveProducts();
   const featuredProducts = await fetchLiveFeaturedProducts();
+  const scrollProducts = await fetchLiveScrollProducts(6);
 
   const homePageSchema = {
     "@context": "https://schema.org",
@@ -119,12 +119,12 @@ export default async function HomePage() {
         <BrandStrip />
       </div>
 
-      {/* ── 2. Scroll the collection (Brand animation stage swapped here) ── */}
-      <section aria-labelledby="scroll-collection">
+      {/* ── 2. Scroll the collection (Curated 6 flagship pieces for 5–6 smooth scrolls) ── */}
+      <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
-        <ScrollAnimationContainer products={allProducts}>
+        <ScrollAnimationContainer products={scrollProducts}>
           <ProductCarousel />
         </ScrollAnimationContainer>
       </section>
@@ -133,12 +133,17 @@ export default async function HomePage() {
       <BrandShowcase />
 
       {/* ── 4. Featured picks ── */}
-      <section className="border-t border-[var(--line)] px-6 py-16 sm:py-20">
+      <section className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="text-3xl font-medium tracking-tight">The edit</h2>
-            <Link href="/products" className="text-sm underline underline-offset-4">
-              Shop all jackets
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                Curated Selection
+              </p>
+              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">The edit</h2>
+            </div>
+            <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
+              Shop all jackets &rarr;
             </Link>
           </div>
           <div className="mt-10">

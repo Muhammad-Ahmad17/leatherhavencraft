@@ -23,7 +23,7 @@ export function OurProcess() {
   ];
 
   return (
-    <section className="border-t border-[#ded5c7] bg-[#faf8f5] px-6 py-16 sm:py-24" aria-labelledby="our-process-heading">
+    <section className="border-t border-[#ded5c7] bg-white px-6 py-16 sm:py-24" aria-labelledby="our-process-heading">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#ded5c7] pb-6">
           <div>
@@ -43,7 +43,7 @@ export function OurProcess() {
           {steps.map((step) => (
             <div
               key={step.num}
-              className="relative flex flex-col justify-between rounded-xl border border-[#ded5c7] bg-white p-6 shadow-2xs transition-all hover:border-[#8a4d2b] hover:shadow-md"
+              className="relative flex flex-col justify-between rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-6 shadow-2xs transition-all hover:border-[#8a4d2b] hover:shadow-md"
             >
               <div>
                 <span className="font-mono text-2xl font-bold text-[#8a4d2b]/60">
@@ -61,7 +61,7 @@ export function OurProcess() {
           ))}
         </div>
 
-        <div className="mt-10 rounded-lg border border-[#ded5c7] bg-[#f4eee6]/60 p-4 text-center text-xs text-[#706456]">
+        <div className="mt-10 rounded-lg border border-[#ded5c7] bg-[#faf8f5] p-4 text-center text-xs text-[#706456]">
           <span className="font-semibold text-[#2a1810]">Atelier Standards: </span>
           Complete workshop documentation and step-by-step video archives updating soon.
         </div>
