@@ -1,6 +1,3 @@
-import { Banner } from "@/components/common/Banner";
-import { ContactLinks } from "@/components/common/ContactLinks";
-
 const steps = [
   {
     n: "01",
@@ -42,23 +39,6 @@ export function OrderPath() {
               </li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      <section className="relative min-h-[380px] overflow-hidden bg-[var(--leather-dark)] text-white md:min-h-[440px]">
-        <Banner desktop="/banners/harley-davidson-desktop.jpg" mobile="/banners/harley-davidson-mobile.jpg" alt="" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
-        <div className="relative mx-auto flex min-h-[380px] max-w-6xl flex-col justify-end px-6 py-14 md:min-h-[440px] md:justify-center">
-          <p className="text-[11px] tracking-[0.22em] text-white/70 uppercase">Talk to the shop</p>
-          <h2 className="mt-3 max-w-lg text-3xl font-medium tracking-tight sm:text-5xl">
-            Ready when you are.
-          </h2>
-          <p className="mt-4 max-w-md text-sm leading-6 text-white/80">
-            Send a jacket, a size, and a city. We reply with stock and a shipping quote.
-          </p>
-          <div className="mt-8 max-w-md [&_a]:border-white/40 [&_a]:text-white [&_a:first-child]:border-transparent [&_a:first-child]:bg-white [&_a:first-child]:text-[var(--ink)]">
-            <ContactLinks variant="inline" />
-          </div>
         </div>
       </section>
 
