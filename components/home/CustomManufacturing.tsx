@@ -1,16 +1,14 @@
 import Link from "next/link";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contact";
 
 interface CustomManufacturingProps {
   showSizeGuideLink?: boolean;
 }
 
 export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufacturingProps) {
-  const whatsappHref =
-    "https://wa.me/?text=" +
-    encodeURIComponent(
-      "Hi Leather Haven Craft — I am interested in custom manufacturing and bespoke orders. Please let me know how to share my specifications."
-    );
+  const whatsappHref = buildWhatsAppUrl(
+    "Hi Leather Haven Craft — I am interested in custom manufacturing and bespoke orders. Please let me know how to share my specifications."
+  );
 
   const emailBody = [
     "Hello Leather Haven Craft Team,",

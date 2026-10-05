@@ -4,6 +4,7 @@ import { getBrandStrip } from "@/data/brands";
 import { SITE_NAME } from "@/lib/constants";
 import { SiteLogo } from "@/components/common/SiteLogo";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
+import { buildWhatsAppUrl } from "@/lib/contact";
 
 export function Footer() {
   const stripBrands = getBrandStrip();
@@ -65,7 +66,7 @@ export function Footer() {
           </p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <a
-              href="https://wa.me/?text=Hi%20Leather%20Haven%20Craft%20%E2%80%94%20I%20would%20like%20to%20inquire%20about%20a%20jacket"
+              href={buildWhatsAppUrl("Hi Leather Haven Craft — I would like to inquire about a jacket.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-9 items-center justify-center rounded bg-[#25D366] px-4 text-xs font-semibold uppercase tracking-wider text-black transition-opacity hover:opacity-90 shadow-2xs"
