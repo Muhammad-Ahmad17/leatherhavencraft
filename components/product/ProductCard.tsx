@@ -31,6 +31,11 @@ export function ProductCard({ product }: { product: Product }) {
             className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           />
         )}
+        {product.featured && (
+          <span className="absolute top-2.5 left-2.5 z-10 rounded-[3px] bg-[#c45500] px-2 py-0.5 text-[11px] font-semibold text-white shadow-xs tracking-tight">
+            Best Seller
+          </span>
+        )}
       </span>
       <span className="mt-3 block text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
         {getBrandLabel(product.brand)}

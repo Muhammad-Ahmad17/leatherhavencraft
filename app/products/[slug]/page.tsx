@@ -118,7 +118,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {brand && (
                 <Link
                   href={`/brands/${brand.slug}`}
-                  className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)] hover:text-black transition-colors"
+                  className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)] hover:text-[#2a1810] transition-colors"
                 >
                   {brand.name}
                 </Link>
@@ -186,7 +186,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       alt={rel.name}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute top-2.5 left-2.5 rounded bg-black/75 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+                    <div className="absolute top-2.5 left-2.5 rounded bg-[#2a1810]/85 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
                       {rel.colorName || "Leather"}
                     </div>
                   </div>

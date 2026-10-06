@@ -162,7 +162,7 @@ export default function FAQPage() {
           <div className="mt-6 sm:mt-0 flex flex-wrap gap-2.5 justify-center">
             <Link
               href="/size-guide"
-              className="inline-flex h-10 items-center justify-center rounded-lg bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-black shadow-xs cursor-pointer"
+              className="inline-flex h-10 items-center justify-center rounded-lg bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-[#2a1810] shadow-xs cursor-pointer"
             >
               Universal Size Guide
             </Link>

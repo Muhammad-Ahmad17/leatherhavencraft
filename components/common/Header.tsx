@@ -186,7 +186,7 @@ export function Header() {
         <>
           <button
             type="button"
-            className="fixed inset-0 top-[var(--site-header-h)] z-40 bg-black/40 lg:hidden"
+            className="fixed inset-0 top-[var(--site-header-h)] z-40 bg-[#1a110c]/50 lg:hidden"
             aria-label="Close menu"
             onClick={() => setOpen(false)}
           />

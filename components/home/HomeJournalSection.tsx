@@ -13,7 +13,7 @@ export function HomeJournalSection() {
             <span className="text-xs font-bold uppercase tracking-[0.24em] text-[#8a4d2b]">
               The Journal
             </span>
-            <h2 className="mt-1 text-3xl font-bold tracking-tight text-[#221b16]">
+            <h2 className="mt-1 text-3xl font-bold tracking-tight text-[#2a1810]">
               Stories &amp; Collector Guides
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-[#6b5c51] max-w-xl">
@@ -22,7 +22,7 @@ export function HomeJournalSection() {
           </div>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#2a1810] transition-colors"
           >
             Explore All Guides
             <span aria-hidden="true">&rarr;</span>

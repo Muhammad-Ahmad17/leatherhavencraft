@@ -69,8 +69,8 @@ export function ProductGallery({
                 aria-label={`Select view ${index + 1}`}
                 className={`relative aspect-[3/4] w-16 md:w-full shrink-0 overflow-hidden rounded-md border transition-all cursor-pointer ${
                   isActive
-                    ? "border-black ring-1 ring-black"
-                    : "border-black/10 opacity-60 hover:opacity-100"
+                    ? "border-[#2a1810] ring-1 ring-[#2a1810]"
+                    : "border-[#ded5c7] opacity-60 hover:opacity-100"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -86,7 +86,7 @@ export function ProductGallery({
       )}
 
       {/* ── Main Pure Imagery Stage (Zero text overlays) ── */}
-      <div className="relative flex-1 w-full overflow-hidden rounded-xl border border-black/10 bg-[#f5f2eb]">
+      <div className="relative flex-1 w-full overflow-hidden rounded-xl border border-[#ded5c7] bg-[#f5f2eb]">
         <div
           onMouseEnter={() => setIsZoomed(true)}
           onMouseLeave={() => setIsZoomed(false)}
@@ -118,7 +118,7 @@ export function ProductGallery({
                 type="button"
                 onClick={handlePrev}
                 aria-label="Previous view"
-                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-black shadow-md transition-all hover:bg-white active:scale-95 cursor-pointer backdrop-blur-xs"
+                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-[#2a1810] shadow-md transition-all hover:bg-white active:scale-95 cursor-pointer backdrop-blur-xs"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="15 18 9 12 15 6" />
@@ -128,7 +128,7 @@ export function ProductGallery({
                 type="button"
                 onClick={handleNext}
                 aria-label="Next view"
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-black shadow-md transition-all hover:bg-white active:scale-95 cursor-pointer backdrop-blur-xs"
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-[#2a1810] shadow-md transition-all hover:bg-white active:scale-95 cursor-pointer backdrop-blur-xs"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="9 18 15 12 9 6" />
