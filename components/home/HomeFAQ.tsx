@@ -30,13 +30,13 @@ export function HomeFAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#221b16] px-6 py-20">
+    <section className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#2a1810] px-6 py-20">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
             Questions &amp; Guidance
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#221b16] sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2a1810] sm:text-4xl">
             Frequently Asked Questions
           </h2>
           <p className="mt-3 text-sm text-[#6b5c51] max-w-xl mx-auto">
@@ -55,7 +55,7 @@ export function HomeFAQ() {
                   className="flex w-full items-center justify-between text-left transition-colors hover:text-[#8a4d2b] cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-base font-semibold pr-4 sm:text-lg text-[#221b16]">
+                  <span className="text-base font-semibold pr-4 sm:text-lg text-[#2a1810]">
                     {faq.q}
                   </span>
                   <span className="text-xl text-[#8a4d2b] flex-shrink-0 font-bold">
@@ -77,7 +77,7 @@ export function HomeFAQ() {
             Have a custom measurement or bespoke inquiry?{" "}
             <Link
               href="/faq"
-              className="text-[#8a4d2b] font-medium underline underline-offset-4 hover:text-[#221b16]"
+              className="text-[#8a4d2b] font-medium underline underline-offset-4 hover:text-[#2a1810]"
             >
               View Full FAQ &amp; Policies →
             </Link>

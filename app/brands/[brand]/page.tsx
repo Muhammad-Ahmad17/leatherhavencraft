@@ -1,12 +1,10 @@
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
-import { BrandDossier } from "@/components/brand/BrandDossier";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { brands, getBrand } from "@/data/brands";
 import { fetchLiveProductsByBrand } from "@/data/products";
 import { Banner } from "@/components/common/Banner";
-import { BrandBestSellers } from "@/components/brand/BrandBestSellers";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 
 export const dynamic = "force-dynamic";
@@ -123,12 +121,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           </div>
         </div>
       )}
-
-      <BrandBestSellers products={items} />
-      <ProductCatalog products={items} />
-
-      {/* ── Brand Heritage & Authenticity Dossier (High-Rank SEO & Collector Guide) ── */}
-      <BrandDossier brand={brand} />
+<ProductCatalog products={items} />
 
       {brand.slug === "leather-haven-craft" && (
         <CustomManufacturing />

@@ -79,7 +79,7 @@ export default async function ProductsPage() {
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-[#6b5c51]">
                 Compare flat pit-to-pit chest, waist, back length, and sleeve measurements against your wardrobe using our{" "}
-                <Link href="/size-guide" className="text-[#8a4d2b] font-bold underline hover:text-black">
+                <Link href="/size-guide" className="text-[#8a4d2b] font-bold underline hover:text-[#2a1810]">
                   Universal Size Guide
                 </Link>.
               </p>

@@ -53,10 +53,10 @@ export const brands: Brand[] = [
         "Over a century later, Schott NYC remains family-owned and operated in New Jersey, hand-cutting each hide with traditional shears, verifying grain alignment across every pattern piece, and using the exact heavy-gauge brass hardware that defined mid-century American craftsmanship.",
       ],
       authenticityPoints: [
-        "Genuine Schott NYC jackets feature heavy-gauge Talon or Schott-embossed brass zippers with signature pull tags.",
+        "Period-accurate heavy-gauge Talon or brass zippers with reinforced leather pull tags.",
         "Underarm bi-swing gussets (known as 'football' gussets) are tailored into the armpits to ensure unrestricted handlebar reach.",
         "Weight inspection: An authentic steerhide Perfecto weighs between 4.5 and 6.0 lbs, feeling dense, substantial, and naturally protective.",
-        "Internal union labels (Workers of America) and white satin or red quilted lining with reinforced interior map pocket.",
+        "Reinforced interior map pocket with quilted thermal or breathable satin lining and heavy-duty seams.",
       ],
       fitAndSizingGuide:
         "Classic vintage American motorcycle cut: trim through the ribs with a higher waistline designed to sit comfortably above a motorcycle fuel tank without bunching. For a traditional 1950s trim rock-and-roll silhouette, order your exact chest size. For layering over heavy knit sweaters or hoodies, we recommend sizing up one interval.",
@@ -126,9 +126,9 @@ export const brands: Brand[] = [
       ],
       authenticityPoints: [
         "Multi-layered graphic leather appliqué: Authentic pieces use genuine colored leather panels stitched together, never screen-printed imitation graphics.",
-        "Custom Marc Buchanan zipper pulls featuring the signature embossed Pelle Pelle crest and trademark stamp.",
+        "Heavy-gauge antiqued brass zipper tracks with smooth action and reinforced pull tabs.",
         "Plush, supple lambskin hand-feel: Authentic Pelle Pelle leather feels buttery soft to the touch with immediate drape and zero plastic stiffness.",
-        "Heavy custom jacquard interior lining with woven Pelle Pelle branding and signature neck hangar chain.",
+        "Heavy thermal jacquard or quilted satin interior lining with reinforced hanging chain.",
       ],
       fitAndSizingGuide:
         "Signature 1990s Detroit oversized silhouette: Cut broad across the chest and shoulders with deep armholes and an elasticated leather waistband designed to sit cleanly at hip level. For the authentic iconic baggy hip-hop drape, select your true size. For a more tailored modern fit, size down one step.",
@@ -162,7 +162,7 @@ export const brands: Brand[] = [
       ],
       authenticityPoints: [
         "High-density red box logo woven collar label with crisp white Futura Bold Oblique lettering.",
-        "Collaborative provenance marks: Authentic Schott or Vanson co-branded inner labels and stamped leather hangtags.",
+        "Archival silhouette references: Bench-cut proportions, reinforced shoulder slopes, and anatomical sizing.",
         "Precision high-thread-count chainstitch embroidery on leather script and chenille varsity patches.",
         "Heavy, smooth action on genuine RiRi or YKK zipper tracks with zero binding or uneven teeth spacing.",
       ],

@@ -90,7 +90,7 @@ export default async function HomePage() {
 
       {/* ── 1. Hero + brand logos moving marquee ── */}
       <div className="flex h-[calc(100dvh-var(--site-header-h))] flex-col">
-        <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a1a1a] text-white">
+        <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a110c] text-white">
           <Banner desktop="/banners/home-desktop.jpg" mobile="/banners/home-mobile.jpg" alt="" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
           <div className="relative flex h-full items-end px-6 pb-8 sm:px-10 sm:pb-12">
@@ -108,7 +108,7 @@ export default async function HomePage() {
                 <Button href="/products" variant="light">
                   Shop jackets
                 </Button>
-                <Button href="/brands/accessories" variant="ghost">
+                <Button href="/brands/accessories" variant="ghost" className="hidden sm:inline-flex">
                   Accessories →
                 </Button>
               </div>
@@ -152,20 +152,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. From The Journal (Editorial & Collector Guides) ── */}
-      <HomeJournalSection />
-
-      {/* ── 6. Custom Manufacturing (Message or mail us) ── */}
+      {/* ── 5. Custom Manufacturing (Message or mail us) ── */}
       <CustomManufacturing />
 
-      {/* ── 7. How ordering works + CTA + trust badges ── */}
+      {/* ── 6. How ordering works + CTA + trust badges ── */}
       <OrderPath />
+
+      {/* ── 7. Our Process ── */}
+      <OurProcess />
 
       {/* ── 8. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
 
-      {/* ── 9. Our Process (Directly above the footer) ── */}
-      <OurProcess />
+      {/* ── 9. From The Journal (Editorial & Collector Guides - Directly above footer) ── */}
+      <HomeJournalSection />
     </main>
   );
 }

@@ -19,10 +19,10 @@ export function BrandDossier({ brand }: BrandDossierProps) {
         <div className="border-b border-[#ded5c7] pb-8 text-center sm:text-left">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
-              Archival Provenance
+              Archival Silhouettes
             </span>
             <span className="rounded-full bg-[#8a4d2b]/10 px-2.5 py-0.5 text-[10px] font-semibold text-[#8a4d2b]">
-              Established {heritage.originYear}
+              Historic Silhouette Guide
             </span>
           </div>
 
@@ -30,10 +30,10 @@ export function BrandDossier({ brand }: BrandDossierProps) {
             id="brand-dossier-heading"
             className="mt-2 font-serif text-3xl font-bold tracking-tight text-[#221b16] sm:text-4xl lg:text-5xl"
           >
-            {brand.name} Heritage &amp; Collector Guide
+            {brand.name} Silhouette &amp; Style Guide
           </h2>
           <p className="mt-3 text-xs leading-relaxed text-[#6b5c51] sm:text-sm max-w-3xl">
-            An in-depth atelier dossier on the history, iconic cuts, material standards, and authenticity inspection for {brand.name} leather outerwear.
+            An artisan craft reference on historic cuts, hide density, and tailoring standards inspired by {brand.name} silhouettes.
           </p>
         </div>
 
@@ -108,13 +108,13 @@ export function BrandDossier({ brand }: BrandDossierProps) {
           {/* Left: Authenticity Verification Guide */}
           <div className="lg:col-span-7 rounded-2xl border border-[#ded5c7] bg-[#f7f3ec] p-6 sm:p-8">
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-              Collector Verification
+              Atelier Standards
             </span>
             <h4 className="mt-1 font-serif text-xl font-bold text-[#221b16] sm:text-2xl">
-              Authenticity Inspection Checklist
+              Benchcraft Quality Checklist
             </h4>
             <p className="mt-2 text-xs text-[#706456]">
-              Every {brand.name} piece in our archive is authenticated through a multi-point verification protocol before entering our catalog:
+              Every master tribute inspired by this silhouette is bench-inspected against our master tailoring standards:
             </p>
 
             <ul className="mt-6 space-y-3.5 text-xs text-[#4a3f35] sm:text-sm">
@@ -152,7 +152,7 @@ export function BrandDossier({ brand }: BrandDossierProps) {
               </p>
               <Link
                 href="/size-guide"
-                className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-black shadow-2xs"
+                className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-[#2a1810] shadow-2xs"
               >
                 <span>Universal Size Guide (XS–6XL) &rarr;</span>
               </Link>

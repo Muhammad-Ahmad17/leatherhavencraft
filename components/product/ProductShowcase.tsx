@@ -33,13 +33,13 @@ export function ProductShowcase({
         <ProductCarousel />
       </ScrollAnimationContainer>
 
-      <section className="border-t border-black/10 bg-[var(--bg)] px-6 py-20 text-[var(--ink)]">
+      <section className="border-t border-[#ded5c7] bg-[var(--bg)] px-6 py-20 text-[var(--ink)]">
         <div className="mx-auto max-w-5xl">
           <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Mock edit</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)]">{intro}</p>
 
-          <ul className="mt-12 divide-y divide-black/10">
+          <ul className="mt-12 divide-y divide-[#ded5c7]">
             {products.map((product) => (
               <li key={product.id} className="flex flex-wrap items-end justify-between gap-4 py-6">
                 <div>

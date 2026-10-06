@@ -1,9 +1,9 @@
 :root {
   --bg: #f7f5f2;
   --bg2: #ece8e2;
-  --ink: #141414;
+  --ink: #2a1810;
   --muted: #5c5854;
-  --line: rgba(20, 20, 20, 0.12);
+  --line: rgba(42, 24, 16, 0.12);
   --leather: #5a3828;
   --leather-dark: #2a1810;
   --mq: #c2b6a8;
@@ -26,8 +26,8 @@ body {
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--leather-dark);
+  color: #faf7f2;
 }
 
 /* ══════════════════════════════════════════════════════════════════════

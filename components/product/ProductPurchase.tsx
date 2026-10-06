@@ -122,7 +122,7 @@ export function ProductPurchase({
   return (
     <div className="space-y-6">
       {/* ── Dynamic Price with Surcharge Badge ── */}
-      <div className="flex items-baseline justify-between border-b border-black/10 pb-4">
+      <div className="flex items-baseline justify-between border-b border-[#ded5c7] pb-4">
         <div className="flex flex-wrap items-baseline gap-2.5">
           <span className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
             {effectivePriceLabel}
@@ -160,11 +160,11 @@ export function ProductPurchase({
                 className={`group relative flex items-center justify-center rounded-full p-[2.5px] transition-all cursor-pointer ${
                   isSelected
                     ? "border-2 border-[#2a1810]"
-                    : "border-2 border-transparent hover:border-black/25"
+                    : "border-2 border-transparent hover:border-[#8a4d2b]"
                 }`}
               >
                 <span
-                  className="block h-5 w-5 rounded-full border border-black/15 shadow-2xs transition-transform group-hover:scale-105"
+                  className="block h-5 w-5 rounded-full border border-[#ded5c7] shadow-2xs transition-transform group-hover:scale-105"
                   style={{ backgroundColor: c.hex || "#1a1a1a" }}
                   aria-hidden="true"
                 />
@@ -190,7 +190,7 @@ export function ProductPurchase({
           <button
             type="button"
             onClick={() => setShowSizeGuide(true)}
-            className="text-xs text-[var(--muted)] hover:text-black underline underline-offset-4 cursor-pointer"
+            className="text-xs text-[var(--muted)] hover:text-[#2a1810] underline underline-offset-4 cursor-pointer"
           >
             Size Guide
           </button>
@@ -207,8 +207,8 @@ export function ProductPurchase({
                 onClick={() => setSize(val)}
                 className={`relative flex h-12 flex-col items-center justify-center rounded-md border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                   isSelected
-                    ? "border-black bg-black text-white shadow-xs"
-                    : "border-black/15 bg-white text-black hover:border-black/50"
+                    ? "border-[#2a1810] bg-[#2a1810] text-white shadow-xs"
+                    : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b] hover:bg-[#faf8f5]"
                 }`}
               >
                 <span>{val}</span>
@@ -235,7 +235,7 @@ export function ProductPurchase({
           className={`w-full h-12 rounded-lg font-semibold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm ${
             addedRecently
               ? "bg-emerald-700 text-white"
-              : "bg-black text-white hover:bg-neutral-800"
+              : "bg-[#2a1810] text-white hover:bg-[#3d2417] active:bg-[#1a0e08]"
           }`}
         >
           {addedRecently ? (
@@ -261,7 +261,7 @@ export function ProductPurchase({
           </a>
           <a
             href={mailHref}
-            className="h-11 rounded-lg border border-black/15 bg-white text-[var(--ink)] font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-black/5 transition-colors"
+            className="h-11 rounded-lg border border-[#ded5c7] bg-white text-[#2a1810] font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:border-[#8a4d2b] hover:bg-[#faf8f5] transition-colors"
           >
             <span>Email Concierge</span>
           </a>
@@ -269,12 +269,12 @@ export function ProductPurchase({
       </div>
 
       {/* ── Clean Collapsible Product Specifications ── */}
-      <div className="border-t border-black/10 pt-4 divide-y divide-black/10 text-xs">
+      <div className="border-t border-[#ded5c7] pt-4 divide-y divide-[#ded5c7] text-xs">
         <div>
           <button
             type="button"
             onClick={() => setActiveTab(activeTab === "details" ? null : "details")}
-            className="w-full py-3 flex items-center justify-between font-medium text-[var(--ink)] hover:text-black cursor-pointer"
+            className="w-full py-3 flex items-center justify-between font-medium text-[var(--ink)] hover:text-[#2a1810] cursor-pointer"
           >
             <span>Product Details &amp; Specifications</span>
             <span className="text-base text-[var(--muted)]">{activeTab === "details" ? "−" : "+"}</span>
@@ -291,7 +291,7 @@ export function ProductPurchase({
           <button
             type="button"
             onClick={() => setActiveTab(activeTab === "shipping" ? null : "shipping")}
-            className="w-full py-3 flex items-center justify-between font-medium text-[var(--ink)] hover:text-black cursor-pointer"
+            className="w-full py-3 flex items-center justify-between font-medium text-[var(--ink)] hover:text-[#2a1810] cursor-pointer"
           >
             <span>Shipping &amp; Workshop Guarantee</span>
             <span className="text-base text-[var(--muted)]">{activeTab === "shipping" ? "−" : "+"}</span>
@@ -308,21 +308,21 @@ export function ProductPurchase({
 
       {/* ── Universal Gents Size Guide Modal (XS to 6XL) ── */}
       {showSizeGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1a110c]/70 p-3 sm:p-4 backdrop-blur-xs">
           <div className="w-full max-w-4xl rounded-2xl border border-[#ded5c7] bg-[#fbf9f6] p-5 sm:p-7 shadow-2xl max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-[#ded5c7] pb-3 mb-4">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
                   {brandName || "Heritage"} Atelier
                 </span>
-                <h3 className="font-serif text-xl font-bold text-[#221b16]">
+                <h3 className="font-serif text-xl font-bold text-[#2a1810]">
                   Universal Gents Size Guide
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowSizeGuide(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-sm font-bold text-[#6b5c51] hover:text-black hover:border-black cursor-pointer shadow-2xs"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#ded5c7] bg-white text-sm font-bold text-[#6b5c51] hover:text-[#2a1810] hover:border-[#8a4d2b] cursor-pointer shadow-2xs"
                 aria-label="Close size guide"
               >
                 ✕
@@ -338,11 +338,11 @@ export function ProductPurchase({
             </div>
 
             <div className="mt-4 flex items-center justify-between border-t border-[#ded5c7] pt-3 text-xs text-[#706456]">
-              <span>Selected size: <strong className="text-[#221b16] font-bold">{size}</strong></span>
+              <span>Selected size: <strong className="text-[#2a1810] font-bold">{size}</strong></span>
               <button
                 type="button"
                 onClick={() => setShowSizeGuide(false)}
-                className="rounded-lg bg-[#221b16] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-black cursor-pointer shadow-xs"
+                className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] cursor-pointer shadow-xs"
               >
                 Apply &amp; Return to Product
               </button>

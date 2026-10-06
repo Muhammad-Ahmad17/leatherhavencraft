@@ -66,7 +66,7 @@ function BrandBanner({
               }`}
             />
           </span>
-          <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-md border border-white/15">
+          <span className="rounded-full bg-[#1a110c]/65 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-md border border-white/15">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
         </div>
@@ -83,7 +83,7 @@ function BrandBanner({
           </div>
 
           <div className="shrink-0">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white backdrop-blur-md transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black shadow-lg">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white backdrop-blur-md transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#2a1810] shadow-lg">
               Explore
               <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
                 &rarr;
@@ -107,13 +107,13 @@ export function BrandShowcase() {
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#8a4d2b]">
               Heritage Collections &amp; Atelier
             </p>
-            <h2 className="mt-2 text-3xl font-medium tracking-tight text-[#221b16] sm:text-4xl lg:text-5xl">
+            <h2 className="mt-2 text-3xl font-medium tracking-tight text-[#2a1810] sm:text-4xl lg:text-5xl">
               Shop by brand &amp; category
             </h2>
           </div>
           <Link
             href="/products"
-            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4"
+            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#2a1810] transition-colors underline underline-offset-4"
           >
             Explore All Jackets &rarr;
           </Link>
