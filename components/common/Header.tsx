@@ -112,27 +112,24 @@ export function Header() {
                     ▾
                   </span>
                 </button>
-                <div className="invisible absolute left-0 top-full z-50 mt-2 w-max max-w-[calc(100vw-2rem)] border border-[var(--line)] bg-white p-3 shadow-xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  <ul className="grid grid-cols-[max-content_max-content] gap-x-6 gap-y-1">
+                <div className="invisible absolute left-0 top-full z-50 mt-2 w-max max-w-[calc(100vw-2rem)] border border-[var(--line)] bg-white p-2.5 shadow-xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="grid grid-cols-2 gap-2">
                     {stripBrands.map((brand) => (
                       <li key={brand.slug}>
                         <Link
                           href={`/brands/${brand.slug}`}
-                          className="flex min-h-[48px] items-center gap-3 px-3 py-2 transition-colors hover:bg-[var(--bg2)]"
+                          title={brand.name}
+                          aria-label={brand.name}
+                          className="flex h-12 w-[120px] items-center justify-center rounded-md border border-transparent p-2 transition-all hover:border-[var(--line)] hover:bg-[var(--bg2)]"
                         >
-                          <span className="flex h-9 w-[88px] shrink-0 items-center justify-center">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={brand.logo}
-                              alt=""
-                              className={`max-h-7 w-auto max-w-full object-contain ${
-                                brand.slug === "harley-davidson" ? "max-h-8" : ""
-                              }`}
-                            />
-                          </span>
-                          <span className="text-sm text-[var(--ink)] whitespace-nowrap">
-                            {brand.name}
-                          </span>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={brand.logo}
+                            alt={brand.name}
+                            className={`max-h-7 w-auto max-w-full object-contain ${
+                              brand.slug === "harley-davidson" ? "max-h-8" : ""
+                            }`}
+                          />
                         </Link>
                       </li>
                     ))}
