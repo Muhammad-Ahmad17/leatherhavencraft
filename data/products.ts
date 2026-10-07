@@ -40,6 +40,8 @@ export interface Product {
   cuff: number;
   /** Extra marks: stitching, pockets, quilting. */
   svgExtra: string;
+  /** Dedicated interactive scroll-model jacket overlay (WebP asset). */
+  scrollJacketImage?: string;
 }
 
 /**
@@ -354,7 +356,7 @@ export const products: Product[] = [
 ];
 
 export function getProduct(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug);
+  return products.find((p) => p.slug === slug) || scrollModelProducts.find((p) => p.slug === slug);
 }
 
 export function getProductsByBrand(brandSlug: string): Product[] {
@@ -473,22 +475,116 @@ export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
   return featured.length > 0 ? featured : live.slice(0, 8);
 }
 
-export async function fetchLiveScrollProducts(limit = 6): Promise<Product[]> {
-  const live = await fetchLiveProducts();
-  const featured = live.filter((p) => p.featured);
 
-  const seen = new Set<string>();
-  const curated: Product[] = [];
-  const pool = [...featured, ...live];
+export const scrollModelProducts: Product[] = [
+  {
+    id: "scroll-1",
+    name: "Soda Club 'New York' Archival Plush Leather Jacket",
+    slug: "pelle-pelle-new-york-knicks-plush-leather-jacket",
+    brand: "pelle-pelle",
+    category: "pelle-pelle",
+    description: "Handcrafted master tribute in supple full-grain lambskin with iconic New York chenille lettering, basketball embroidery, and Marc Buchanan atelier crest patches.",
+    price: 350,
+    meta: "Supple full-grain lambskin, custom chenille & Marc Buchanan crest",
+    color: "#e66012",
+    darkColor: "#1d4486",
+    colorName: "Orange / Royal Blue",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-1.png",
+    imageHover: "/scroll-model/jacket-1.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-1.webp",
+  },
+  {
+    id: "scroll-2",
+    name: "Bar & Shield Racing Leather Jacket",
+    slug: "harley-davidson-racing-leather-jacket",
+    brand: "harley-davidson",
+    category: "harley-davidson",
+    description: "Classic track-cut motorcycle jacket handcrafted in heavyweight 1.4mm steerhide featuring high-contrast orange and white racing chest stripes and mandarin snap collar.",
+    price: 300,
+    meta: "Heavyweight 1.4mm steerhide, twin racing stripes & cafe collar",
+    color: "#1a1a1a",
+    darkColor: "#ea580c",
+    colorName: "Black / Orange",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-2.png",
+    imageHover: "/scroll-model/jacket-2.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-2.webp",
+  },
+  {
+    id: "scroll-3",
+    name: "Ghost Rider Flames & Chains Leather Jacket",
+    slug: "supreme-vanson-ghost-rider-leather-jacket",
+    brand: "supreme",
+    category: "supreme",
+    description: "Cult collaboration tribute built in heavy competition steerhide featuring intricate hand-cut flame appliqués, embroidered chains, Ghost Rider skull centerpiece, and Vanson/Supreme sleeve patches.",
+    price: 350,
+    meta: "Competition-weight steerhide, custom flame appliqués & Talon hardware",
+    color: "#f59e0b",
+    darkColor: "#1a1a1a",
+    colorName: "Yellow / Black Flames",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-3.png",
+    imageHover: "/scroll-model/jacket-3.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-3.webp",
+  },
+  {
+    id: "scroll-4",
+    name: "WWII Military Spec Heavy B-3 Sheepskin Shearling Bomber",
+    slug: "avirex-avirex-b-3-sheepskin-shearling-bomber-300-1",
+    brand: "avirex",
+    category: "avirex",
+    description: "Historical WWII flight jacket bench-crafted from 20mm genuine merino shearling pelts with antiqued steerhide welts, dual throat latch buckles, and heavy brass zippers.",
+    price: 300,
+    meta: "Heavy 20mm shearling sheepskin pelt, double buckle collar & brass hardware",
+    color: "#4a3528",
+    darkColor: "#d4a373",
+    colorName: "Aged Brown / Cream Shearling",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-4.png",
+    imageHover: "/scroll-model/jacket-4.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-4.webp",
+  },
+  {
+    id: "scroll-5",
+    name: "Heritage Crocodile-Embossed Leather Bomber",
+    slug: "avirex-crocodile-embossed-leather-bomber",
+    brand: "avirex",
+    category: "avirex",
+    description: "Luxury archive tribute crafted from textured crocodile-embossed top-grain leather featuring the historic Avirex USA leather chest crest, antique brass hardware, and heavy rib-knit trim.",
+    price: 300,
+    meta: "Embossed crocodile calfskin, Avirex USA chest badge & ribbed wool hem",
+    color: "#5c3a21",
+    darkColor: "#2a1810",
+    colorName: "Cognac Brown",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-5.png",
+    imageHover: "/scroll-model/jacket-5.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-5.webp",
+  },
+];
 
-  for (const p of pool) {
-    if (!seen.has(p.name)) {
-      seen.add(p.name);
-      curated.push(p);
-    }
-    if (curated.length === limit) break;
-  }
-
-  return curated.length > 0 ? curated : live.slice(0, limit);
+export async function fetchLiveScrollProducts(limit = 5): Promise<Product[]> {
+  return scrollModelProducts.slice(0, limit);
 }
 

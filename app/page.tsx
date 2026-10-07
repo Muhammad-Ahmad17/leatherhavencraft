@@ -59,7 +59,7 @@ const homeFaqSchema = [
 
 export default async function HomePage() {
   const featuredProducts = await fetchLiveFeaturedProducts();
-  const scrollProducts = await fetchLiveScrollProducts(6);
+  const scrollProducts = await fetchLiveScrollProducts(5);
 
   const homePageSchema = {
     "@context": "https://schema.org",

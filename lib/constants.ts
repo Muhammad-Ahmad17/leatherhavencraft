@@ -1,4 +1,4 @@
-export const SVG_VIEWBOX = { width: 400, height: 700 } as const;
+export const SVG_VIEWBOX = { width: 700, height: 1200 } as const;
 
 /** Desktop scroll track, in viewport heights. Shortened from the jacket demo. */
 export const TRACK_HEIGHT_VH = 280;

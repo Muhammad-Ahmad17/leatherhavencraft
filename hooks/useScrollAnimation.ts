@@ -78,7 +78,7 @@ export function useScrollAnimation({
       const rotation = (dx / travel) * ROTATION_DEGREES;
       group.setAttribute(
         "transform",
-        `translate(${dx.toFixed(1)} 0) rotate(${rotation.toFixed(2)} 200 300)`,
+        `translate(${dx.toFixed(1)} 0) rotate(${rotation.toFixed(2)} 350 620)`,
       );
     });
 
