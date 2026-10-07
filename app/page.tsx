@@ -40,6 +40,10 @@ const homeFaqSchema = [
     a: "We curate premium heavyweight steerhide and cowhide (Schott Perfecto & Cafe Racers), thick shearling sheepskin pelt (Avirex B-3 Bombers), supple lambskin (Pelle Pelle Plush Bombers), and competition-weight full-grain Horween Chromexcel for our bespoke creations.",
   },
   {
+    q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
+    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturer for retail boutiques, motorcycle clubs, streetwear labels, and corporate teams. We offer tiered wholesale volume discounts starting from 5+ units, custom embossing, private-label branding, and international bulk shipping. Contact our atelier via WhatsApp or email with your quantity and design details for an immediate wholesale quote.",
+  },
+  {
     q: "How do I choose the correct size?",
     a: "Every jacket has exact pit-to-pit chest, sleeve, back length, and hem measurements listed on its product page and in our Universal Size Guide (XS–6XL). If you are unsure between two sizes, message our concierge for personalized fit advice before ordering.",
   },
@@ -96,13 +100,13 @@ export default async function HomePage() {
           <div className="relative flex h-full items-end px-6 pb-8 sm:px-10 sm:pb-12">
             <div className="max-w-xl">
               <p className="text-[11px] uppercase tracking-[0.22em] text-white/75">
-                Outerwear &amp; Leather Goods · Europe and America
+                Bespoke Outerwear &amp; Wholesale Production · Europe &amp; America
               </p>
               <h1 className="mt-3 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
                 The brands. The cut. In stock.
               </h1>
               <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke custom outerwear, shipped across Europe and America.
+                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke tailoring and wholesale bulk orders for clubs, boutiques, and retailers.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button href="/products" variant="light">

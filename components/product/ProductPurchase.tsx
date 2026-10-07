@@ -266,6 +266,22 @@ export function ProductPurchase({
             <span>Email Concierge</span>
           </a>
         </div>
+
+        {/* ── Wholesale & Bulk Dealing Notice ── */}
+        <div className="flex items-center justify-between rounded-lg border border-[#ded5c7] bg-[#faf8f5] px-3.5 py-2.5 text-xs">
+          <div className="space-y-0.5">
+            <span className="font-semibold text-[#2a1810]">Wholesale &amp; Bulk Orders</span>
+            <p className="text-[11px] text-[#706456]">Tiered volume pricing for clubs, teams &amp; boutiques (5+ units)</p>
+          </div>
+          <a
+            href={buildWhatsAppUrl(`Hi Leather Haven Craft — I am inquiring about wholesale/bulk pricing for "${productName || "this jacket"}" (${brandName || "Heritage"}).`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 font-bold text-[#8a4d2b] hover:text-[#2a1810] underline underline-offset-2 transition-colors ml-3 whitespace-nowrap cursor-pointer"
+          >
+            Bulk Quote &rarr;
+          </a>
+        </div>
       </div>
 
       {/* ── Clean Collapsible Product Specifications ── */}
@@ -301,6 +317,7 @@ export function ProductPurchase({
               <p>• 100% genuine full-grain leather bench-crafted with heavy heritage brass hardware.</p>
               <p>• Express air courier (DHL/FedEx 3–5 business days to US &amp; Europe).</p>
               <p>• 14-day exchange and fit guarantee on all bespoke and catalog pieces.</p>
+              <p>• Wholesale &amp; bulk supply: Custom branding, club patches, and volume freight available on request.</p>
             </div>
           )}
         </div>

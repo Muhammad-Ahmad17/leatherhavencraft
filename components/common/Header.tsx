@@ -72,7 +72,11 @@ export function Header() {
   return (
     <header id="site-header" className="sticky top-0 z-40">
       <div className="flex min-h-[var(--announcement-h)] items-center justify-center bg-[var(--leather-dark)] px-4 py-1 text-center text-[10px] tracking-[0.12em] text-white/90 uppercase sm:text-[11px]">
-        Handcrafted Leather Outerwear · Ships to Europe &amp; the United States
+        <span>Handcrafted Leather Outerwear</span>
+        <span className="mx-2 text-white/40">·</span>
+        <span className="font-semibold text-[#f0d4b8]">Wholesale &amp; Bulk Orders Available</span>
+        <span className="mx-2 text-white/40">·</span>
+        <span>Ships to Europe &amp; USA</span>
       </div>
 
       <div className="border-b border-[var(--line)] bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
@@ -142,6 +146,12 @@ export function Header() {
               >
                 Journal
               </Link>
+              <Link
+                href="/#custom-manufacturing"
+                className={`${navLink} text-[var(--ink)] hover:text-[var(--leather)]`}
+              >
+                Wholesale &amp; Bulk
+              </Link>
             </nav>
           </div>
 
@@ -200,6 +210,13 @@ export function Header() {
               className="block border-b border-[var(--line)] py-4 text-2xl font-medium tracking-tight"
             >
               Shop all jackets
+            </Link>
+            <Link
+              href="/#custom-manufacturing"
+              onClick={() => setOpen(false)}
+              className="block border-b border-[var(--line)] py-4 text-2xl font-medium tracking-tight"
+            >
+              Wholesale &amp; Bulk
             </Link>
             <Link
               href="/blog"
