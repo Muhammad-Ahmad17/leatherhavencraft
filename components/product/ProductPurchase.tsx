@@ -183,7 +183,7 @@ export function ProductPurchase({
             </span>
             {hasPlusSurcharge && (
               <span className="text-[11px] font-medium text-[#8a4d2b]">
-                (Includes +${PLUS_SIZE_SURCHARGE} 3XL–6XL surcharge)
+                (Includes +${PLUS_SIZE_SURCHARGE} 3XL to 6XL surcharge)
               </span>
             )}
           </div>
@@ -314,9 +314,9 @@ export function ProductPurchase({
           </button>
           {activeTab === "shipping" && (
             <div className="pb-3 text-[var(--muted)] space-y-1.5 text-xs leading-relaxed">
-              <p>• 100% genuine full-grain leather bench-crafted with heavy heritage brass hardware.</p>
-              <p>• Express air courier (DHL/FedEx 3–5 business days to US &amp; Europe).</p>
-              <p>• 14-day exchange and fit guarantee on all bespoke and catalog pieces.</p>
+              <p>• 100% genuine full grain leather bench crafted with heavy heritage brass hardware.</p>
+              <p>• Express air courier (DHL/FedEx 3 to 5 business days to US &amp; Europe).</p>
+              <p>• 14 day exchange and fit guarantee on all bespoke and catalog pieces.</p>
               <p>• Wholesale &amp; bulk supply: Custom branding, club patches, and volume freight available on request.</p>
             </div>
           )}

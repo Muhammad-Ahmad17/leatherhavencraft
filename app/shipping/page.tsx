@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Global Express Shipping & 14-Day Return Guarantee | Leather Haven Craft",
+  title: "Global Express Shipping & 14 Day Return Guarantee | Leather Haven Craft",
   description:
     "Express DHL & FedEx air courier delivery timelines, full transit insurance, luxury dust bag packaging, and 14-day hassle-free returns for authentic leather jackets.",
   alternates: { canonical: "/shipping" },
   openGraph: {
     title: "Shipping, Transit & Returns | Leather Haven Craft",
-    description: "Insured door-to-door courier transit to the United States, UK, and European Union.",
+    description: "Insured door to door courier transit to the United States, UK, and European Union.",
   },
 };
 
@@ -30,7 +30,7 @@ export default function ShippingPage() {
             Shipping &amp; Returns Policy
           </h1>
           <p className="mt-3 text-xs sm:text-sm text-[#6b5c51] leading-relaxed">
-            Express Air Courier · Fully Insured Door-to-Door Delivery · 14-Day Fit Guarantee
+            Express Air Courier · Fully Insured Door to Door Delivery · 14 Day Fit Guarantee
           </p>
         </header>
 
@@ -40,21 +40,21 @@ export default function ShippingPage() {
               1. Priority Air Transit Timelines &amp; Couriers
             </h2>
             <p>
-              Every garment in our catalog is dispatched via expedited air freight with DHL Express or FedEx International Priority to ensure the shortest possible transit time, zero warehouse transfers, and strict chain-of-custody handling.
+              Every garment in our catalog is dispatched via expedited air freight with DHL Express or FedEx International Priority to ensure the shortest possible transit time, zero warehouse transfers, and strict chain of custody handling.
             </p>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
                   United States &amp; Canada
                 </span>
-                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 – 5 Business Days</p>
-                <p className="text-xs text-[#6b5c51] mt-1">Full door-to-door online tracking with signature release.</p>
+                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 to 5 Business Days</p>
+                <p className="text-xs text-[#6b5c51] mt-1">Full door to door online tracking with signature release.</p>
               </div>
               <div className="rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
                   United Kingdom &amp; European Union
                 </span>
-                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 – 4 Business Days</p>
+                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 to 4 Business Days</p>
                 <p className="text-xs text-[#6b5c51] mt-1">Direct air express customs clearance included.</p>
               </div>
             </div>
@@ -65,13 +65,13 @@ export default function ShippingPage() {
               2. Luxury Protective Packaging
             </h2>
             <p>
-              Archival and bespoke leather garments are never tightly folded, vacuum-sealed, or compressed. Each jacket is shipped hanging inside a heavy-duty, breathable cotton dust bag on wide, contoured wooden shoulder hangers to maintain shoulder pad integrity and avoid creasing during flight transit.
+              Archival and bespoke leather garments are never tightly folded, vacuum sealed, or compressed. Each jacket is shipped hanging inside a heavy duty, breathable cotton dust bag on wide, contoured wooden shoulder hangers to maintain shoulder pad integrity and avoid creasing during flight transit.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="font-serif text-lg sm:text-xl font-bold text-[#221b16]">
-              3. 14-Day Exchange &amp; Return Fit Guarantee
+              3. 14 Day Exchange &amp; Return Fit Guarantee
             </h2>
             <p>
               We stand unconditionally behind our sizing and authenticity. If your jacket does not fit as desired or your preferences shift:

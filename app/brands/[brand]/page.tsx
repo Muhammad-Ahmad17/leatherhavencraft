@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
 
   return {
     title: `${brand.name} Leather Jackets & Outerwear Archive | Leather Haven Craft`,
-    description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made-to-measure tailoring. Express shipping to US, UK, and Europe.`,
+    description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made to measure tailoring. Express shipping to US, UK, and Europe.`,
     alternates: { canonical: `/brands/${brand.slug}` },
     openGraph: {
       title: `${brand.name} Leather Jackets | Leather Haven Craft`,
@@ -121,7 +121,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
         <div className="mx-auto max-w-6xl px-6 pt-6">
           <div className="rounded-lg border border-[#ded5c7] bg-[#faf7f2] p-3 text-xs text-[#706456] leading-relaxed">
             <span className="font-semibold text-[#221b16]">Atelier Notice: </span>
-            Pieces in this section are master handcrafted tributes and custom made-to-measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
+            Pieces in this section are master handcrafted tributes and custom made to measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
           </div>
         </div>
       )}

@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-medium text-[#221b16]">3. Third-Party Infrastructure</h2>
+            <h2 className="text-lg font-medium text-[#221b16]">3. Third Party Infrastructure</h2>
             <p className="mt-2">
               We do not sell, rent, or trade your personal information. Data is shared strictly with essential logistical partners required for fulfillment (such as DHL, FedEx, Cloudflare, and secure payment processors).
             </p>

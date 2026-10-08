@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const faqSchemaData = [
   {
     q: "How are your jackets constructed and sourced?",
-    a: "Our jackets are master artisan recreations and custom made-to-measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3–1.5mm full-grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy-gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
+    a: "Our jackets are master artisan recreations and custom made to measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3 to 1.5mm full grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
   },
   {
     q: "What leather types and hide grades do you stock?",
@@ -23,11 +23,11 @@ const faqSchemaData = [
   },
   {
     q: "How should a genuine leather jacket fit?",
-    a: "A new leather jacket should feel snug across the chest and shoulders without constricting circulation. High-grade cowhide and steerhide break in after 20 to 30 hours of wear, stretching up to half a size to mold precisely to your body contours. Please refer to our Universal Size Guide (XS–6XL) for exact flat garment measurements across pit-to-pit chest, waist, length, shoulder, and sleeve.",
+    a: "A new leather jacket should feel snug across the chest and shoulders without constricting circulation. High-grade cowhide and steerhide break in after 20 to 30 hours of wear, stretching up to half a size to mold precisely to your body contours. Please refer to our Universal Size Guide (XS to 6XL) for exact flat garment measurements across pit to pit chest, waist, length, shoulder, and sleeve.",
   },
   {
     q: "How do I care for, condition, and clean my leather outerwear?",
-    a: "Store your jacket on a wide-shoulder wooden hanger away from direct sunlight and heat radiators. Condition with a natural beeswax, lanolin, or pure neatsfoot oil balm once every 12 to 18 months. Never machine-wash leather; for heavy spots, consult a specialist leather dry cleaner.",
+    a: "Store your jacket on a wide shoulder wooden hanger away from direct sunlight and heat radiators. Condition with a natural beeswax, lanolin, or pure neatsfoot oil balm once every 12 to 18 months. Never machine-wash leather; for heavy spots, consult a specialist leather dry cleaner.",
   },
   {
     q: "What is your return and exchange policy?",
@@ -35,15 +35,15 @@ const faqSchemaData = [
   },
   {
     q: "How long does shipping take to the United States, UK, and Europe?",
-    a: "Express transit via DHL Express or FedEx Priority takes 3 to 5 business days with full door-to-door tracking. Orders are carefully packaged in custom luxury garment covers with wide wooden hangers.",
+    a: "Express transit via DHL Express or FedEx Priority takes 3 to 5 business days with full door to door tracking. Orders are carefully packaged in custom luxury garment covers with wide wooden hangers.",
   },
   {
-    q: "Do you offer custom made-to-measure sizing for extended sizes?",
-    a: "Yes. Our atelier creates custom made-to-measure commissions and offers an inclusive Universal Size Matrix spanning XS through 6XL. Standard sizing spans XS to 2XL, while 3XL through 6XL are crafted with dedicated extra hide panels for a modest +$20 surcharge.",
+    q: "Do you offer custom made to measure sizing for extended sizes?",
+    a: "Yes. Our atelier creates custom made to measure commissions and offers an inclusive Universal Size Matrix spanning XS through 6XL. Standard sizing spans XS to 2XL, while 3XL through 6XL are crafted with dedicated extra hide panels for a modest +$20 surcharge.",
   },
   {
     q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
-    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturing facility in Sialkot, supplying retail boutiques, motorcycle clubs, streetwear labels, and corporate bulk clients worldwide. We offer tiered wholesale volume pricing starting from 5+ units, custom embossing, private-label branding, and international bulk express shipping. Contact our concierge via WhatsApp or email with your target quantity and specifications for a custom quotation.",
+    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturing facility in Sialkot, supplying retail boutiques, motorcycle clubs, streetwear labels, and corporate bulk clients worldwide. We offer tiered wholesale volume pricing starting from 5+ units, custom embossing, private label branding, and international bulk express shipping. Contact our concierge via WhatsApp or email with your target quantity and specifications for a custom quotation.",
   },
 ];
 
@@ -56,7 +56,7 @@ const CARE_STEPS = [
   {
     step: "02",
     title: "Annual Conditioning & Balms",
-    text: "Leather breathes and loses natural oils over time. Apply a light coat of natural beeswax, lanolin, or carnauba leather balm once every 12 to 18 months using a soft microfiber cloth to replenish moisture and prevent micro-cracking.",
+    text: "Leather breathes and loses natural oils over time. Apply a light coat of natural beeswax, lanolin, or carnauba leather balm once every 12 to 18 months using a soft microfiber cloth to replenish moisture and prevent microcracking.",
   },
   {
     step: "03",
@@ -66,7 +66,7 @@ const CARE_STEPS = [
   {
     step: "04",
     title: "Patina & Natural Creasing",
-    text: "Embrace the journey: full-grain leather develops an individual patina unique to your body. Natural creases around the elbows, honey-colored edge highlights, and subtle grain shifts reflect genuine hide character.",
+    text: "Embrace the journey: full grain leather develops an individual patina unique to your body. Natural creases around the elbows, honey colored edge highlights, and subtle grain shifts reflect genuine hide character.",
   },
 ];
 

@@ -16,10 +16,10 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
     "I would like to inquire about wholesale / bulk dealing and custom outerwear production.",
     "",
     "Inquiry Type: [Wholesale Boutique Order / Motorcycle Club / Private Label / Custom Run]",
-    "Estimated Quantity: [e.g. 5–15 pieces / 20–50 pieces / 100+ wholesale units]",
+    "Estimated Quantity: [e.g. 5 to 15 pieces / 20 to 50 pieces / 100+ wholesale units]",
     "Target Silhouettes: [e.g. Double Rider Perfecto, B-3 Bomber, Cafe Racer, Bespoke Pattern]",
-    "Preferred Leather Type & Color: [e.g. Full-grain steerhide, shearling, lambskin]",
-    "Custom Details: [Custom embossed patches, private-label branding, bespoke sizing]",
+    "Preferred Leather Type & Color: [e.g. Full grain steerhide, shearling, lambskin]",
+    "Custom Details: [Custom embossed patches, private label branding, bespoke sizing]",
     "",
     "Looking forward to your volume pricing quotation and production timeline.",
   ].join("\n");
@@ -51,7 +51,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
               </h2>
 
               <p className="text-xs leading-relaxed text-[#706456] sm:text-sm">
-                Beyond our heritage archival drops, Leather Haven Craft operates a dedicated manufacturing atelier for individual made-to-measure tailoring, club outerwear, private-label collections, and wholesale bulk orders. Every jacket is hand-patterned, grain-matched, and constructed by master leather artisans with tiered wholesale rates for boutiques, motorcycle clubs, and apparel brands worldwide.
+                Beyond our heritage archival drops, Leather Haven Craft operates a dedicated manufacturing atelier for individual made to measure tailoring, club outerwear, private label collections, and wholesale bulk orders. Every jacket is hand-patterned, grain-matched, and constructed by master leather artisans with tiered wholesale rates for boutiques, motorcycle clubs, and apparel brands worldwide.
               </p>
 
               {/* Referral Pill linking to the Size Guide */}
@@ -68,7 +68,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                     href="/size-guide"
                     className="font-bold text-[#8a4d2b] underline decoration-[#8a4d2b]/40 underline-offset-2 hover:decoration-[#8a4d2b] transition-colors"
                   >
-                    Explore Universal Size Guide (XS–6XL) &rarr;
+                    Explore Universal Size Guide (XS to 6XL) &rarr;
                   </Link>
                 </div>
               )}
@@ -77,19 +77,19 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                 <div className="space-y-1">
                   <span className="block text-xs font-bold text-[#2a1810]">Single &amp; Bulk Runs</span>
                   <p className="text-[11px] text-[#706456]">
-                    From 1 made-to-measure piece to 100+ wholesale units with tiered volume pricing.
+                    From 1 made to measure piece to 100+ wholesale units with tiered volume pricing.
                   </p>
                 </div>
                 <div className="space-y-1">
                   <span className="block text-xs font-bold text-[#2a1810]">Premium Tannery Hides</span>
                   <p className="text-[11px] text-[#706456]">
-                    Full-grain cowhide, heavyweight steerhide, lambskin &amp; genuine shearling pelts.
+                    Full grain cowhide, heavyweight steerhide, lambskin &amp; genuine shearling pelts.
                   </p>
                 </div>
                 <div className="space-y-1">
                   <span className="block text-xs font-bold text-[#2a1810]">Wholesale &amp; Branding</span>
                   <p className="text-[11px] text-[#706456]">
-                    Custom embossed patches, private-label tags, heavy brass hardware &amp; silk linings.
+                    Custom embossed patches, private label tags, heavy brass hardware &amp; silk linings.
                   </p>
                 </div>
               </div>
@@ -144,13 +144,13 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                       <path d="M21.3 15.3l-4.6-4.6M14.5 12.5l2-2M11.5 15.5l2-2M8.5 18.5l2-2" />
                       <rect x="3" y="3" width="18" height="18" rx="2" />
                     </svg>
-                    <span>View Universal Size Guide (XS–6XL)</span>
+                    <span>View Universal Size Guide (XS to 6XL)</span>
                   </Link>
                 )}
               </div>
 
               <p className="text-[11px] text-[#8a7b70]">
-                Direct reply within 30 minutes during workshop hours (Mon – Sat).
+                Direct reply within 30 minutes during workshop hours (Mon to Sat).
               </p>
             </div>
           </div>

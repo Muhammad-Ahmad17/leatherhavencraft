@@ -34,7 +34,7 @@ export function Footer() {
                 Verified Provenance
               </span>
               <p className="text-[11px] text-[#6b5c51]">
-                Heavy 1.3–1.5mm full-grain hides &amp; solid brass hardware.
+                Heavy 1.3 to 1.5mm full grain hides &amp; solid brass hardware.
               </p>
             </div>
             <div className="space-y-1">
@@ -42,7 +42,7 @@ export function Footer() {
                 Express Transit
               </span>
               <p className="text-[11px] text-[#6b5c51]">
-                3–5 days DHL / FedEx air courier to US &amp; EU.
+                3 to 5 days DHL / FedEx air courier to US &amp; EU.
               </p>
             </div>
             <div className="space-y-1">
@@ -124,7 +124,7 @@ export function Footer() {
             </li>
             <li>
               <Link href="/size-guide" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
-                Universal Size Guide (XS–6XL)
+                Universal Size Guide (XS to 6XL)
               </Link>
             </li>
             <li>
@@ -158,7 +158,7 @@ export function Footer() {
           <div className="mt-4 space-y-2.5 text-xs text-[#6b5c51]">
             <div>
               <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Support Hours</span>
-              <span className="text-[#221b16] font-medium">Mon – Sat · 09:00 – 20:00 CET</span>
+              <span className="text-[#221b16] font-medium">Mon to Sat · 09:00 to 20:00 CET</span>
             </div>
             <div>
               <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Transit</span>
