@@ -27,8 +27,9 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json(data);
-  } catch (err: any) {
-    console.error("[API catalog error]", err);
-    return NextResponse.json({ error: err?.message || String(err), stack: err?.stack }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[API catalog error]", message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

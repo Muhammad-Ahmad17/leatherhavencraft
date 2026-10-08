@@ -144,9 +144,16 @@ export function ProductCatalog({
   // Support both direct products prop (e.g. from BrandPage) and SSR paginated props (from ProductsPage)
   const isDirectMode = Boolean(products && !initialProducts);
 
-  const [items, setItems] = useState<Product[]>(
-    products || initialProducts || []
-  );
+  const [items, setItems] = useState<Product[]>(() => {
+    const initial = products || initialProducts || [];
+    const seen = new Set<string>();
+    return initial.filter((p) => {
+      const pid = String(p.id);
+      if (seen.has(pid)) return false;
+      seen.add(pid);
+      return true;
+    });
+  });
 
   const [pagination, setPagination] = useState({
     total: initialPagination?.total ?? (products ? products.length : (initialProducts?.length ?? 0)),
@@ -237,9 +244,24 @@ export function ProductCatalog({
           const data = await res.json();
           if (Array.isArray(data.products)) {
             if (append) {
-              setItems((prev) => [...prev, ...data.products]);
+              setItems((prev) => {
+                const seen = new Set(prev.map((p) => String(p.id)));
+                const uniqueIncoming = (data.products as Product[]).filter(
+                  (p: Product) => !seen.has(String(p.id))
+                );
+                return [...prev, ...uniqueIncoming];
+              });
             } else {
-              setItems(data.products);
+              const seen = new Set<string>();
+              const deduped: Product[] = [];
+              for (const p of data.products as Product[]) {
+                const pid = String(p.id);
+                if (!seen.has(pid)) {
+                  seen.add(pid);
+                  deduped.push(p);
+                }
+              }
+              setItems(deduped);
             }
             if (data.pagination) {
               setPagination(data.pagination);
@@ -328,7 +350,16 @@ export function ProductCatalog({
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.products)) {
-          setItems(data.products);
+          const seen = new Set<string>();
+          const deduped: Product[] = [];
+          for (const p of data.products as Product[]) {
+            const pid = String(p.id);
+            if (!seen.has(pid)) {
+              seen.add(pid);
+              deduped.push(p);
+            }
+          }
+          setItems(deduped);
           setPagination({
             ...pagination,
             page: 1,
