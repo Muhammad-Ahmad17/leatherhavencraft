@@ -20,6 +20,36 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  keywords: [
+    "Leather Haven Craft",
+    "Leather Haven",
+    "Leather Haven Craft Atelier",
+    "leather jackets",
+    "handcrafted leather jackets",
+    "vintage leather jacket recreations",
+    "custom leather jackets",
+    "bespoke leather outerwear",
+    "Avirex leather jacket",
+    "Schott NYC leather jacket",
+    "Pelle Pelle leather jacket",
+    "Harley-Davidson leather jacket",
+    "B-3 bomber jacket",
+    "shearling leather jacket",
+  ],
+  authors: [{ name: "Leather Haven Craft", url: "https://www.leatherhavencraft.com" }],
+  creator: "Leather Haven Craft",
+  publisher: "Leather Haven Craft",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -46,7 +76,9 @@ export const metadata: Metadata = {
     images: ["/banners/home-desktop.jpg"],
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      "CVVLIna9Pm_qo5LzeCVFOQ6c6YcM-1ZIlE0BMDmk-Ds",
   },
 };
 
