@@ -19,7 +19,7 @@ export function ProductShowcase({
   if (products.length === 0) {
     return (
       <section className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-start justify-center px-6 py-24">
-        <h1 className="text-4xl font-semibold tracking-tight text-[var(--ink)]">Nothing in this edit yet</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-[var(--ink)]">Nothing in this collection yet</h1>
         <Link href="/products" className="mt-6 text-sm underline underline-offset-4">
           Back to the collection
         </Link>
@@ -35,7 +35,7 @@ export function ProductShowcase({
 
       <section className="border-t border-[#ded5c7] bg-[var(--bg)] px-6 py-20 text-[var(--ink)]">
         <div className="mx-auto max-w-5xl">
-          <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Mock edit</p>
+          <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Best Sellers</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)]">{intro}</p>
 

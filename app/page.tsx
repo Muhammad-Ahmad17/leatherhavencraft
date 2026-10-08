@@ -144,7 +144,7 @@ export default async function HomePage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
                 Curated Selection
               </p>
-              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">The edit</h2>
+              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">Best Sellers</h2>
             </div>
             <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
               Shop all jackets &rarr;
