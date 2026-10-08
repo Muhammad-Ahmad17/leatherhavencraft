@@ -1,6 +1,6 @@
 .scroll-track {
   position: relative;
-  height: 240vh;
+  height: 280vh;
 }
 
 .scroll-track-single {
@@ -23,8 +23,6 @@
   display: grid;
   place-items: center;
   background: radial-gradient(ellipse at 50% 58%, #fbfaf8, var(--bg2) 72%);
-  touch-action: pan-y;
-  will-change: transform;
 }
 
 svg.scene {
