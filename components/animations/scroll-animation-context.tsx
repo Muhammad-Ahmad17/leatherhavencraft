@@ -11,6 +11,10 @@ export type ScrollAnimationContextValue = {
   svgRef: RefObject<SVGSVGElement | null>;
   setGroupRef: (index: number, node: SVGGElement | null) => void;
   scrollToIndex: (index: number) => void;
+  nextJacket: () => void;
+  prevJacket: () => void;
+  canNext: boolean;
+  canPrev: boolean;
 };
 
 export const ScrollAnimationContext =

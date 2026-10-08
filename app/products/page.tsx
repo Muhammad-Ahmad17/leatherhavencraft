@@ -1,24 +1,73 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { fetchLiveProducts } from "@/data/products";
+import { fetchPaginatedProducts, getBrandLabel } from "@/data/products";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "All Leather Outerwear & Archive Jackets | Leather Haven Craft",
-  description:
-    "Explore our complete collection of handcrafted leather outerwear, master archival tributes to Schott NYC, Avirex, Pelle Pelle, and bespoke atelier creations. Men's sizes XS to 6XL.",
-  alternates: { canonical: "/products" },
-  openGraph: {
-    title: "All Leather Outerwear & Archive Jackets | Leather Haven Craft",
-    description:
-      "Handcrafted heritage leather jackets and bespoke made-to-measure outerwear. Worldwide express shipping.",
-  },
+type ProductsPageProps = {
+  searchParams: Promise<{
+    page?: string;
+    brand?: string;
+    category?: string;
+    size?: string;
+    color?: string;
+    sort?: string;
+  }>;
 };
 
-export default async function ProductsPage() {
-  const products = await fetchLiveProducts();
+export async function generateMetadata({
+  searchParams,
+}: ProductsPageProps): Promise<Metadata> {
+  const sp = await searchParams;
+  const pageNum = Number(sp.page) || 1;
+  const brandName = sp.brand ? getBrandLabel(sp.brand) : "";
+
+  const titlePrefix = brandName
+    ? `${brandName} Leather Outerwear`
+    : "All Leather Outerwear & Archive Jackets";
+
+  const fullTitle =
+    pageNum > 1
+      ? `${titlePrefix} — Page ${pageNum} | Leather Haven Craft`
+      : `${titlePrefix} | Leather Haven Craft`;
+
+  const canonicalUrl =
+    pageNum > 1 ? `/products?page=${pageNum}` : "/products";
+
+  return {
+    title: fullTitle,
+    description:
+      "Explore our complete collection of handcrafted leather outerwear, master archival tributes to Schott NYC, Avirex, Pelle Pelle, and bespoke atelier creations. Men's sizes XS to 6XL.",
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title: fullTitle,
+      description:
+        "Handcrafted heritage leather jackets and bespoke made-to-measure outerwear. Worldwide express shipping.",
+    },
+  };
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+  const sp = await searchParams;
+  const page = Number(sp.page) || 1;
+  const brand = sp.brand || "all";
+  const category = sp.category || "all";
+  const size = sp.size || "all";
+  const color = sp.color || "all";
+  const rawSort = sp.sort || "featured";
+  const validSort: "featured" | "price-asc" | "price-desc" = rawSort === "price-asc" || rawSort === "price-desc" ? rawSort : "featured";
+
+  // Initial SSR fetch of Page 1 (or requested page) for instant First Contentful Paint & 100% SEO indexability
+  const { products, pagination } = await fetchPaginatedProducts({
+    page,
+    limit: 16,
+    category: category !== "all" ? category : undefined,
+    brand: brand !== "all" ? brand : undefined,
+    size: size !== "all" ? size : undefined,
+    color: color !== "all" ? color : undefined,
+    sort: validSort !== "featured" ? validSort : undefined,
+  });
 
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -27,6 +76,17 @@ export default async function ProductsPage() {
     description:
       "Complete collection of handcrafted leather outerwear, master archival tributes, and bespoke atelier creations.",
     url: "https://www.leatherhavencraft.com/products",
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: pagination.total,
+      itemListElement: products.map((p, idx) => ({
+        "@type": "ListItem",
+        position: (page - 1) * 16 + idx + 1,
+        url: `https://www.leatherhavencraft.com/products/${p.slug}`,
+        name: p.name,
+        image: p.image,
+      })),
+    },
   };
 
   return (
@@ -52,7 +112,15 @@ export default async function ProductsPage() {
         </p>
       </div>
 
-      <ProductCatalog products={products} />
+      <ProductCatalog
+        initialProducts={products}
+        initialPagination={pagination}
+        initialCategory={category}
+        initialBrand={brand}
+        initialSize={size}
+        initialColor={color}
+        initialSort={validSort}
+      />
 
       {/* ── Catalog Editorial Footer Guide ── */}
       <section className="border-t border-[#ded5c7] bg-[#fbf9f6] px-6 py-16 text-[#221b16]">

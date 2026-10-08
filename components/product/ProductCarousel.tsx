@@ -4,13 +4,22 @@ import { SVG_VIEWBOX } from "@/lib/constants";
 import { useScrollAnimationContext } from "@/components/animations/scroll-animation-context";
 import { JacketShape } from "@/components/product/ProductSVG";
 import { ProductCaption } from "@/components/product/ProductCaption";
-import { ProductDots } from "@/components/product/ProductDots";
+import { ProductNavControls } from "@/components/product/ProductNavControls";
 
 export function ProductCarousel() {
-  const { products, svgRef, setGroupRef, hintVisible } = useScrollAnimationContext();
+  const {
+    products,
+    svgRef,
+    setGroupRef,
+    hintVisible,
+    nextJacket,
+    prevJacket,
+    canNext,
+    canPrev,
+  } = useScrollAnimationContext();
 
   return (
-    <div className="stage">
+    <div className="stage relative overflow-hidden">
       {/* Hidden image preloader to ensure instant zero-latency rendering of all 5 jackets and model */}
       <div className="sr-only" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -24,9 +33,24 @@ export function ProductCarousel() {
       </div>
 
       <p className="hint" style={{ opacity: hintVisible ? 1 : 0 }}>
-        Scroll the collection
+        Scroll or use arrows &larr; &rarr; to explore
       </p>
 
+      {/* ── Left Edge Floating Chevron Arrow (Desktop) ── */}
+      {canPrev && (
+        <button
+          type="button"
+          onClick={prevJacket}
+          aria-label="Previous jacket"
+          className="hidden xl:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 h-11 w-11 items-center justify-center rounded-full border border-[#2a1810]/15 bg-white/85 text-[#2a1810] shadow-md backdrop-blur-xs transition-all hover:border-[#8a4d2b] hover:bg-[#8a4d2b] hover:text-white hover:scale-110 active:scale-95"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
+
+      {/* ── Center: Main Model & Interactive SVG Layer ── */}
       <svg
         ref={svgRef}
         className="scene"
@@ -73,8 +97,25 @@ export function ProductCarousel() {
         </g>
       </svg>
 
+      {/* ── Right Edge Floating Chevron Arrow (Desktop) ── */}
+      {canNext && (
+        <button
+          type="button"
+          onClick={nextJacket}
+          aria-label="Next jacket"
+          className="hidden xl:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 h-11 w-11 items-center justify-center rounded-full border border-[#2a1810]/15 bg-white/85 text-[#2a1810] shadow-md backdrop-blur-xs transition-all hover:border-[#8a4d2b] hover:bg-[#8a4d2b] hover:text-white hover:scale-110 active:scale-95"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
+
+      {/* ── Active Jacket Details (Bottom Left) ── */}
       <ProductCaption />
-      <ProductDots />
+
+      {/* ── Bottom Center Arrow Synchronization & Counter (02 / 05) ── */}
+      <ProductNavControls />
     </div>
   );
 }

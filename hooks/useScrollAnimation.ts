@@ -81,7 +81,7 @@ export function useScrollAnimation({
       const pairIndex = Math.min(Math.floor(position), count - 2);
       const localProgress = position - pairIndex; // in [0, 1]
 
-      // Active index for dots and captions
+      // Active index for dots, arrows, and captions
       const activeIndex = clamp(Math.round(position), 0, count - 1);
 
       groupsRef.current.forEach((group, i) => {
@@ -177,11 +177,41 @@ export function useScrollAnimation({
       if (!track || count < 2) return;
       measure();
       const { trackTop, max } = metricsRef.current;
-      const top = trackTop + (index / (count - 1)) * max;
+      const targetIndex = clamp(index, 0, count - 1);
+      const top = trackTop + (targetIndex / (count - 1)) * max;
       window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
     },
     [count, trackRef, measure]
   );
+
+  const nextJacket = useCallback(() => {
+    if (count < 2) return;
+    const currentPos = targetProgressRef.current * (count - 1);
+    const target = clamp(Math.floor(currentPos + 1.001), 0, count - 1);
+    if (target > Math.round(currentPos)) {
+      scrollToIndex(target);
+    } else if (target < count - 1) {
+      scrollToIndex(target + 1);
+    } else {
+      scrollToIndex(count - 1);
+    }
+  }, [count, scrollToIndex]);
+
+  const prevJacket = useCallback(() => {
+    if (count < 2) return;
+    const currentPos = targetProgressRef.current * (count - 1);
+    const target = clamp(Math.ceil(currentPos - 1.001), 0, count - 1);
+    if (target < Math.round(currentPos)) {
+      scrollToIndex(target);
+    } else if (target > 0) {
+      scrollToIndex(target - 1);
+    } else {
+      scrollToIndex(0);
+    }
+  }, [count, scrollToIndex]);
+
+  const canNext = currentIndex < count - 1;
+  const canPrev = currentIndex > 0;
 
   useEffect(() => {
     measure();
@@ -195,17 +225,41 @@ export function useScrollAnimation({
       triggerAnimation();
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
+      const track = trackRef.current;
+      if (!track) return;
+      const rect = track.getBoundingClientRect();
+      const inView = rect.top <= window.innerHeight * 0.7 && rect.bottom >= window.innerHeight * 0.3;
+      if (!inView) return;
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextJacket();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevJacket();
+      }
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKeyDown);
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [triggerAnimation, updateTarget, renderFrame, measure, viewport.height, viewport.width]);
+  }, [triggerAnimation, updateTarget, renderFrame, measure, nextJacket, prevJacket, trackRef, viewport.height, viewport.width]);
 
   return {
     currentIndex,
@@ -213,5 +267,9 @@ export function useScrollAnimation({
     svgRef,
     setGroupRef,
     scrollToIndex,
+    nextJacket,
+    prevJacket,
+    canNext,
+    canPrev,
   };
 }

@@ -43,10 +43,18 @@ svg.scene {
 
 .caption {
   position: absolute;
-  left: clamp(20px, 5vw, 64px);
-  bottom: calc(clamp(20px, 5vh, 56px) + env(safe-area-inset-bottom, 0px));
+  left: clamp(16px, 4vw, 56px);
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   pointer-events: none;
-  max-width: min(70vw, 520px);
+  max-width: min(85vw, 400px);
+  z-index: 15;
+}
+
+@media (min-width: 768px) {
+  .caption {
+    bottom: calc(clamp(24px, 5vh, 56px) + env(safe-area-inset-bottom, 0px));
+    max-width: min(35vw, 440px);
+  }
 }
 
 .eyebrow {

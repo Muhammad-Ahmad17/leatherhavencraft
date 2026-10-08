@@ -380,6 +380,152 @@ export function getAllColors(): string[] {
   return Array.from(set);
 }
 
+export type PaginatedResponse = {
+  products: Product[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+};
+
+export type ProductQueryParams = {
+  page?: number;
+  limit?: number;
+  category?: string;
+  brand?: string;
+  size?: string;
+  color?: string;
+  sort?: string;
+  search?: string;
+};
+
+export interface RawProductData {
+  _id?: string;
+  id?: string;
+  slug?: string;
+  name?: string;
+  category?: string;
+  description?: string;
+  price?: number;
+  meta?: string;
+  color?: string;
+  darkColor?: string;
+  colorName?: string;
+  colors?: { name: string; hex: string }[];
+  sizes?: string[];
+  featured?: boolean;
+  image?: string;
+  imagePublicId?: string;
+  imageHover?: string;
+  imageHoverPublicId?: string;
+  images?: string[];
+  imagesPublicIds?: string[];
+  hem?: number;
+  cuff?: number;
+  svgExtra?: string;
+}
+
+export function mapRawProduct(raw: RawProductData): Product {
+  return {
+    id: raw._id || raw.id || "",
+    slug: raw.slug || "",
+    name: raw.name || "",
+    brand: raw.category || "leather-haven-craft",
+    description: raw.description || "",
+    price: raw.price || 0,
+    meta: raw.meta || "",
+    color: raw.color || "#1a1a1a",
+    darkColor: raw.darkColor || "#0f0f0f",
+    colorName: raw.colorName || "Black",
+    colors:
+      Array.isArray(raw.colors) && raw.colors.length > 0
+        ? raw.colors
+        : [{ name: raw.colorName || "Black", hex: raw.color || "#1a1a1a" }],
+    sizes:
+      Array.isArray(raw.sizes) && raw.sizes.length > 0
+        ? raw.sizes
+        : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: Boolean(raw.featured),
+    image: raw.image || "",
+    imagePublicId: raw.imagePublicId,
+    imageHover: raw.imageHover || raw.image || "",
+    imageHoverPublicId: raw.imageHoverPublicId,
+    images:
+      Array.isArray(raw.images) && raw.images.length > 0
+        ? raw.images
+        : ([raw.image, raw.imageHover].filter(Boolean) as string[]),
+    imagesPublicIds: raw.imagesPublicIds || [],
+    hem: raw.hem || 410,
+    cuff: raw.cuff || 418,
+    svgExtra: raw.svgExtra || "",
+  };
+}
+
+export async function fetchPaginatedProducts(
+  params: ProductQueryParams = {}
+): Promise<PaginatedResponse> {
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.leatherhavencraft.com";
+  const { page = 1, limit = 16, category, brand, size, color, sort, search } = params;
+
+  const sp = new URLSearchParams();
+  sp.set("page", String(page));
+  sp.set("limit", String(limit));
+
+  const targetCategory = (category && category !== "all") ? category : (brand && brand !== "all" ? brand : undefined);
+  if (targetCategory) sp.set("category", targetCategory);
+  if (size && size !== "all") sp.set("size", size);
+  if (color && color !== "all") sp.set("color", color);
+  if (sort && sort !== "featured") sp.set("sort", sort);
+  if (search) sp.set("search", search);
+
+  try {
+    const res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        const mapped = json.data.map(mapRawProduct);
+        const total = json.pagination?.total ?? mapped.length;
+        return {
+          products: mapped,
+          pagination: {
+            total,
+            page: json.pagination?.page ?? page,
+            limit: json.pagination?.limit ?? limit,
+            totalPages: json.pagination?.totalPages ?? (Math.ceil(total / limit) || 1),
+          },
+        };
+      }
+    }
+  } catch (err) {
+    console.error("[fetchPaginatedProducts error]", err);
+  }
+
+  // Fallback if backend is unreachable
+  const filtered = products.filter((p) => {
+    if (targetCategory && p.brand !== targetCategory) return false;
+    if (size && size !== "all" && !(p.sizes || []).includes(size)) return false;
+    return true;
+  });
+
+  const start = (page - 1) * limit;
+  const sliced = filtered.slice(start, start + limit);
+
+  return {
+    products: sliced,
+    pagination: {
+      total: filtered.length,
+      page,
+      limit,
+      totalPages: Math.ceil(filtered.length / limit) || 1,
+    },
+  };
+}
+
 export async function fetchLiveProducts(category?: string): Promise<Product[]> {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   try {
@@ -391,30 +537,7 @@ export async function fetchLiveProducts(category?: string): Promise<Product[]> {
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-        return json.data.map((raw: any) => ({
-          id: raw._id || raw.id,
-          slug: raw.slug,
-          name: raw.name,
-          brand: raw.category,
-          description: raw.description,
-          price: raw.price,
-          meta: raw.meta || "",
-          color: raw.color || "#1a1a1a",
-          darkColor: raw.darkColor || "#0f0f0f",
-          colorName: raw.colorName || "Black",
-          colors: Array.isArray(raw.colors) && raw.colors.length > 0 ? raw.colors : [{ name: raw.colorName || "Black", hex: raw.color || "#1a1a1a" }],
-          sizes: Array.isArray(raw.sizes) && raw.sizes.length > 0 ? raw.sizes : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
-          featured: Boolean(raw.featured),
-          image: raw.image,
-          imagePublicId: raw.imagePublicId,
-          imageHover: raw.imageHover || raw.image,
-          imageHoverPublicId: raw.imageHoverPublicId,
-          images: Array.isArray(raw.images) && raw.images.length > 0 ? raw.images : [raw.image, raw.imageHover].filter(Boolean),
-          imagesPublicIds: raw.imagesPublicIds || [],
-          hem: raw.hem || 410,
-          cuff: raw.cuff || 418,
-          svgExtra: raw.svgExtra || "",
-        }));
+        return json.data.map(mapRawProduct);
       }
     }
   } catch {
