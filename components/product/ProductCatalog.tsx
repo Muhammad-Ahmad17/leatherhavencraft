@@ -81,7 +81,6 @@ const STANDARD_SIZES = [
   "4XL",
   "5XL",
   "6XL",
-  "One Size",
 ];
 
 const KNOWN_BRANDS = [
@@ -91,17 +90,12 @@ const KNOWN_BRANDS = [
   { slug: "harley-davidson", name: "Harley-Davidson" },
   { slug: "supreme", name: "Supreme" },
   { slug: "leather-haven-craft", name: "Leather Haven Craft" },
-  { slug: "accessories", name: "Accessories" },
 ];
 
-const KNOWN_CATEGORIES = [
+const PRIMARY_SILHOUETTES = [
   "Bomber Jackets",
   "Racing & Moto",
   "Coats & Jackets",
-  "Hoodies",
-  "Jerseys",
-  "T-Shirts",
-  "Accessories",
 ];
 
 const KNOWN_COLORS = [
@@ -143,7 +137,10 @@ export function ProductCatalog({
   initialSort = "featured",
   initialSearch = "",
 }: ProductCatalogProps) {
-  // Support both direct products prop (e.g. from BrandPage) and SSR paginated props (from ProductsPage)
+  // Brand locking: when on a brand page like /brands/pelle-pelle, brand is locked
+  const isBrandLocked = Boolean(initialBrand && initialBrand !== "all");
+
+  // Support direct products prop (e.g. from static fallback) and SSR paginated props
   const isDirectMode = Boolean(products && !initialProducts);
 
   const [items, setItems] = useState<Product[]>(() => {
@@ -164,7 +161,6 @@ export function ProductCatalog({
     totalPages: initialPagination?.totalPages ?? (products ? Math.ceil(products.length / 16) || 1 : 1),
   });
 
-  const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState(initialCategory);
   const [brand, setBrand] = useState(initialBrand);
   const [size, setSize] = useState(initialSize);
@@ -174,23 +170,6 @@ export function ProductCatalog({
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
-
-  // Lock body scroll and handle Escape key when drawer is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setIsOpen(false);
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [isOpen]);
 
   // Keep items in sync if products prop updates
   useEffect(() => {
@@ -308,7 +287,6 @@ export function ProductCatalog({
       newSrt = sort
     ) => {
       if (isDirectMode && products) {
-        // Direct in-memory filtering for pages like BrandPage
         setCategory(newCat);
         setBrand(newBrd);
         setSize(newSz);
@@ -324,19 +302,28 @@ export function ProductCatalog({
     [isDirectMode, products, category, brand, size, color, sort, queryBackend]
   );
 
+  // Instant 1-click silhouette filter
+  const handleCategoryClick = (catName: string) => {
+    const nextCat = category === catName && catName !== "all" ? "all" : catName;
+    setCategory(nextCat);
+    handleFilterChange(nextCat, brand, size, color, sort);
+  };
+
+  // Clear all filters (maintains locked brand on brand pages)
   const clearAllFilters = () => {
+    const targetBrand = isBrandLocked ? initialBrand : "all";
     setCategory("all");
-    setBrand("all");
+    if (!isBrandLocked) setBrand("all");
     setSize("all");
     setColor("all");
     if (!isDirectMode) {
-      handleFilterChange("all", "all", "all", "all", sort);
+      handleFilterChange("all", targetBrand, "all", "all", sort);
     } else {
       setPagination((prev) => ({ ...prev, page: 1 }));
     }
   };
 
-  // For direct mode (e.g. BrandPage fallback), filter products in memory
+  // For direct mode fallback, filter products in memory
   const filteredDirectProducts = useMemo(() => {
     if (!isDirectMode || !products) return [];
     const filtered = products.filter((p) => {
@@ -373,7 +360,6 @@ export function ProductCatalog({
 
     if (isDirectMode && products) {
       if (displayedItems.length >= totalPieces) return;
-      // In-memory pagination for direct mode
       setPagination((prev) => ({
         ...prev,
         page: prev.page + 1,
@@ -441,230 +427,15 @@ export function ProductCatalog({
     }
   };
 
+  // Active filters count (excluding locked brand on brand pages)
   const activeFiltersCount =
     (category !== "all" ? 1 : 0) +
-    (brand !== "all" ? 1 : 0) +
+    (!isBrandLocked && brand !== "all" ? 1 : 0) +
     (size !== "all" ? 1 : 0) +
     (color !== "all" ? 1 : 0);
 
   return (
     <section className="px-6 pb-20">
-      {/* ── Slide-over Filter Panel ── */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-[#1a110c]/60 backdrop-blur-xs transition-opacity duration-300"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      <aside
-        role="dialog"
-        aria-modal="true"
-        aria-label="Filters"
-        className={`fixed inset-y-0 left-0 z-50 flex w-full max-w-[320px] sm:max-w-[360px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
-        }`}
-      >
-        {/* Panel Header */}
-        <div className="flex items-center justify-between border-b border-[#ece7de] px-6 py-5">
-          <div className="flex items-center gap-2">
-            <h2 className="font-serif text-lg font-bold text-[#2a1810]">Filters</h2>
-            {activeFiltersCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
-                {activeFiltersCount}
-              </span>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[#706456] hover:bg-[#f5f1eb] hover:text-[#2a1810] transition-colors cursor-pointer"
-            aria-label="Close filters"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Panel Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-7">
-          {/* Brand Section */}
-          <div>
-            <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Brand / Heritage House
-            </h3>
-            <ul className="mt-3.5 space-y-2">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBrand("all");
-                    handleFilterChange(category, "all", size, color, sort);
-                  }}
-                  className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                    brand === "all"
-                      ? "font-bold text-[#8a4d2b]"
-                      : "text-[#2a1810] hover:text-[#8a4d2b]"
-                  }`}
-                >
-                  All Houses
-                </button>
-              </li>
-              {KNOWN_BRANDS.map((b) => {
-                const isActive = brand === b.slug;
-                return (
-                  <li key={b.slug}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const next = isActive ? "all" : b.slug;
-                        setBrand(next);
-                        handleFilterChange(category, next, size, color, sort);
-                      }}
-                      className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                        isActive
-                          ? "font-bold text-[#8a4d2b]"
-                          : "text-[#2a1810] hover:text-[#8a4d2b]"
-                      }`}
-                    >
-                      {b.name}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Category Section */}
-          <div>
-            <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Silhouettes &amp; Cuts
-            </h3>
-            <ul className="mt-3.5 space-y-2">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategory("all");
-                    handleFilterChange("all", brand, size, color, sort);
-                  }}
-                  className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                    category === "all"
-                      ? "font-bold text-[#8a4d2b]"
-                      : "text-[#2a1810] hover:text-[#8a4d2b]"
-                  }`}
-                >
-                  All Silhouettes
-                </button>
-              </li>
-              {KNOWN_CATEGORIES.map((catName) => {
-                const isActive = category === catName;
-                return (
-                  <li key={catName}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const next = isActive ? "all" : catName;
-                        setCategory(next);
-                        handleFilterChange(next, brand, size, color, sort);
-                      }}
-                      className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                        isActive
-                          ? "font-bold text-[#8a4d2b]"
-                          : "text-[#2a1810] hover:text-[#8a4d2b]"
-                      }`}
-                    >
-                      {catName}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Size Section */}
-          <div>
-            <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Size (XS – 6XL)
-            </h3>
-            <div className="mt-3.5 grid grid-cols-3 gap-2">
-              {STANDARD_SIZES.map((s) => {
-                const isActive = size === s;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => {
-                      const next = isActive ? "all" : s;
-                      setSize(next);
-                      handleFilterChange(category, brand, next, color, sort);
-                    }}
-                    className={`py-2 px-3 text-xs font-semibold rounded-md border transition-all cursor-pointer text-center ${
-                      isActive
-                        ? "border-[#8a4d2b] bg-[#8a4d2b] text-white shadow-2xs"
-                        : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b]"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Color Section */}
-          <div>
-            <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Color
-            </h3>
-            <ul className="mt-3.5 space-y-2">
-              {KNOWN_COLORS.map((colName) => {
-                const isActive = color === colName;
-                return (
-                  <li key={colName}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const next = isActive ? "all" : colName;
-                        setColor(next);
-                        handleFilterChange(category, brand, size, next, sort);
-                      }}
-                      className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                        isActive
-                          ? "font-bold text-[#8a4d2b]"
-                          : "text-[#2a1810] hover:text-[#8a4d2b]"
-                      }`}
-                    >
-                      {colName}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
-        {/* Panel Footer */}
-        <div className="border-t border-[#ece7de] bg-[#fbf9f6] p-4 flex gap-3">
-          {activeFiltersCount > 0 && (
-            <button
-              type="button"
-              onClick={clearAllFilters}
-              className="flex-1 py-2.5 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-[#706456] bg-white border border-[#ded5c7] hover:bg-[#f5f1eb] rounded transition-colors cursor-pointer"
-            >
-              Clear All
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="flex-1 py-2.5 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-white bg-[#2a1810] hover:bg-[#8a4d2b] rounded transition-colors cursor-pointer"
-          >
-            View ({totalPieces})
-          </button>
-        </div>
-      </aside>
-
       {/* ── Active Search Banner ── */}
       {search && (
         <div className="mx-auto max-w-6xl mb-6">
@@ -692,133 +463,239 @@ export function ProductCatalog({
         </div>
       )}
 
-      {/* ── Top Catalog Action Bar ── */}
-      <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3.5 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
-          {/* Left: Filter Trigger Button & Active Filters */}
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className="inline-flex items-center gap-2 rounded-md border border-[#ded5c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#2a1810] hover:border-[#8a4d2b] hover:bg-[#faf8f5] transition-all shadow-2xs cursor-pointer"
-            >
-              <svg className="h-4 w-4 text-[#8a4d2b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-
-            {/* Active Filter Chips */}
-            {category !== "all" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#faf7f2] border border-[#ded5c7] px-3 py-1 text-xs text-[#2a1810]">
-                <span>{category}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategory("all");
-                    handleFilterChange("all", brand, size, color, sort);
-                  }}
-                  className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
-                  aria-label={`Remove ${category} filter`}
-                >
-                  ✕
-                </button>
-              </span>
-            )}
-
-            {brand !== "all" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#faf7f2] border border-[#ded5c7] px-3 py-1 text-xs text-[#2a1810]">
-                <span>{getBrandLabel(brand)}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBrand("all");
-                    handleFilterChange(category, "all", size, color, sort);
-                  }}
-                  className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
-                  aria-label="Remove brand filter"
-                >
-                  ✕
-                </button>
-              </span>
-            )}
-
-            {size !== "all" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#faf7f2] border border-[#ded5c7] px-3 py-1 text-xs text-[#2a1810]">
-                <span>Size: {size}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSize("all");
-                    handleFilterChange(category, brand, "all", color, sort);
-                  }}
-                  className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
-                  aria-label="Remove size filter"
-                >
-                  ✕
-                </button>
-              </span>
-            )}
-
-            {color !== "all" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#faf7f2] border border-[#ded5c7] px-3 py-1 text-xs text-[#2a1810]">
-                <span>Color: {color}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setColor("all");
-                    handleFilterChange(category, brand, size, "all", sort);
-                  }}
-                  className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
-                  aria-label="Remove color filter"
-                >
-                  ✕
-                </button>
-              </span>
-            )}
-
-            {activeFiltersCount > 0 && (
+      {/* ── Direct, Intuitive Filter Toolbar ── */}
+      <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-4 backdrop-blur-md">
+        <div className="mx-auto max-w-6xl space-y-3.5">
+          {/* Row 1: Direct 1-Click Category / Silhouette Pills */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               <button
                 type="button"
-                onClick={clearAllFilters}
-                className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] ml-1 cursor-pointer"
+                onClick={() => handleCategoryClick("all")}
+                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                  category === "all"
+                    ? "bg-[#2a1810] text-[#faf7f2] shadow-xs"
+                    : "border border-[#ded5c7] bg-white text-[#524438] hover:border-[#8a4d2b] hover:text-[#2a1810]"
+                }`}
               >
-                Clear all
+                {isBrandLocked ? `All ${getBrandLabel(initialBrand)}` : "All Outerwear"}
               </button>
-            )}
+
+              {PRIMARY_SILHOUETTES.map((sil) => {
+                const isActive = category === sil;
+                return (
+                  <button
+                    key={sil}
+                    type="button"
+                    onClick={() => handleCategoryClick(sil)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-[#2a1810] text-[#faf7f2] shadow-xs"
+                        : "border border-[#ded5c7] bg-white text-[#524438] hover:border-[#8a4d2b] hover:text-[#2a1810]"
+                    }`}
+                  >
+                    {sil}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Total Pieces counter */}
+            <span className="shrink-0 text-xs font-medium text-[#706456] hidden md:inline">
+              <span className="font-bold text-[#2a1810]">{totalPieces}</span>{" "}
+              {totalPieces === 1 ? "piece" : "pieces"}
+            </span>
           </div>
 
-          {/* Right: Sort & Pieces Counter */}
-          <div className="flex items-center gap-4">
-            <span className="text-xs uppercase tracking-[0.14em] text-[var(--muted)] hidden sm:inline">
-              {totalPieces} {totalPieces === 1 ? "piece" : "pieces"}
-            </span>
+          {/* Row 2: Clean Dropdown Refinement Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#ece7de]/70">
+            <div className="flex flex-wrap items-center gap-2">
+              {/* House/Brand Select: Only on /products, hidden if already on brand page */}
+              {!isBrandLocked && (
+                <div className="relative">
+                  <select
+                    value={brand}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setBrand(next);
+                      handleFilterChange(category, next, size, color, sort);
+                    }}
+                    className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+                    aria-label="Filter by House"
+                  >
+                    <option value="all">House: All Houses</option>
+                    {KNOWN_BRANDS.map((b) => (
+                      <option key={b.slug} value={b.slug}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
+                    ▾
+                  </span>
+                </div>
+              )}
 
-            <div className="flex items-center gap-2">
+              {/* Size Select */}
+              <div className="relative">
+                <select
+                  value={size}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setSize(next);
+                    handleFilterChange(category, brand, next, color, sort);
+                  }}
+                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+                  aria-label="Filter by Size"
+                >
+                  <option value="all">Size: All Sizes</option>
+                  {STANDARD_SIZES.map((s) => (
+                    <option key={s} value={s}>
+                      Size: {s}
+                    </option>
+                  ))}
+                </select>
+                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
+                  ▾
+                </span>
+              </div>
+
+              {/* Color Select */}
+              <div className="relative">
+                <select
+                  value={color}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setColor(next);
+                    handleFilterChange(category, brand, size, next, sort);
+                  }}
+                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+                  aria-label="Filter by Color"
+                >
+                  <option value="all">Color: All Colors</option>
+                  {KNOWN_COLORS.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
+                  ▾
+                </span>
+              </div>
+
+              {/* Reset link if filters applied */}
+              {activeFiltersCount > 0 && (
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="ml-1 text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] transition-colors cursor-pointer"
+                >
+                  Reset filters
+                </button>
+              )}
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 ml-auto">
               <label htmlFor="sort-select" className="sr-only">
                 Sort by
               </label>
-              <select
-                id="sort-select"
-                value={sort}
-                onChange={(e) => {
-                  const nextSort = e.target.value as Sort;
-                  setSort(nextSort);
-                  handleFilterChange(category, brand, size, color, nextSort);
-                }}
-                className="h-9 px-3 text-xs font-medium rounded-md border border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs"
-              >
-                <option value="featured">Featured</option>
-                <option value="price-asc">Price, low to high</option>
-                <option value="price-desc">Price, high to low</option>
-              </select>
+              <div className="relative">
+                <select
+                  id="sort-select"
+                  value={sort}
+                  onChange={(e) => {
+                    const nextSort = e.target.value as Sort;
+                    setSort(nextSort);
+                    handleFilterChange(category, brand, size, color, nextSort);
+                  }}
+                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+                >
+                  <option value="featured">Sort: Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                </select>
+                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
+                  ▾
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Row 3: Active Filter Badges (Shows only when filters are active) */}
+          {activeFiltersCount > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706456] mr-1">
+                Active:
+              </span>
+
+              {category !== "all" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
+                  <span>{category}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleCategoryClick("all")}
+                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
+                    aria-label={`Remove ${category} filter`}
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {!isBrandLocked && brand !== "all" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
+                  <span>House: {getBrandLabel(brand)}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBrand("all");
+                      handleFilterChange(category, "all", size, color, sort);
+                    }}
+                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
+                    aria-label="Remove brand filter"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {size !== "all" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
+                  <span>Size: {size}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSize("all");
+                      handleFilterChange(category, brand, "all", color, sort);
+                    }}
+                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
+                    aria-label="Remove size filter"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {color !== "all" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
+                  <span>Color: {color}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setColor("all");
+                      handleFilterChange(category, brand, size, "all", sort);
+                    }}
+                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
+                    aria-label="Remove color filter"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -828,7 +705,7 @@ export function ProductCatalog({
           <>
             <ProductGrid products={displayedItems} />
 
-            {/* Progressive Load More & Counter (Shows when catalog exceeds 16 pieces) */}
+            {/* Progressive Load More & Counter */}
             {totalPieces > 16 && (
               <div className="mt-14 flex flex-col items-center text-center">
                 <p className="text-xs font-semibold tracking-wide text-[#706456]">
