@@ -13,6 +13,7 @@ type ProductsPageProps = {
     size?: string;
     color?: string;
     sort?: string;
+    search?: string;
   }>;
 };
 
@@ -27,10 +28,12 @@ export async function generateMetadata({
     ? `${brandName} Leather Outerwear`
     : "All Leather Outerwear & Archive Jackets";
 
-  const fullTitle =
-    pageNum > 1
-      ? `${titlePrefix} — Page ${pageNum} | Leather Haven Craft`
-      : `${titlePrefix} | Leather Haven Craft`;
+  const queryTerm = sp.search ? `"${sp.search}"` : "";
+  const fullTitle = queryTerm
+    ? `Search: ${queryTerm}${pageNum > 1 ? ` — Page ${pageNum}` : ""} | Leather Haven Craft`
+    : pageNum > 1
+    ? `${titlePrefix} — Page ${pageNum} | Leather Haven Craft`
+    : `${titlePrefix} | Leather Haven Craft`;
 
   const canonicalUrl =
     pageNum > 1 ? `/products?page=${pageNum}` : "/products";
@@ -55,6 +58,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const category = sp.category || "all";
   const size = sp.size || "all";
   const color = sp.color || "all";
+  const search = sp.search || undefined;
   const rawSort = sp.sort || "featured";
   const validSort: "featured" | "price-asc" | "price-desc" = rawSort === "price-asc" || rawSort === "price-desc" ? rawSort : "featured";
 
@@ -67,6 +71,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     size: size !== "all" ? size : undefined,
     color: color !== "all" ? color : undefined,
     sort: validSort !== "featured" ? validSort : undefined,
+    search,
   });
 
   const collectionSchema = {
@@ -120,6 +125,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         initialSize={size}
         initialColor={color}
         initialSort={validSort}
+        initialSearch={search}
       />
 
       {/* ── Catalog Editorial Footer Guide ── */}

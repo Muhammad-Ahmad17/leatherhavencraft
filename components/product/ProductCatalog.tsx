@@ -129,6 +129,7 @@ export type ProductCatalogProps = {
   initialSize?: string;
   initialColor?: string;
   initialSort?: Sort;
+  initialSearch?: string;
 };
 
 export function ProductCatalog({
@@ -140,6 +141,7 @@ export function ProductCatalog({
   initialSize = "all",
   initialColor = "all",
   initialSort = "featured",
+  initialSearch = "",
 }: ProductCatalogProps) {
   // Support both direct products prop (e.g. from BrandPage) and SSR paginated props (from ProductsPage)
   const isDirectMode = Boolean(products && !initialProducts);
@@ -168,6 +170,7 @@ export function ProductCatalog({
   const [size, setSize] = useState(initialSize);
   const [color, setColor] = useState(initialColor);
   const [sort, setSort] = useState<Sort>(initialSort);
+  const [search, setSearch] = useState(initialSearch);
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
@@ -227,8 +230,10 @@ export function ProductCatalog({
       newSize: string,
       newColor: string,
       newSort: Sort,
-      append = false
+      append = false,
+      newSearch?: string
     ) => {
+      const activeSearch = newSearch !== undefined ? newSearch : search;
       const sp = new URLSearchParams();
       sp.set("page", String(targetPage));
       sp.set("limit", "16");
@@ -237,6 +242,7 @@ export function ProductCatalog({
       if (newSize !== "all") sp.set("size", newSize);
       if (newColor !== "all") sp.set("color", newColor);
       if (newSort !== "featured") sp.set("sort", newSort);
+      if (activeSearch && activeSearch.trim()) sp.set("search", activeSearch.trim());
 
       try {
         const res = await fetch(`/api/catalog/products?${sp.toString()}`);
@@ -273,6 +279,7 @@ export function ProductCatalog({
               size: newSize,
               color: newColor,
               sort: newSort,
+              search: activeSearch,
             });
           }
         }
@@ -280,7 +287,7 @@ export function ProductCatalog({
         console.error("[Catalog Query Error]", err);
       }
     },
-    [updateUrlQuery]
+    [updateUrlQuery, search]
   );
 
   // Filter change handler
@@ -623,6 +630,33 @@ export function ProductCatalog({
           </button>
         </div>
       </aside>
+
+      {/* ── Active Search Banner ── */}
+      {search && (
+        <div className="mx-auto max-w-6xl mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#ded5c7] bg-[#fbf9f6] px-5 py-3.5 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b]">Search</span>
+              <span className="text-sm font-semibold text-[#221b16]">
+                &ldquo;{search}&rdquo;
+              </span>
+              <span className="text-xs text-[#706456]">
+                ({totalPieces} matching {totalPieces === 1 ? "piece" : "pieces"})
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                queryBackend(1, category, brand, size, color, sort, false, "");
+              }}
+              className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] cursor-pointer"
+            >
+              Clear Search
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Top Catalog Action Bar ── */}
       <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3.5 backdrop-blur-sm">
