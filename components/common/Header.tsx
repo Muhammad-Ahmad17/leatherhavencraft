@@ -108,41 +108,19 @@ export function Header() {
                     ▾
                   </span>
                 </button>
-                <div className="invisible absolute left-0 top-full z-50 mt-2 w-[260px] rounded-xl border border-[var(--line)] bg-white py-2 shadow-2xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  <div className="px-4 py-2 border-b border-[#ece7de] flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8a4d2b]">
-                      Collections
-                    </span>
-                    <Link
-                      href="/products"
-                      className="text-[11px] font-medium text-[#706456] hover:text-[#2a1810] underline"
-                    >
-                      All Pieces
-                    </Link>
-                  </div>
-                  <ul className="py-1">
+                <div className="invisible absolute left-0 top-full z-50 mt-1 w-[220px] rounded-none border border-[var(--line)] bg-white py-1 shadow-md transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul>
                     {stripBrands.map((brand) => (
                       <li key={brand.slug}>
                         <Link
                           href={`/brands/${brand.slug}`}
-                          className="group/link flex items-center justify-between px-4 py-2.5 text-xs font-medium tracking-wide text-[#2a1810] transition-colors hover:bg-[#faf7f2] hover:text-[#8a4d2b]"
+                          className="block px-4 py-2 text-xs font-medium tracking-wide text-[#2a1810] transition-colors hover:bg-[#faf7f2] hover:text-[#8a4d2b]"
                         >
-                          <span>{brand.name}</span>
-                          <span className="text-[10px] text-[#8a4d2b] opacity-0 transition-opacity group-hover/link:opacity-100">
-                            &rarr;
-                          </span>
+                          {brand.name}
                         </Link>
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-1 border-t border-[#ece7de] pt-2.5 px-4 pb-1">
-                    <Link
-                      href="/products"
-                      className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a4d2b] hover:text-[#2a1810] transition-colors"
-                    >
-                      View All Outerwear &rarr;
-                    </Link>
-                  </div>
                 </div>
               </div>
               <Link
