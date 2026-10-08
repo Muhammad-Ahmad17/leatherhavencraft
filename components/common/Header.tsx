@@ -108,41 +108,41 @@ export function Header() {
                     ▾
                   </span>
                 </button>
-                <div className="invisible absolute left-0 top-full z-50 mt-2 w-[460px] rounded-xl border border-[var(--line)] bg-white p-3 shadow-2xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  <div className="px-2 py-1.5 mb-1.5 border-b border-[#ece7de] flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                      Brands &amp; Collections
+                <div className="invisible absolute left-0 top-full z-50 mt-2 w-[260px] rounded-xl border border-[var(--line)] bg-white py-2 shadow-2xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <div className="px-4 py-2 border-b border-[#ece7de] flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8a4d2b]">
+                      Collections
                     </span>
                     <Link
                       href="/products"
                       className="text-[11px] font-medium text-[#706456] hover:text-[#2a1810] underline"
                     >
-                      View All Pieces
+                      All Pieces
                     </Link>
                   </div>
-                  <ul className="grid grid-cols-2 gap-2">
+                  <ul className="py-1">
                     {stripBrands.map((brand) => (
                       <li key={brand.slug}>
                         <Link
                           href={`/brands/${brand.slug}`}
-                          title={brand.name}
-                          className="group/brand flex items-center gap-3 rounded-lg border border-transparent p-2 transition-all hover:border-[#ded5c7] hover:bg-[#faf7f2]"
+                          className="group/link flex items-center justify-between px-4 py-2.5 text-xs font-medium tracking-wide text-[#2a1810] transition-colors hover:bg-[#faf7f2] hover:text-[#8a4d2b]"
                         >
-                          <span className="flex h-9 w-14 shrink-0 items-center justify-center rounded bg-white p-1 shadow-2xs border border-[#eee8df]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={brand.logo}
-                              alt=""
-                              className="max-h-6 w-auto max-w-full object-contain"
-                            />
-                          </span>
-                          <span className="text-xs font-semibold text-[#2a1810] group-hover/brand:text-[#8a4d2b] transition-colors truncate">
-                            {brand.name}
+                          <span>{brand.name}</span>
+                          <span className="text-[10px] text-[#8a4d2b] opacity-0 transition-opacity group-hover/link:opacity-100">
+                            &rarr;
                           </span>
                         </Link>
                       </li>
                     ))}
                   </ul>
+                  <div className="mt-1 border-t border-[#ece7de] pt-2.5 px-4 pb-1">
+                    <Link
+                      href="/products"
+                      className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a4d2b] hover:text-[#2a1810] transition-colors"
+                    >
+                      View All Outerwear &rarr;
+                    </Link>
+                  </div>
                 </div>
               </div>
               <Link
@@ -229,24 +229,12 @@ export function Header() {
                 <li key={brand.slug} className="border-b border-[var(--line)]">
                   <Link
                     href={`/brands/${brand.slug}`}
-                    className="flex items-center justify-between gap-4 py-3.5"
+                    className="flex items-center justify-between py-3.5 text-base font-normal text-[var(--ink)] hover:text-[#8a4d2b] transition-colors"
                     onClick={() => setOpen(false)}
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
-                      <span className="flex h-10 w-16 shrink-0 items-center justify-center rounded-md bg-white p-1.5 shadow-2xs border border-[#eee8df]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={brand.logo}
-                          alt=""
-                          className="max-h-7 w-auto max-w-full object-contain"
-                        />
-                      </span>
-                      <span className="text-base font-semibold text-[var(--ink)] truncate">
-                        {brand.name}
-                      </span>
-                    </div>
-                    <span aria-hidden="true" className="text-[var(--muted)] text-lg">
-                      →
+                    <span>{brand.name}</span>
+                    <span aria-hidden="true" className="text-[var(--muted)] text-sm">
+                      &rarr;
                     </span>
                   </Link>
                 </li>
