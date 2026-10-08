@@ -67,9 +67,8 @@ export function useScrollAnimation({
         groupsRef.current.forEach((group, i) => {
           if (!group) return;
           const active = i === activeIndex;
-          group.style.display = active ? "" : "none";
-          group.removeAttribute("transform");
-          group.removeAttribute("opacity");
+          group.style.opacity = active ? "1" : "0";
+          group.style.visibility = active ? "visible" : "hidden";
         });
         setCurrentIndex((prev) => (prev === activeIndex ? prev : activeIndex));
         return;
@@ -89,25 +88,22 @@ export function useScrollAnimation({
       groupsRef.current.forEach((group, i) => {
         if (!group) return;
 
-        // If this jacket is neither the outgoing nor incoming one, cleanly hide it
+        // If this jacket is neither the outgoing nor incoming one, cleanly hide it without GPU texture destruction
         if (i !== pairIndex && i !== pairIndex + 1) {
-          group.style.display = "none";
-          group.setAttribute("opacity", "0");
-          group.removeAttribute("transform");
+          group.style.opacity = "0";
+          group.style.visibility = "hidden";
           return;
         }
 
-        // Clean display
-        group.style.display = "";
-        group.removeAttribute("transform");
+        group.style.visibility = "visible";
 
         // Case 1: Sitting in the rest zone of pairIndex
         if (localProgress <= REST_ZONE) {
           if (i === pairIndex) {
-            group.setAttribute("opacity", "1");
+            group.style.opacity = "1";
           } else {
-            group.style.display = "none";
-            group.setAttribute("opacity", "0");
+            group.style.opacity = "0";
+            group.style.visibility = "hidden";
           }
           return;
         }
@@ -115,10 +111,10 @@ export function useScrollAnimation({
         // Case 2: Sitting in the rest zone of pairIndex + 1
         if (localProgress >= 1.0 - REST_ZONE) {
           if (i === pairIndex + 1) {
-            group.setAttribute("opacity", "1");
+            group.style.opacity = "1";
           } else {
-            group.style.display = "none";
-            group.setAttribute("opacity", "0");
+            group.style.opacity = "0";
+            group.style.visibility = "hidden";
           }
           return;
         }
@@ -128,13 +124,13 @@ export function useScrollAnimation({
         const t = clamp((localProgress - REST_ZONE) / transitionSpan, 0, 1);
         const blend = easeInOut(t);
 
-        // Equal-power cosine/sine cross-fade maintains 100% perceived leather density
+        // Equal-power cosine/sine cross-fade maintains 100% perceived leather density with GPU accelerated opacity
         if (i === pairIndex) {
           const opacityOut = Math.cos((blend * Math.PI) / 2);
-          group.setAttribute("opacity", opacityOut.toFixed(3));
+          group.style.opacity = opacityOut.toFixed(3);
         } else if (i === pairIndex + 1) {
           const opacityIn = Math.sin((blend * Math.PI) / 2);
-          group.setAttribute("opacity", opacityIn.toFixed(3));
+          group.style.opacity = opacityIn.toFixed(3);
         }
       });
 
@@ -146,13 +142,20 @@ export function useScrollAnimation({
   );
 
   const tick = useCallback(() => {
+    updateTarget();
     const target = targetProgressRef.current;
     let current = currentProgressRef.current;
     const diff = target - current;
 
-    // 0.12 lerp factor: silky-smooth organic luxury damping
-    if (Math.abs(diff) > 0.0001) {
-      current += diff * 0.12;
+    // Detect mobile / touch for snappy real-time tracking vs desktop inertia
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 || "ontouchstart" in window || navigator.maxTouchPoints > 0);
+    // On mobile touch: 0.75 gives instantaneous, lag-free finger tracking. On desktop: 0.16 gives smooth wheel inertia
+    const lerpFactor = isMobile ? 0.75 : 0.16;
+
+    if (Math.abs(diff) > 0.0005) {
+      current += diff * lerpFactor;
       currentProgressRef.current = current;
       renderFrame(current);
       rafIdRef.current = requestAnimationFrame(tick);
@@ -163,15 +166,14 @@ export function useScrollAnimation({
       isLoopRunningRef.current = false;
       rafIdRef.current = null;
     }
-  }, [renderFrame]);
+  }, [renderFrame, updateTarget]);
 
   const triggerAnimation = useCallback(() => {
-    updateTarget();
     if (!isLoopRunningRef.current) {
       isLoopRunningRef.current = true;
       rafIdRef.current = requestAnimationFrame(tick);
     }
-  }, [updateTarget, tick]);
+  }, [tick]);
 
   const scrollToIndex = useCallback(
     (index: number) => {
@@ -189,29 +191,29 @@ export function useScrollAnimation({
 
   const nextJacket = useCallback(() => {
     if (count < 2) return;
-    const currentPos = targetProgressRef.current * (count - 1);
-    const target = clamp(Math.floor(currentPos + 1.001), 0, count - 1);
-    if (target > Math.round(currentPos)) {
-      scrollToIndex(target);
-    } else if (target < count - 1) {
-      scrollToIndex(target + 1);
-    } else {
-      scrollToIndex(count - 1);
-    }
-  }, [count, scrollToIndex]);
+    const nextIdx = Math.min(currentIndex + 1, count - 1);
+    if (nextIdx === currentIndex) return;
+    // Instant visual update for zero-latency feedback on mobile touch/clicks
+    const targetProgress = nextIdx / (count - 1);
+    targetProgressRef.current = targetProgress;
+    currentProgressRef.current = targetProgress;
+    renderFrame(targetProgress);
+    setCurrentIndex(nextIdx);
+    scrollToIndex(nextIdx);
+  }, [count, currentIndex, renderFrame, scrollToIndex]);
 
   const prevJacket = useCallback(() => {
     if (count < 2) return;
-    const currentPos = targetProgressRef.current * (count - 1);
-    const target = clamp(Math.ceil(currentPos - 1.001), 0, count - 1);
-    if (target < Math.round(currentPos)) {
-      scrollToIndex(target);
-    } else if (target > 0) {
-      scrollToIndex(target - 1);
-    } else {
-      scrollToIndex(0);
-    }
-  }, [count, scrollToIndex]);
+    const prevIdx = Math.max(currentIndex - 1, 0);
+    if (prevIdx === currentIndex) return;
+    // Instant visual update for zero-latency feedback on mobile touch/clicks
+    const targetProgress = prevIdx / (count - 1);
+    targetProgressRef.current = targetProgress;
+    currentProgressRef.current = targetProgress;
+    renderFrame(targetProgress);
+    setCurrentIndex(prevIdx);
+    scrollToIndex(prevIdx);
+  }, [count, currentIndex, renderFrame, scrollToIndex]);
 
   const canNext = currentIndex < count - 1;
   const canPrev = currentIndex > 0;
@@ -268,12 +270,12 @@ export function useScrollAnimation({
       if (e.changedTouches.length === 1) {
         const deltaX = e.changedTouches[0].clientX - touchStartX;
         const deltaY = e.changedTouches[0].clientY - touchStartY;
-        // Horizontal swipe threshold: 45px and dominant over vertical
-        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+        // Horizontal swipe threshold: 35px and dominant over vertical
+        if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.1) {
           const track = trackRef.current;
           if (!track) return;
           const rect = track.getBoundingClientRect();
-          if (rect.top <= window.innerHeight * 0.8 && rect.bottom >= window.innerHeight * 0.2) {
+          if (rect.top <= window.innerHeight * 0.85 && rect.bottom >= window.innerHeight * 0.15) {
             if (deltaX < 0) {
               nextJacket();
             } else {
