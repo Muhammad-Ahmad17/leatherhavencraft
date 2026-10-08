@@ -41,6 +41,10 @@ const faqSchemaData = [
     q: "Do you offer custom made-to-measure sizing for extended sizes?",
     a: "Yes. Our atelier creates custom made-to-measure commissions and offers an inclusive Universal Size Matrix spanning XS through 6XL. Standard sizing spans XS to 2XL, while 3XL through 6XL are crafted with dedicated extra hide panels for a modest +$20 surcharge.",
   },
+  {
+    q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
+    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturing facility in Sialkot, supplying retail boutiques, motorcycle clubs, streetwear labels, and corporate bulk clients worldwide. We offer tiered wholesale volume pricing starting from 5+ units, custom embossing, private-label branding, and international bulk express shipping. Contact our concierge via WhatsApp or email with your target quantity and specifications for a custom quotation.",
+  },
 ];
 
 const CARE_STEPS = [

@@ -62,7 +62,7 @@ export function Footer() {
         <div className="lg:col-span-4">
           <SiteLogo />
           <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#6b5c51]">
-            {SITE_NAME} is an independent leather workshop and bespoke outerwear atelier. We handcraft master tributes to the world&apos;s most iconic leather jacket silhouettes alongside our bespoke made-to-measure pieces.
+            {SITE_NAME} is an independent leather workshop, bespoke atelier, and direct manufacturer. We handcraft master tributes to iconic silhouettes alongside bespoke made-to-measure tailoring and wholesale bulk production for boutiques, clubs, and retailers worldwide.
           </p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <a
@@ -135,6 +135,11 @@ export function Footer() {
             <li>
               <Link href="/shipping" className="transition-colors hover:text-[#221b16]">
                 Shipping &amp; Returns
+              </Link>
+            </li>
+            <li>
+              <Link href="/#custom-manufacturing" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                Wholesale &amp; Bulk Dealing
               </Link>
             </li>
             <li>

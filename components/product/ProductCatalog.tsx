@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Product } from "@/data/products";
 import { getBrandLabel } from "@/data/products";
 import { ProductGrid } from "@/components/product/ProductGrid";
@@ -84,13 +84,93 @@ const STANDARD_SIZES = [
   "One Size",
 ];
 
-export function ProductCatalog({ products }: { products: Product[] }) {
+const KNOWN_BRANDS = [
+  { slug: "pelle-pelle", name: "Pelle Pelle" },
+  { slug: "avirex", name: "Avirex" },
+  { slug: "schott-nyc", name: "Schott NYC" },
+  { slug: "harley-davidson", name: "Harley-Davidson" },
+  { slug: "supreme", name: "Supreme" },
+  { slug: "leather-haven-craft", name: "Leather Haven Craft" },
+  { slug: "accessories", name: "Accessories" },
+];
+
+const KNOWN_CATEGORIES = [
+  "Bomber Jackets",
+  "Racing & Moto",
+  "Coats & Jackets",
+  "Hoodies",
+  "Jerseys",
+  "T-Shirts",
+  "Accessories",
+];
+
+const KNOWN_COLORS = [
+  "Black",
+  "Brown",
+  "Navy",
+  "Yellow",
+  "Burgundy & Red",
+  "Olive Green",
+  "Grey",
+  "Cream & White",
+];
+
+export type ProductCatalogProps = {
+  products?: Product[];
+  initialProducts?: Product[];
+  initialPagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  initialCategory?: string;
+  initialBrand?: string;
+  initialSize?: string;
+  initialColor?: string;
+  initialSort?: Sort;
+};
+
+export function ProductCatalog({
+  products,
+  initialProducts,
+  initialPagination,
+  initialCategory = "all",
+  initialBrand = "all",
+  initialSize = "all",
+  initialColor = "all",
+  initialSort = "featured",
+}: ProductCatalogProps) {
+  // Support both direct products prop (e.g. from BrandPage) and SSR paginated props (from ProductsPage)
+  const isDirectMode = Boolean(products && !initialProducts);
+
+  const [items, setItems] = useState<Product[]>(() => {
+    const initial = products || initialProducts || [];
+    const seen = new Set<string>();
+    return initial.filter((p) => {
+      const pid = String(p.id);
+      if (seen.has(pid)) return false;
+      seen.add(pid);
+      return true;
+    });
+  });
+
+  const [pagination, setPagination] = useState({
+    total: initialPagination?.total ?? (products ? products.length : (initialProducts?.length ?? 0)),
+    page: initialPagination?.page ?? 1,
+    limit: initialPagination?.limit ?? 16,
+    totalPages: initialPagination?.totalPages ?? (products ? Math.ceil(products.length / 16) || 1 : 1),
+  });
+
   const [isOpen, setIsOpen] = useState(false);
-  const [category, setCategory] = useState("all");
-  const [brand, setBrand] = useState("all");
-  const [size, setSize] = useState("all");
-  const [color, setColor] = useState("all");
-  const [sort, setSort] = useState<Sort>("featured");
+  const [category, setCategory] = useState(initialCategory);
+  const [brand, setBrand] = useState(initialBrand);
+  const [size, setSize] = useState(initialSize);
+  const [color, setColor] = useState(initialColor);
+  const [sort, setSort] = useState<Sort>(initialSort);
+
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   // Lock body scroll and handle Escape key when drawer is open
   useEffect(() => {
@@ -109,87 +189,213 @@ export function ProductCatalog({ products }: { products: Product[] }) {
     }
   }, [isOpen]);
 
-  // Available brands (shown only when multiple brands exist in products)
-  const availableBrands = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const p of products) {
-      if (p.brand) {
-        map.set(p.brand, (map.get(p.brand) || 0) + 1);
-      }
+  // Keep items in sync if products prop updates
+  useEffect(() => {
+    if (products) {
+      setItems(products);
+      setPagination({
+        total: products.length,
+        page: 1,
+        limit: 16,
+        totalPages: Math.ceil(products.length / 16) || 1,
+      });
     }
-    return Array.from(map.entries())
-      .map(([slug, count]) => ({ slug, name: getBrandLabel(slug), count }))
-      .sort((a, b) => b.count - a.count);
   }, [products]);
 
-  const hasMultipleBrands = availableBrands.length > 1;
+  // Update URL shallowly without triggering unwanted re-renders or page jumps
+  const updateUrlQuery = useCallback(
+    (paramsObj: Record<string, string | number>) => {
+      if (typeof window === "undefined" || isDirectMode) return;
+      const sp = new URLSearchParams();
+      Object.entries(paramsObj).forEach(([k, v]) => {
+        if (v && v !== "all" && v !== "featured") {
+          sp.set(k, String(v));
+        }
+      });
+      const queryStr = sp.toString() ? `?${sp.toString()}` : window.location.pathname;
+      window.history.replaceState(null, "", queryStr);
+    },
+    [isDirectMode]
+  );
 
-  // Categories list with counts
-  const categoryCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const p of products) {
-      // Filter by brand if selected
-      if (brand !== "all" && p.brand !== brand) continue;
-      const cat = getProductCategory(p);
-      map.set(cat, (map.get(cat) || 0) + 1);
-    }
-    return Array.from(map.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [products, brand]);
+  // Apply filters via backend API query
+  const queryBackend = useCallback(
+    async (
+      targetPage: number,
+      newCategory: string,
+      newBrand: string,
+      newSize: string,
+      newColor: string,
+      newSort: Sort,
+      append = false
+    ) => {
+      const sp = new URLSearchParams();
+      sp.set("page", String(targetPage));
+      sp.set("limit", "16");
+      if (newCategory !== "all") sp.set("category", newCategory);
+      if (newBrand !== "all") sp.set("brand", newBrand);
+      if (newSize !== "all") sp.set("size", newSize);
+      if (newColor !== "all") sp.set("color", newColor);
+      if (newSort !== "featured") sp.set("sort", newSort);
 
-  // Sizes list with counts
-  const sizeCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const p of products) {
-      if (category !== "all" && getProductCategory(p) !== category) continue;
-      if (brand !== "all" && p.brand !== brand) continue;
-      for (const s of p.sizes || []) {
-        map.set(s, (map.get(s) || 0) + 1);
+      try {
+        const res = await fetch(`/api/catalog/products?${sp.toString()}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.products)) {
+            if (append) {
+              setItems((prev) => {
+                const seen = new Set(prev.map((p) => String(p.id)));
+                const uniqueIncoming = (data.products as Product[]).filter(
+                  (p: Product) => !seen.has(String(p.id))
+                );
+                return [...prev, ...uniqueIncoming];
+              });
+            } else {
+              const seen = new Set<string>();
+              const deduped: Product[] = [];
+              for (const p of data.products as Product[]) {
+                const pid = String(p.id);
+                if (!seen.has(pid)) {
+                  seen.add(pid);
+                  deduped.push(p);
+                }
+              }
+              setItems(deduped);
+            }
+            if (data.pagination) {
+              setPagination(data.pagination);
+            }
+            updateUrlQuery({
+              page: targetPage,
+              category: newCategory,
+              brand: newBrand,
+              size: newSize,
+              color: newColor,
+              sort: newSort,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("[Catalog Query Error]", err);
       }
+    },
+    [updateUrlQuery]
+  );
+
+  // Filter change handler
+  const handleFilterChange = useCallback(
+    async (
+      newCat = category,
+      newBrd = brand,
+      newSz = size,
+      newClr = color,
+      newSrt = sort
+    ) => {
+      if (isDirectMode && products) {
+        // Direct in-memory filtering for pages like BrandPage
+        return;
+      }
+      setIsFiltering(true);
+      await queryBackend(1, newCat, newBrd, newSz, newClr, newSrt, false);
+      setIsFiltering(false);
+    },
+    [isDirectMode, products, category, brand, size, color, sort, queryBackend]
+  );
+
+  const clearAllFilters = () => {
+    setCategory("all");
+    setBrand("all");
+    setSize("all");
+    setColor("all");
+    if (!isDirectMode) {
+      handleFilterChange("all", "all", "all", "all", sort);
     }
-    const standard = STANDARD_SIZES.filter((s) => map.has(s)).map((s) => ({
-      name: s,
-      count: map.get(s) || 0,
-    }));
-    const extra = Array.from(map.keys())
-      .filter((s) => !STANDARD_SIZES.includes(s))
-      .sort()
-      .map((s) => ({ name: s, count: map.get(s) || 0 }));
-    return [...standard, ...extra];
-  }, [products, category, brand]);
+  };
 
-  // Colors list with counts
-  const colorCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const p of products) {
-      if (category !== "all" && getProductCategory(p) !== category) continue;
-      if (brand !== "all" && p.brand !== brand) continue;
-      const base = getBaseColor(p.colorName);
-      map.set(base, (map.get(base) || 0) + 1);
+  // Load More Handler (Progressive append)
+  const handleLoadMore = async () => {
+    if (isLoadingMore || items.length >= pagination.total) return;
+
+    if (isDirectMode && products) {
+      // In-memory pagination for direct mode
+      setPagination((prev) => ({
+        ...prev,
+        page: prev.page + 1,
+      }));
+      return;
     }
-    return Array.from(map.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [products, category, brand]);
 
-  // Filtered & sorted products
-  const visible = useMemo(() => {
-    const filtered = products.filter((p) => {
-      if (category !== "all" && getProductCategory(p) !== category) return false;
-      if (brand !== "all" && p.brand !== brand) return false;
-      if (size !== "all" && !(p.sizes || []).includes(size)) return false;
-      if (color !== "all" && getBaseColor(p.colorName) !== color) return false;
-      return true;
-    });
+    setIsLoadingMore(true);
+    const nextPage = pagination.page + 1;
+    await queryBackend(nextPage, category, brand, size, color, sort, true);
+    setIsLoadingMore(false);
+  };
 
-    return [...filtered].sort((a, b) => {
-      if (sort === "price-asc") return a.price - b.price;
-      if (sort === "price-desc") return b.price - a.price;
-      if (a.featured !== b.featured) return a.featured ? -1 : 1;
-      return String(a.id || "").localeCompare(String(b.id || ""));
-    });
-  }, [products, category, brand, size, color, sort]);
+  // View All Handler
+  const handleViewAll = async () => {
+    if (isLoadingMore || items.length >= pagination.total) return;
+    setIsLoadingMore(true);
+    const sp = new URLSearchParams();
+    sp.set("page", "1");
+    sp.set("limit", String(pagination.total));
+    if (category !== "all") sp.set("category", category);
+    if (brand !== "all") sp.set("brand", brand);
+    if (size !== "all") sp.set("size", size);
+    if (color !== "all") sp.set("color", color);
+    if (sort !== "featured") sp.set("sort", sort);
+
+    try {
+      const res = await fetch(`/api/catalog/products?${sp.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.products)) {
+          const seen = new Set<string>();
+          const deduped: Product[] = [];
+          for (const p of data.products as Product[]) {
+            const pid = String(p.id);
+            if (!seen.has(pid)) {
+              seen.add(pid);
+              deduped.push(p);
+            }
+          }
+          setItems(deduped);
+          setPagination({
+            ...pagination,
+            page: 1,
+            totalPages: 1,
+          });
+        }
+      }
+    } catch (err) {
+      console.error("[View All Error]", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
+  // For direct mode (e.g. BrandPage), slice items based on pagination page
+  const displayedItems = useMemo(() => {
+    if (isDirectMode && products) {
+      const filtered = products.filter((p) => {
+        if (category !== "all" && getProductCategory(p) !== category) return false;
+        if (brand !== "all" && p.brand !== brand) return false;
+        if (size !== "all" && !(p.sizes || []).includes(size)) return false;
+        if (color !== "all" && getBaseColor(p.colorName) !== color) return false;
+        return true;
+      });
+
+      filtered.sort((a, b) => {
+        if (sort === "price-asc") return a.price - b.price;
+        if (sort === "price-desc") return b.price - a.price;
+        if (a.featured !== b.featured) return a.featured ? -1 : 1;
+        return String(a.id || "").localeCompare(String(b.id || ""));
+      });
+
+      return filtered.slice(0, pagination.page * 16);
+    }
+    return items;
+  }, [isDirectMode, products, items, category, brand, size, color, sort, pagination.page]);
 
   const activeFiltersCount =
     (category !== "all" ? 1 : 0) +
@@ -197,16 +403,12 @@ export function ProductCatalog({ products }: { products: Product[] }) {
     (size !== "all" ? 1 : 0) +
     (color !== "all" ? 1 : 0);
 
-  const clearAllFilters = () => {
-    setCategory("all");
-    setBrand("all");
-    setSize("all");
-    setColor("all");
-  };
+  const totalPieces = isDirectMode && products ? products.length : pagination.total;
+  const loadedPieces = displayedItems.length;
 
   return (
     <section className="px-6 pb-20">
-      {/* ── Slide-over Filter Panel (1:1 Reference Architecture) ── */}
+      {/* ── Slide-over Filter Panel ── */}
       {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-[#1a110c]/60 backdrop-blur-xs transition-opacity duration-300"
@@ -225,48 +427,66 @@ export function ProductCatalog({ products }: { products: Product[] }) {
       >
         {/* Panel Header */}
         <div className="flex items-center justify-between border-b border-[#ece7de] px-6 py-5">
-          <h2 className="text-2xl font-serif font-medium tracking-tight text-[#2a1810]">
-            Filters
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-serif text-lg font-bold text-[#2a1810]">Filters</h2>
+            {activeFiltersCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                {activeFiltersCount}
+              </span>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-[#706456] hover:bg-[#f5f1eb] hover:text-[#2a1810] transition-colors cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-[#706456] hover:bg-[#f5f1eb] hover:text-[#2a1810] transition-colors cursor-pointer"
             aria-label="Close filters"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            ✕
           </button>
         </div>
 
-        {/* Panel Scrollable Content */}
+        {/* Panel Body */}
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-7">
-          {/* Category Section */}
+          {/* Brand Section */}
           <div>
             <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Category
+              Brand / Heritage House
             </h3>
             <ul className="mt-3.5 space-y-2">
-              {categoryCounts.map((cat) => {
-                const isActive = category === cat.name;
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBrand("all");
+                    handleFilterChange(category, "all", size, color, sort);
+                  }}
+                  className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
+                    brand === "all"
+                      ? "font-bold text-[#8a4d2b]"
+                      : "text-[#2a1810] hover:text-[#8a4d2b]"
+                  }`}
+                >
+                  All Houses
+                </button>
+              </li>
+              {KNOWN_BRANDS.map((b) => {
+                const isActive = brand === b.slug;
                 return (
-                  <li key={cat.name}>
+                  <li key={b.slug}>
                     <button
                       type="button"
-                      onClick={() => setCategory(isActive ? "all" : cat.name)}
+                      onClick={() => {
+                        const next = isActive ? "all" : b.slug;
+                        setBrand(next);
+                        handleFilterChange(category, next, size, color, sort);
+                      }}
                       className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
                         isActive
                           ? "font-bold text-[#8a4d2b]"
                           : "text-[#2a1810] hover:text-[#8a4d2b]"
                       }`}
                     >
-                      <span className={isActive ? "font-bold" : "font-normal"}>
-                        {cat.name}
-                      </span>{" "}
-                      <span className="text-[#8c7e72] font-normal text-xs">
-                        (&nbsp;{cat.count}&nbsp;)
-                      </span>
+                      {b.name}
                     </button>
                   </li>
                 );
@@ -274,70 +494,81 @@ export function ProductCatalog({ products }: { products: Product[] }) {
             </ul>
           </div>
 
-          {/* Brand Section (shown only on multi-brand pages e.g. /products) */}
-          {hasMultipleBrands && (
-            <div>
-              <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-                Brand
-              </h3>
-              <ul className="mt-3.5 space-y-2">
-                {availableBrands.map((b) => {
-                  const isActive = brand === b.slug;
-                  return (
-                    <li key={b.slug}>
-                      <button
-                        type="button"
-                        onClick={() => setBrand(isActive ? "all" : b.slug)}
-                        className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
-                          isActive
-                            ? "font-bold text-[#8a4d2b]"
-                            : "text-[#2a1810] hover:text-[#8a4d2b]"
-                        }`}
-                      >
-                        <span className={isActive ? "font-bold" : "font-normal"}>
-                          {b.name}
-                        </span>{" "}
-                        <span className="text-[#8c7e72] font-normal text-xs">
-                          (&nbsp;{b.count}&nbsp;)
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-
-          {/* Size Section */}
+          {/* Category Section */}
           <div>
             <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
-              Size
+              Silhouettes &amp; Cuts
             </h3>
             <ul className="mt-3.5 space-y-2">
-              {sizeCounts.map((sz) => {
-                const isActive = size === sz.name;
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategory("all");
+                    handleFilterChange("all", brand, size, color, sort);
+                  }}
+                  className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
+                    category === "all"
+                      ? "font-bold text-[#8a4d2b]"
+                      : "text-[#2a1810] hover:text-[#8a4d2b]"
+                  }`}
+                >
+                  All Silhouettes
+                </button>
+              </li>
+              {KNOWN_CATEGORIES.map((catName) => {
+                const isActive = category === catName;
                 return (
-                  <li key={sz.name}>
+                  <li key={catName}>
                     <button
                       type="button"
-                      onClick={() => setSize(isActive ? "all" : sz.name)}
+                      onClick={() => {
+                        const next = isActive ? "all" : catName;
+                        setCategory(next);
+                        handleFilterChange(next, brand, size, color, sort);
+                      }}
                       className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
                         isActive
                           ? "font-bold text-[#8a4d2b]"
                           : "text-[#2a1810] hover:text-[#8a4d2b]"
                       }`}
                     >
-                      <span className={isActive ? "font-bold" : "font-normal"}>
-                        {sz.name}
-                      </span>{" "}
-                      <span className="text-[#8c7e72] font-normal text-xs">
-                        (&nbsp;{sz.count}&nbsp;)
-                      </span>
+                      {catName}
                     </button>
                   </li>
                 );
               })}
             </ul>
+          </div>
+
+          {/* Size Section */}
+          <div>
+            <h3 className="text-[15px] font-semibold tracking-tight text-[#2a1810]">
+              Size (XS – 6XL)
+            </h3>
+            <div className="mt-3.5 grid grid-cols-3 gap-2">
+              {STANDARD_SIZES.map((s) => {
+                const isActive = size === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      const next = isActive ? "all" : s;
+                      setSize(next);
+                      handleFilterChange(category, brand, next, color, sort);
+                    }}
+                    className={`py-2 px-3 text-xs font-semibold rounded-md border transition-all cursor-pointer text-center ${
+                      isActive
+                        ? "border-[#8a4d2b] bg-[#8a4d2b] text-white shadow-2xs"
+                        : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b]"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Color Section */}
@@ -346,25 +577,24 @@ export function ProductCatalog({ products }: { products: Product[] }) {
               Color
             </h3>
             <ul className="mt-3.5 space-y-2">
-              {colorCounts.map((col) => {
-                const isActive = color === col.name;
+              {KNOWN_COLORS.map((colName) => {
+                const isActive = color === colName;
                 return (
-                  <li key={col.name}>
+                  <li key={colName}>
                     <button
                       type="button"
-                      onClick={() => setColor(isActive ? "all" : col.name)}
+                      onClick={() => {
+                        const next = isActive ? "all" : colName;
+                        setColor(next);
+                        handleFilterChange(category, brand, size, next, sort);
+                      }}
                       className={`block text-left text-sm py-1 transition-colors cursor-pointer ${
                         isActive
                           ? "font-bold text-[#8a4d2b]"
                           : "text-[#2a1810] hover:text-[#8a4d2b]"
                       }`}
                     >
-                      <span className={isActive ? "font-bold" : "font-normal"}>
-                        {col.name}
-                      </span>{" "}
-                      <span className="text-[#8c7e72] font-normal text-xs">
-                        (&nbsp;{col.count}&nbsp;)
-                      </span>
+                      {colName}
                     </button>
                   </li>
                 );
@@ -389,7 +619,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
             onClick={() => setIsOpen(false)}
             className="flex-1 py-2.5 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-white bg-[#2a1810] hover:bg-[#8a4d2b] rounded transition-colors cursor-pointer"
           >
-            View ({visible.length})
+            View ({totalPieces})
           </button>
         </div>
       </aside>
@@ -421,7 +651,10 @@ export function ProductCatalog({ products }: { products: Product[] }) {
                 <span>{category}</span>
                 <button
                   type="button"
-                  onClick={() => setCategory("all")}
+                  onClick={() => {
+                    setCategory("all");
+                    handleFilterChange("all", brand, size, color, sort);
+                  }}
                   className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
                   aria-label={`Remove ${category} filter`}
                 >
@@ -430,12 +663,15 @@ export function ProductCatalog({ products }: { products: Product[] }) {
               </span>
             )}
 
-            {hasMultipleBrands && brand !== "all" && (
+            {brand !== "all" && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#faf7f2] border border-[#ded5c7] px-3 py-1 text-xs text-[#2a1810]">
                 <span>{getBrandLabel(brand)}</span>
                 <button
                   type="button"
-                  onClick={() => setBrand("all")}
+                  onClick={() => {
+                    setBrand("all");
+                    handleFilterChange(category, "all", size, color, sort);
+                  }}
                   className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
                   aria-label="Remove brand filter"
                 >
@@ -449,7 +685,10 @@ export function ProductCatalog({ products }: { products: Product[] }) {
                 <span>Size: {size}</span>
                 <button
                   type="button"
-                  onClick={() => setSize("all")}
+                  onClick={() => {
+                    setSize("all");
+                    handleFilterChange(category, brand, "all", color, sort);
+                  }}
                   className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
                   aria-label="Remove size filter"
                 >
@@ -463,7 +702,10 @@ export function ProductCatalog({ products }: { products: Product[] }) {
                 <span>Color: {color}</span>
                 <button
                   type="button"
-                  onClick={() => setColor("all")}
+                  onClick={() => {
+                    setColor("all");
+                    handleFilterChange(category, brand, size, "all", sort);
+                  }}
                   className="text-[#8c7e72] hover:text-[#2a1810] cursor-pointer font-bold"
                   aria-label="Remove color filter"
                 >
@@ -486,7 +728,7 @@ export function ProductCatalog({ products }: { products: Product[] }) {
           {/* Right: Sort & Pieces Counter */}
           <div className="flex items-center gap-4">
             <span className="text-xs uppercase tracking-[0.14em] text-[var(--muted)] hidden sm:inline">
-              {visible.length} {visible.length === 1 ? "piece" : "pieces"}
+              {totalPieces} {totalPieces === 1 ? "piece" : "pieces"}
             </span>
 
             <div className="flex items-center gap-2">
@@ -496,7 +738,11 @@ export function ProductCatalog({ products }: { products: Product[] }) {
               <select
                 id="sort-select"
                 value={sort}
-                onChange={(e) => setSort(e.target.value as Sort)}
+                onChange={(e) => {
+                  const nextSort = e.target.value as Sort;
+                  setSort(nextSort);
+                  handleFilterChange(category, brand, size, color, nextSort);
+                }}
                 className="h-9 px-3 text-xs font-medium rounded-md border border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs"
               >
                 <option value="featured">Featured</option>
@@ -509,9 +755,76 @@ export function ProductCatalog({ products }: { products: Product[] }) {
       </div>
 
       {/* ── Product Grid or Empty State ── */}
-      <div className="mx-auto max-w-6xl">
-        {visible.length > 0 ? (
-          <ProductGrid products={visible} />
+      <div className={`mx-auto max-w-6xl transition-opacity duration-300 ${isFiltering ? "opacity-40 pointer-events-none" : "opacity-100"}`}>
+        {displayedItems.length > 0 ? (
+          <>
+            <ProductGrid products={displayedItems} />
+
+            {/* Progressive Load More & Counter (Shows when catalog exceeds 16 pieces) */}
+            {totalPieces > 16 && (
+              <div className="mt-14 flex flex-col items-center text-center">
+                <p className="text-xs font-semibold tracking-wide text-[#706456]">
+                  Showing <span className="font-bold text-[#2a1810]">{loadedPieces}</span> of{" "}
+                  <span className="font-bold text-[#2a1810]">{totalPieces}</span> handcrafted pieces
+                </p>
+
+                {/* Progress bar */}
+                <div className="mt-3 h-1.5 w-64 max-w-full rounded-full bg-[#ded5c7]/60 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#8a4d2b] transition-all duration-500 ease-out"
+                    style={{
+                      width: `${Math.min(100, Math.round((loadedPieces / totalPieces) * 100))}%`,
+                    }}
+                  />
+                </div>
+
+                {/* Buttons */}
+                {loadedPieces < totalPieces ? (
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+                    <button
+                      type="button"
+                      onClick={handleLoadMore}
+                      disabled={isLoadingMore}
+                      className="inline-flex items-center gap-2 rounded-md bg-[#2a1810] px-8 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#8a4d2b] transition-all shadow-sm active:scale-98 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          <svg className="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                          </svg>
+                          <span>Loading Pieces...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Load More Jackets</span>
+                          <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px]">
+                            +{Math.min(16, totalPieces - loadedPieces)}
+                          </span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleViewAll}
+                      disabled={isLoadingMore}
+                      className="text-xs font-semibold text-[#8a4d2b] underline underline-offset-4 hover:text-[#2a1810] transition-colors cursor-pointer py-2 px-1 disabled:opacity-50"
+                    >
+                      View All ({totalPieces})
+                    </button>
+                  </div>
+                ) : (
+                  <div className="mt-6 flex items-center gap-2 text-xs font-medium text-[#706456]">
+                    <svg className="h-4 w-4 text-[#8a4d2b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>You have viewed all {totalPieces} available pieces in this selection.</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         ) : (
           <div className="rounded-xl border border-dashed border-[#ded5c7] bg-[#fbf9f6] py-16 text-center">
             <h3 className="font-serif text-lg font-bold text-[#2a1810]">

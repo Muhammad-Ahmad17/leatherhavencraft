@@ -51,3 +51,6 @@ next-env.d.ts
 # No local product photos in git repo
 public/catalog/items/
 public/catalog/items
+
+# Raw scroll model asset source
+/scroll-model/

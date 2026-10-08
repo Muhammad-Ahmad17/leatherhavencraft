@@ -2,15 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
-import {
-  EASE_SPAN,
-  EASE_START,
-  ROTATION_DEGREES,
-  SVG_VIEWBOX,
-} from "@/lib/constants";
-import { easeInOut } from "@/lib/easing";
 import { clamp, prefersReducedMotion } from "@/lib/utils";
-import { useAnimationFrame } from "@/hooks/useAnimationFrame";
+import { easeInOut } from "@/lib/easing";
 import { useViewportSize } from "@/hooks/useViewportSize";
 
 type UseScrollAnimationOptions = {
@@ -19,102 +12,254 @@ type UseScrollAnimationOptions = {
   count: number;
 };
 
+// Portion of each transition gap where the jacket sits completely steady and 100% visible on model
+const REST_ZONE = 0.22;
+
 export function useScrollAnimation({
   trackRef,
   svgRef,
   count,
 }: UseScrollAnimationOptions) {
   const groupsRef = useRef<(SVGGElement | null)[]>([]);
-  const travelRef = useRef(600);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hintVisible, setHintVisible] = useState(true);
-  const schedule = useAnimationFrame();
   const viewport = useViewportSize();
+
+  const metricsRef = useRef({ trackTop: 0, max: 1 });
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
+  const isLoopRunningRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
 
   const setGroupRef = useCallback((index: number, node: SVGGElement | null) => {
     groupsRef.current[index] = node;
   }, []);
 
   const measure = useCallback(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const height = svg.getBoundingClientRect().height;
-    if (height < 1) return;
-    const scale = height / SVG_VIEWBOX.height;
-    travelRef.current = window.innerWidth / 2 / scale + 260;
-  }, [svgRef]);
-
-  const render = useCallback(() => {
     const track = trackRef.current;
-    if (!track || count < 1) return;
-
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const trackTop = rect.top + window.scrollY;
     const max = Math.max(track.offsetHeight - window.innerHeight, 1);
-    const progress = clamp((window.scrollY - track.offsetTop) / max, 0, 1);
-    const position = count === 1 ? 0 : progress * (count - 1);
-    const index = clamp(Math.round(position), 0, count - 1);
-    const reduced = prefersReducedMotion();
-    const travel = travelRef.current;
+    metricsRef.current = { trackTop, max };
+  }, [trackRef]);
 
-    groupsRef.current.forEach((group, i) => {
-      if (!group) return;
+  const updateTarget = useCallback(() => {
+    if (count < 1) return;
+    if (metricsRef.current.max <= 1) {
+      measure();
+    }
+    const { trackTop, max } = metricsRef.current;
+    const progress = clamp((window.scrollY - trackTop) / max, 0, 1);
+    targetProgressRef.current = progress;
+  }, [count, measure]);
+
+  const renderFrame = useCallback(
+    (progress: number) => {
+      if (count < 1) return;
+      const reduced = prefersReducedMotion();
 
       if (reduced || count === 1) {
-        const active = i === index;
-        group.style.display = active ? "" : "none";
+        const position = count === 1 ? 0 : progress * (count - 1);
+        const activeIndex = clamp(Math.round(position), 0, count - 1);
+        groupsRef.current.forEach((group, i) => {
+          if (!group) return;
+          const active = i === activeIndex;
+          group.style.display = active ? "" : "none";
+          group.removeAttribute("transform");
+          group.removeAttribute("opacity");
+        });
+        setCurrentIndex((prev) => (prev === activeIndex ? prev : activeIndex));
+        return;
+      }
+
+      // Continuous float position from 0.0 to count - 1
+      const totalTransitions = count - 1;
+      const position = clamp(progress * totalTransitions, 0, totalTransitions);
+
+      // Active pair: between pairIndex and pairIndex + 1
+      const pairIndex = Math.min(Math.floor(position), count - 2);
+      const localProgress = position - pairIndex; // in [0, 1]
+
+      // Active index for dots, arrows, and captions
+      const activeIndex = clamp(Math.round(position), 0, count - 1);
+
+      groupsRef.current.forEach((group, i) => {
+        if (!group) return;
+
+        // If this jacket is neither the outgoing nor incoming one, cleanly hide it
+        if (i !== pairIndex && i !== pairIndex + 1) {
+          group.style.display = "none";
+          group.setAttribute("opacity", "0");
+          group.removeAttribute("transform");
+          return;
+        }
+
+        // Clean display
+        group.style.display = "";
         group.removeAttribute("transform");
-        return;
-      }
 
-      const delta = position - i;
-      const distance = Math.abs(delta);
-      if (distance >= 1) {
-        group.style.display = "none";
-        return;
-      }
+        // Case 1: Sitting in the rest zone of pairIndex
+        if (localProgress <= REST_ZONE) {
+          if (i === pairIndex) {
+            group.setAttribute("opacity", "1");
+          } else {
+            group.style.display = "none";
+            group.setAttribute("opacity", "0");
+          }
+          return;
+        }
 
-      group.style.display = "";
-      const eased = easeInOut(clamp((distance - EASE_START) / EASE_SPAN, 0, 1));
-      const dx = (delta < 0 ? 1 : -1) * eased * travel;
-      const rotation = (dx / travel) * ROTATION_DEGREES;
-      group.setAttribute(
-        "transform",
-        `translate(${dx.toFixed(1)} 0) rotate(${rotation.toFixed(2)} 200 300)`,
-      );
-    });
+        // Case 2: Sitting in the rest zone of pairIndex + 1
+        if (localProgress >= 1.0 - REST_ZONE) {
+          if (i === pairIndex + 1) {
+            group.setAttribute("opacity", "1");
+          } else {
+            group.style.display = "none";
+            group.setAttribute("opacity", "0");
+          }
+          return;
+        }
 
-    const showHint = progress <= 0.02 && count > 1;
-    setHintVisible((previous) => (previous === showHint ? previous : showHint));
-    setCurrentIndex((previous) => (previous === index ? previous : index));
-  }, [count, trackRef]);
+        // Case 3: Smooth transition zone between REST_ZONE and (1 - REST_ZONE)
+        const transitionSpan = 1.0 - 2 * REST_ZONE;
+        const t = clamp((localProgress - REST_ZONE) / transitionSpan, 0, 1);
+        const blend = easeInOut(t);
+
+        // Equal-power cosine/sine cross-fade maintains 100% perceived leather density
+        if (i === pairIndex) {
+          const opacityOut = Math.cos((blend * Math.PI) / 2);
+          group.setAttribute("opacity", opacityOut.toFixed(3));
+        } else if (i === pairIndex + 1) {
+          const opacityIn = Math.sin((blend * Math.PI) / 2);
+          group.setAttribute("opacity", opacityIn.toFixed(3));
+        }
+      });
+
+      const showHint = progress <= 0.02 && count > 1;
+      setHintVisible((prev) => (prev === showHint ? prev : showHint));
+      setCurrentIndex((prev) => (prev === activeIndex ? prev : activeIndex));
+    },
+    [count]
+  );
+
+  const tick = useCallback(() => {
+    const target = targetProgressRef.current;
+    let current = currentProgressRef.current;
+    const diff = target - current;
+
+    // 0.12 lerp factor: silky-smooth organic luxury damping
+    if (Math.abs(diff) > 0.0001) {
+      current += diff * 0.12;
+      currentProgressRef.current = current;
+      renderFrame(current);
+      rafIdRef.current = requestAnimationFrame(tick);
+    } else {
+      current = target;
+      currentProgressRef.current = target;
+      renderFrame(current);
+      isLoopRunningRef.current = false;
+      rafIdRef.current = null;
+    }
+  }, [renderFrame]);
+
+  const triggerAnimation = useCallback(() => {
+    updateTarget();
+    if (!isLoopRunningRef.current) {
+      isLoopRunningRef.current = true;
+      rafIdRef.current = requestAnimationFrame(tick);
+    }
+  }, [updateTarget, tick]);
 
   const scrollToIndex = useCallback(
     (index: number) => {
       const track = trackRef.current;
       if (!track || count < 2) return;
-      const max = track.offsetHeight - window.innerHeight;
-      const top = track.offsetTop + (index / (count - 1)) * max;
+      measure();
+      const { trackTop, max } = metricsRef.current;
+      const targetIndex = clamp(index, 0, count - 1);
+      const top = trackTop + (targetIndex / (count - 1)) * max;
       window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
     },
-    [count, trackRef],
+    [count, trackRef, measure]
   );
+
+  const nextJacket = useCallback(() => {
+    if (count < 2) return;
+    const currentPos = targetProgressRef.current * (count - 1);
+    const target = clamp(Math.floor(currentPos + 1.001), 0, count - 1);
+    if (target > Math.round(currentPos)) {
+      scrollToIndex(target);
+    } else if (target < count - 1) {
+      scrollToIndex(target + 1);
+    } else {
+      scrollToIndex(count - 1);
+    }
+  }, [count, scrollToIndex]);
+
+  const prevJacket = useCallback(() => {
+    if (count < 2) return;
+    const currentPos = targetProgressRef.current * (count - 1);
+    const target = clamp(Math.ceil(currentPos - 1.001), 0, count - 1);
+    if (target < Math.round(currentPos)) {
+      scrollToIndex(target);
+    } else if (target > 0) {
+      scrollToIndex(target - 1);
+    } else {
+      scrollToIndex(0);
+    }
+  }, [count, scrollToIndex]);
+
+  const canNext = currentIndex < count - 1;
+  const canPrev = currentIndex > 0;
 
   useEffect(() => {
     measure();
-    render();
+    updateTarget();
+    currentProgressRef.current = targetProgressRef.current;
+    renderFrame(currentProgressRef.current);
 
-    const onScroll = () => schedule(render);
+    const onScroll = () => triggerAnimation();
     const onResize = () => {
       measure();
-      schedule(render);
+      triggerAnimation();
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
+      const track = trackRef.current;
+      if (!track) return;
+      const rect = track.getBoundingClientRect();
+      const inView = rect.top <= window.innerHeight * 0.7 && rect.bottom >= window.innerHeight * 0.3;
+      if (!inView) return;
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextJacket();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevJacket();
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKeyDown);
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKeyDown);
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
-  }, [measure, render, schedule, viewport.height, viewport.width]);
+  }, [triggerAnimation, updateTarget, renderFrame, measure, nextJacket, prevJacket, trackRef, viewport.height, viewport.width]);
 
   return {
     currentIndex,
@@ -122,5 +267,9 @@ export function useScrollAnimation({
     svgRef,
     setGroupRef,
     scrollToIndex,
+    nextJacket,
+    prevJacket,
+    canNext,
+    canPrev,
   };
 }

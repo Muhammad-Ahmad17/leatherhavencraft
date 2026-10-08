@@ -427,14 +427,38 @@ export function getAllCategories(): string[] {
   return Array.from(new Set(BLOG_POSTS.map((p) => p.category)));
 }
 
-export function mapBackendBlog(raw: any): BlogPost {
+export interface RawBlogData {
+  _id?: string;
+  id?: string;
+  slug?: string;
+  title?: string;
+  subtitle?: string;
+  excerpt?: string;
+  coverImage?: string;
+  category?: string;
+  tags?: string[];
+  createdAt?: string;
+  publishedAt?: string;
+  readingTime?: string;
+  author?: { name: string; role: string };
+  featured?: boolean;
+  isPublished?: boolean;
+  metaTitle?: string;
+  metaDescription?: string;
+  content?: string;
+  sections?: BlogPost["sections"];
+  relatedProductSlugs?: string[];
+  relatedPostSlugs?: string[];
+}
+
+export function mapBackendBlog(raw: RawBlogData): BlogPost {
   return {
     _id: raw._id ? String(raw._id) : undefined,
-    id: raw._id ? String(raw._id) : raw.id || raw.slug,
-    slug: raw.slug,
-    title: raw.title,
+    id: raw._id ? String(raw._id) : raw.id || raw.slug || "",
+    slug: raw.slug || "",
+    title: raw.title || "",
     subtitle: raw.subtitle || "",
-    excerpt: raw.excerpt || raw.title,
+    excerpt: raw.excerpt || raw.title || "",
     coverImage: raw.coverImage || "/banners/home-desktop.jpg",
     category: raw.category || "Heritage & History",
     tags: Array.isArray(raw.tags) ? raw.tags : [],
@@ -443,8 +467,8 @@ export function mapBackendBlog(raw: any): BlogPost {
     author: raw.author || { name: "Leather Haven Craft Atelier", role: "Master Leather Artisan" },
     featured: Boolean(raw.featured),
     isPublished: raw.isPublished !== undefined ? Boolean(raw.isPublished) : true,
-    metaTitle: raw.metaTitle || raw.title,
-    metaDescription: raw.metaDescription || raw.excerpt || raw.title,
+    metaTitle: raw.metaTitle || raw.title || "",
+    metaDescription: raw.metaDescription || raw.excerpt || raw.title || "",
     content: raw.content || "",
     sections: raw.sections || [],
     relatedProductSlugs: raw.relatedProductSlugs || [],

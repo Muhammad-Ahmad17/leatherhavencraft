@@ -7,28 +7,30 @@ interface CustomManufacturingProps {
 
 export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufacturingProps) {
   const whatsappHref = buildWhatsAppUrl(
-    "Hi Leather Haven Craft — I am interested in custom manufacturing and bespoke orders. Please let me know how to share my specifications."
+    "Hi Leather Haven Craft — I am inquiring about wholesale pricing, bulk orders, and custom manufacturing. Please share your volume tiers and catalog."
   );
 
   const emailBody = [
-    "Hello Leather Haven Craft Team,",
+    "Hello Leather Haven Craft Workshop,",
     "",
-    "I would like to inquire about custom manufacturing / bespoke orders.",
+    "I would like to inquire about wholesale / bulk dealing and custom outerwear production.",
     "",
-    "Order Type: [Individual Made-to-Measure / Club Order / Private Label]",
-    "Quantity: [e.g. 1 piece / 10 pieces / 50+ pieces]",
-    "Preferred Leather Type & Color: ",
-    "Measurements / Sizing Baseline (e.g. custom dimensions or standard XS–6XL matrix): ",
+    "Inquiry Type: [Wholesale Boutique Order / Motorcycle Club / Private Label / Custom Run]",
+    "Estimated Quantity: [e.g. 5–15 pieces / 20–50 pieces / 100+ wholesale units]",
+    "Target Silhouettes: [e.g. Double Rider Perfecto, B-3 Bomber, Cafe Racer, Bespoke Pattern]",
+    "Preferred Leather Type & Color: [e.g. Full-grain steerhide, shearling, lambskin]",
+    "Custom Details: [Custom embossed patches, private-label branding, bespoke sizing]",
     "",
-    "Looking forward to your guidance.",
+    "Looking forward to your volume pricing quotation and production timeline.",
   ].join("\n");
 
   const emailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    "Custom Manufacturing Inquiry — Leather Haven Craft"
+    "Wholesale & Bulk Manufacturing Inquiry — Leather Haven Craft"
   )}&body=${encodeURIComponent(emailBody)}`;
 
   return (
     <section
+      id="custom-manufacturing"
       className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-24"
       aria-labelledby="custom-manufacturing-heading"
     >
@@ -38,18 +40,18 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
             {/* Left Column: Heading, Context & Size Guide Referral */}
             <div className="lg:col-span-7 space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#8a4d2b]/20 bg-[#faf6f0] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                <span>Atelier Bespoke &amp; Production</span>
+                <span>Atelier Bespoke &amp; Wholesale Production</span>
               </div>
 
               <h2
                 id="custom-manufacturing-heading"
                 className="font-serif text-3xl font-bold tracking-tight text-[#2a1810] sm:text-4xl lg:text-5xl leading-tight"
               >
-                Custom Manufacturing &amp; Made to Measure
+                Custom Manufacturing, Wholesale &amp; Bulk Dealing
               </h2>
 
               <p className="text-xs leading-relaxed text-[#706456] sm:text-sm">
-                Beyond our heritage archival drops, Leather Haven Craft operates a dedicated bespoke atelier for individual made-to-measure tailoring, club jackets, and small-batch private label production. Every piece is hand-patterned, grain-matched, and constructed by master leather artisans.
+                Beyond our heritage archival drops, Leather Haven Craft operates a dedicated manufacturing atelier for individual made-to-measure tailoring, club outerwear, private-label collections, and wholesale bulk orders. Every jacket is hand-patterned, grain-matched, and constructed by master leather artisans with tiered wholesale rates for boutiques, motorcycle clubs, and apparel brands worldwide.
               </p>
 
               {/* Referral Pill linking to the Size Guide */}
@@ -61,7 +63,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                       <path d="M7 8h10M7 12h6M7 16h8" />
                     </svg>
                   </span>
-                  <span>Need baseline dimensions for your custom build?</span>
+                  <span>Need baseline dimensions for your custom or bulk run?</span>
                   <Link
                     href="/size-guide"
                     className="font-bold text-[#8a4d2b] underline decoration-[#8a4d2b]/40 underline-offset-2 hover:decoration-[#8a4d2b] transition-colors"
@@ -73,23 +75,22 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[#eee7de]">
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Bespoke Fit</span>
+                  <span className="block text-xs font-bold text-[#2a1810]">Single &amp; Bulk Runs</span>
                   <p className="text-[11px] text-[#706456]">
-                    Exact chest, shoulder, sleeve &amp; back length tailoring.{" "}
-                    {showSizeGuideLink && (
-                      <Link href="/size-guide" className="text-[#8a4d2b] underline hover:text-[#2a1810]">
-                        Compare size chart.
-                      </Link>
-                    )}
+                    From 1 made-to-measure piece to 100+ wholesale units with tiered volume pricing.
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Premium Hides</span>
-                  <p className="text-[11px] text-[#706456]">Full-grain cowhide, steerhide, lambskin &amp; Italian leathers.</p>
+                  <span className="block text-xs font-bold text-[#2a1810]">Premium Tannery Hides</span>
+                  <p className="text-[11px] text-[#706456]">
+                    Full-grain cowhide, heavyweight steerhide, lambskin &amp; genuine shearling pelts.
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Custom Details</span>
-                  <p className="text-[11px] text-[#706456]">Embossed patches, solid brass zippers, and custom silk linings.</p>
+                  <span className="block text-xs font-bold text-[#2a1810]">Wholesale &amp; Branding</span>
+                  <p className="text-[11px] text-[#706456]">
+                    Custom embossed patches, private-label tags, heavy brass hardware &amp; silk linings.
+                  </p>
                 </div>
               </div>
             </div>
@@ -98,13 +99,13 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
             <div className="lg:col-span-5 rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-6 sm:p-8 space-y-6 text-center">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                  Consult With Our Artisans
+                  Wholesale &amp; Bespoke Consultations
                 </span>
                 <h3 className="mt-1 text-xl font-bold text-[#2a1810]">
-                  Message or Mail Us
+                  Message or Mail Our Workshop
                 </h3>
                 <p className="mt-2 text-xs text-[#706456] leading-relaxed">
-                  Have a design sketch, measurement chart, or bulk club inquiry? Contact us directly for pricing estimates and fabrications.
+                  Have a design sketch, measurement chart, or bulk boutique/club inquiry? Contact our artisans directly for wholesale price tiers and fabrication timelines.
                 </p>
               </div>
 
@@ -115,14 +116,14 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                   rel="noopener noreferrer"
                   className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-5 text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-[#20ba59] shadow-xs cursor-pointer"
                 >
-                  <span>Message on WhatsApp</span>
+                  <span>Message for Wholesale &amp; Bulk (WhatsApp)</span>
                 </a>
 
                 <a
                   href={emailHref}
                   className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#ded5c7] bg-white px-5 text-xs font-bold uppercase tracking-wider text-[#2a1810] transition-all hover:border-[#8a4d2b] hover:bg-[#faf6f0] shadow-xs cursor-pointer"
                 >
-                  <span>Email Specifications</span>
+                  <span>Email Bulk Specifications</span>
                 </a>
 
                 {showSizeGuideLink && (
