@@ -26,7 +26,11 @@ const faqs = [
   },
   {
     q: "Where do you ship and what are the delivery times?",
-    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door to door tracking and transit insurance.",
+    a: "We provide free worldwide delivery. We use reliable air delivery selected according to destination country with no fixed single carrier to ensure the fastest local transit. Delivery typically takes around 1 week to 9 days. We provide direct personal updates on your order throughout production until it is dispatched, after which the respective delivery service provides full online tracking to your doorstep.",
+  },
+  {
+    q: "What is your return policy?",
+    a: "We accept returns within 7 to 8 days of delivery. The customer must contact us within 7 to 8 days to request a return. Return shipping costs will be paid by the customer. The product must be returned in its original, unused, and undamaged condition. Once we receive and inspect the returned product, we will process the refund or re-payment. Refunds will only be issued after the returned product has been received and checked. Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.",
   },
 ];
 

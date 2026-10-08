@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
 import { BrandStrip } from "@/components/brand/BrandStrip";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
-import { OrderPath } from "@/components/home/OrderPath";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
-import { HomeJournalSection } from "@/components/home/HomeJournalSection";
 import { OurProcess } from "@/components/home/OurProcess";
 
 export const dynamic = "force-dynamic";
@@ -20,12 +18,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Leather Haven Craft | Handcrafted Heritage Leather Jackets & Bespoke Atelier",
   description:
-    "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear inspired by iconic heritage silhouettes. Shipped express across Europe and America.",
+    "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear inspired by iconic heritage silhouettes. Free worldwide delivery across Europe and America.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Leather Haven Craft | Heritage Leather Outerwear",
     description:
-      "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear.",
+      "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear with free worldwide delivery.",
     images: [{ url: "/banners/home-desktop.jpg" }],
   },
 };
@@ -53,7 +51,11 @@ const homeFaqSchema = [
   },
   {
     q: "Where do you ship and what are the delivery times?",
-    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door to door tracking and transit insurance.",
+    a: "We provide free worldwide delivery. We use reliable air delivery selected according to destination country with no fixed single carrier to ensure the fastest local transit. Delivery typically takes around 1 week to 9 days. We provide direct personal updates on your order throughout production until it is dispatched, after which the respective delivery service provides full online tracking to your doorstep.",
+  },
+  {
+    q: "What is your return policy?",
+    a: "We accept returns within 7 to 8 days of delivery. The customer must contact us within 7 to 8 days to request a return. Return shipping costs will be paid by the customer. The product must be returned in its original, unused, and undamaged condition. Once we receive and inspect the returned product, we will process the refund or re-payment. Refunds will only be issued after the returned product has been received and checked. Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.",
   },
 ];
 
@@ -99,14 +101,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
           <div className="relative flex h-full items-end px-6 pb-8 sm:px-10 sm:pb-12">
             <div className="max-w-xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-xs border border-white/20 mb-3 shadow-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
+                Free Worldwide Delivery · 1 Week to 9 Days
+              </span>
               <p className="text-[11px] uppercase tracking-[0.22em] text-white/75">
                 Bespoke Outerwear &amp; Wholesale Production · Europe &amp; America
               </p>
-              <h1 className="mt-3 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
+              <h1 className="mt-2 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
                 The brands. The cut. In stock.
               </h1>
               <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke tailoring and wholesale bulk orders for clubs, boutiques, and retailers.
+                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke tailoring and wholesale bulk orders with free worldwide delivery.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button href="/products" variant="light">
@@ -123,7 +129,7 @@ export default async function HomePage() {
         <BrandStrip />
       </div>
 
-      {/* ── 2. Scroll the collection (Curated 6 flagship pieces for 5–6 smooth scrolls) ── */}
+      {/* ── 2. Scroll the collection (Curated flagship archive pieces) ── */}
       <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
@@ -133,17 +139,19 @@ export default async function HomePage() {
         </ScrollAnimationContainer>
       </section>
 
-      {/* ── 3. Shop by brand & category (Swapped after scroll collection) ── */}
-      <BrandShowcase />
-
-      {/* ── 4. Featured picks ── */}
+      {/* ── 3. Best Sellers (Swapped before Brand Showcase) ── */}
       <section className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                Curated Selection
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                  Curated Selection
+                </p>
+                <span className="inline-flex items-center rounded-sm bg-[#22722b]/10 px-2 py-0.5 text-[10px] font-semibold text-[#22722b]">
+                  Free Delivery
+                </span>
+              </div>
               <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">Best Sellers</h2>
             </div>
             <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
@@ -156,20 +164,17 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── 4. Shop by brand & category ── */}
+      <BrandShowcase />
+
       {/* ── 5. Custom Manufacturing (Message or mail us) ── */}
       <CustomManufacturing />
 
-      {/* ── 6. How ordering works + CTA + trust badges ── */}
-      <OrderPath />
-
-      {/* ── 7. Our Process ── */}
+      {/* ── 6. Our Process (Animated 4-step artisan journey) ── */}
       <OurProcess />
 
-      {/* ── 8. Client FAQ & Care Guidance ── */}
+      {/* ── 7. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
-
-      {/* ── 9. From The Journal (Editorial & Collector Guides - Directly above footer) ── */}
-      <HomeJournalSection />
     </main>
   );
 }

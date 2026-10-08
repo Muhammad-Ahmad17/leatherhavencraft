@@ -39,6 +39,7 @@ export function BrandStrip() {
       <div className="marquee-track gap-8 sm:gap-14 px-4">
         {loopItems.map((brand, idx) => {
           const isLHC = brand.slug === "leather-haven-craft";
+          const isOthers = brand.slug === "others" || !brand.logo;
           return (
             <Link
               key={`${brand.slug}-${idx}`}
@@ -48,14 +49,20 @@ export function BrandStrip() {
               }`}
               title={brand.name}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={brand.logo}
-                alt={brand.name}
-                className={`h-8 sm:h-10 w-auto max-w-[130px] sm:max-w-[155px] object-contain ${
-                  isLHC ? "brightness-95" : ""
-                }`}
-              />
+              {isOthers ? (
+                <span className="font-serif text-xs sm:text-sm font-bold tracking-widest text-[#2a1810] uppercase px-3 py-1 border border-[#ded5c7] rounded-sm bg-[#faf8f5]">
+                  Others
+                </span>
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className={`h-8 sm:h-10 w-auto max-w-[130px] sm:max-w-[155px] object-contain ${
+                    isLHC ? "brightness-95" : ""
+                  }`}
+                />
+              )}
             </Link>
           );
         })}

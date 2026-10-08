@@ -30,12 +30,12 @@ const faqSchemaData = [
     a: "Store your jacket on a wide shoulder wooden hanger away from direct sunlight and heat radiators. Condition with a natural beeswax, lanolin, or pure neatsfoot oil balm once every 12 to 18 months. Never machine-wash leather; for heavy spots, consult a specialist leather dry cleaner.",
   },
   {
-    q: "What is your return and exchange policy?",
-    a: "We offer a 14-day return and exchange policy on all standard catalog pieces. Items must be unworn, in pristine condition, with all original tags attached. Custom bespoke pieces tailored to individual measurements are final sale.",
+    q: "What is your return policy?",
+    a: "We accept returns within 7 to 8 days of delivery. The customer must contact us within 7 to 8 days to request a return. Return shipping costs will be paid by the customer. The product must be returned in its original, unused, and undamaged condition. Once we receive and inspect the returned product, we will process the refund or re-payment. Refunds will only be issued after the returned product has been received and checked. Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.",
   },
   {
-    q: "How long does shipping take to the United States, UK, and Europe?",
-    a: "Express transit via DHL Express or FedEx Priority takes 3 to 5 business days with full door to door tracking. Orders are carefully packaged in custom luxury garment covers with wide wooden hangers.",
+    q: "How long does shipping take and how is it tracked?",
+    a: "We provide free worldwide delivery. We use reliable air delivery selected according to destination country with no fixed single company, taking around 1 week to 9 days. We provide direct personal updates on your order throughout production until it is dispatched, after which the respective delivery service provides full online tracking to your doorstep.",
   },
   {
     q: "Do you offer custom made to measure sizing for extended sizes?",

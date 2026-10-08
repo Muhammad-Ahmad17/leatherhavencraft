@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Global Express Shipping & 14 Day Return Guarantee | Leather Haven Craft",
+  title: "Free Worldwide Delivery & 7 to 8 Day Return Policy | Leather Haven Craft",
   description:
-    "Express DHL & FedEx air courier delivery timelines, full transit insurance, luxury dust bag packaging, and 14-day hassle-free returns for authentic leather jackets.",
+    "Free global air delivery timeline (1 week to 9 days), full dispatch updates, tracking, and our official 7 to 8 day return policy.",
   alternates: { canonical: "/shipping" },
   openGraph: {
-    title: "Shipping, Transit & Returns | Leather Haven Craft",
-    description: "Insured door to door courier transit to the United States, UK, and European Union.",
+    title: "Shipping, Delivery & Returns Policy | Leather Haven Craft",
+    description: "Free international air delivery and 7 to 8 day return policy for handcrafted leather outerwear.",
   },
 };
 
@@ -24,63 +24,86 @@ export default function ShippingPage() {
 
         <header className="border-b border-[#ded5c7] pb-8">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
-            Global Logistics &amp; Security
+            Global Logistics &amp; Customer Care
           </p>
           <h1 className="mt-2 font-serif text-3xl font-bold tracking-tight sm:text-5xl text-[#221b16]">
             Shipping &amp; Returns Policy
           </h1>
           <p className="mt-3 text-xs sm:text-sm text-[#6b5c51] leading-relaxed">
-            Express Air Courier · Fully Insured Door to Door Delivery · 14 Day Fit Guarantee
+            Free Worldwide Delivery (1 Week to 9 Days) · Full Dispatch Updates &amp; Tracking · 7 to 8 Day Return Policy
           </p>
         </header>
 
         <div className="mt-10 space-y-10 text-xs sm:text-sm leading-relaxed text-[#52453c]">
-          <section className="space-y-3">
+          {/* ── Shipping Policy ── */}
+          <section className="space-y-4">
             <h2 className="font-serif text-lg sm:text-xl font-bold text-[#221b16]">
-              1. Priority Air Transit Timelines &amp; Couriers
+              1. Delivery Timelines &amp; Dispatch Updates
             </h2>
             <p>
-              Every garment in our catalog is dispatched via expedited air freight with DHL Express or FedEx International Priority to ensure the shortest possible transit time, zero warehouse transfers, and strict chain of custody handling.
+              We provide free worldwide delivery across all orders. We use dependable international air delivery services selected according to destination country with no fixed single company, ensuring the most reliable and efficient local transit for each region.
             </p>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
-                  United States &amp; Canada
+            <div className="rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between border-b border-[#ded5c7]/60 pb-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                  Estimated Delivery Window
                 </span>
-                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 to 5 Business Days</p>
-                <p className="text-xs text-[#6b5c51] mt-1">Full door to door online tracking with signature release.</p>
-              </div>
-              <div className="rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b]">
-                  United Kingdom &amp; European Union
+                <span className="font-mono text-sm font-bold text-[#221b16]">
+                  Around 1 Week to 9 Days
                 </span>
-                <p className="font-serif text-xl font-bold text-[#221b16] mt-1">3 to 4 Business Days</p>
-                <p className="text-xs text-[#6b5c51] mt-1">Direct air express customs clearance included.</p>
               </div>
+              <p className="text-xs text-[#6b5c51]">
+                We personally keep you updated on your order throughout production and preparation until it is dispatched. Once dispatched, the respective delivery service provides full online tracking directly to your doorstep.
+              </p>
             </div>
           </section>
 
+          {/* ── Packaging ── */}
           <section className="space-y-3">
             <h2 className="font-serif text-lg sm:text-xl font-bold text-[#221b16]">
               2. Luxury Protective Packaging
             </h2>
             <p>
-              Archival and bespoke leather garments are never tightly folded, vacuum sealed, or compressed. Each jacket is shipped hanging inside a heavy duty, breathable cotton dust bag on wide, contoured wooden shoulder hangers to maintain shoulder pad integrity and avoid creasing during flight transit.
+              Every leather garment is prepared with care to preserve hide shape, structure, and hardware during transit. Garments are placed inside breathable protective covers on wide wooden hangers to prevent creasing and maintain natural drape.
             </p>
           </section>
 
-          <section className="space-y-3">
+          {/* ── Return Policy ── */}
+          <section className="space-y-4">
             <h2 className="font-serif text-lg sm:text-xl font-bold text-[#221b16]">
-              3. 14 Day Exchange &amp; Return Fit Guarantee
+              3. Return Policy (7 to 8 Days)
             </h2>
             <p>
-              We stand unconditionally behind our sizing and authenticity. If your jacket does not fit as desired or your preferences shift:
+              We accept returns within 7 to 8 days of delivery. Please review the following conditions:
             </p>
-            <ul className="mt-3 space-y-2 list-disc list-inside text-[#6b5c51]">
-              <li>Contact our concierge desk at <a href="mailto:support@leatherhavencraft.com" className="text-[#8a4d2b] font-bold underline">support@leatherhavencraft.com</a> within 14 calendar days of signed delivery.</li>
-              <li>Garments must be in pristine, unworn condition with brand tags, zipper guards, and original dust bags intact.</li>
-              <li>We will immediately arrange a priority exchange for an alternate size or issue a prompt refund upon inspection.</li>
-            </ul>
+            <div className="rounded-xl border border-[#ded5c7] bg-white p-6 shadow-2xs space-y-3.5">
+              <ul className="space-y-2.5 list-disc list-inside text-[#52453c]">
+                <li>
+                  <strong className="text-[#221b16]">Notification Window:</strong> The customer must contact us within 7 to 8 days of delivery to request a return.
+                </li>
+                <li>
+                  <strong className="text-[#221b16]">Shipping Costs:</strong> Return shipping costs will be paid by the customer.
+                </li>
+                <li>
+                  <strong className="text-[#221b16]">Original Condition:</strong> The product must be returned in its original, unused, and undamaged condition.
+                </li>
+                <li>
+                  <strong className="text-[#221b16]">Inspection &amp; Refund:</strong> Once we receive and inspect the returned product, we will process the refund or re-payment.
+                </li>
+                <li>
+                  <strong className="text-[#221b16]">Verification Requirement:</strong> Refunds will only be issued after the returned product has been received and checked.
+                </li>
+                <li>
+                  <strong className="text-[#221b16]">Eligibility:</strong> Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.
+                </li>
+              </ul>
+              <div className="border-t border-[#ded5c7]/60 pt-3 text-xs text-[#706456]">
+                Thank you for your understanding and cooperation. To initiate a return, contact our support desk at{" "}
+                <a href="mailto:support@leatherhavencraft.com" className="text-[#8a4d2b] font-bold underline">
+                  support@leatherhavencraft.com
+                </a>.
+              </div>
+            </div>
           </section>
         </div>
       </div>

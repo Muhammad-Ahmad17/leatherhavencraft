@@ -314,10 +314,10 @@ export function ProductPurchase({
           </button>
           {activeTab === "shipping" && (
             <div className="pb-3 text-[var(--muted)] space-y-1.5 text-xs leading-relaxed">
-              <p>• 100% genuine full grain leather bench crafted with heavy heritage brass hardware.</p>
-              <p>• Express air courier (DHL/FedEx 3 to 5 business days to US &amp; Europe).</p>
-              <p>• 14 day exchange and fit guarantee on all bespoke and catalog pieces.</p>
-              <p>• Wholesale &amp; bulk supply: Custom branding, club patches, and volume freight available on request.</p>
+              <p>• Free worldwide delivery: Reliable air delivery according to country (around 1 week to 9 days).</p>
+              <p>• Direct order updates until dispatch, followed by live door-to-door tracking.</p>
+              <p>• Return Policy: Returns accepted within 7 to 8 days of delivery in original, unused, and undamaged condition (return shipping paid by customer).</p>
+              <p>• Wholesale &amp; bulk orders: Custom branding, club patches, and volume freight available on request.</p>
             </div>
           )}
         </div>
