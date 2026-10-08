@@ -7,44 +7,6 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 
 type Sort = "featured" | "price-asc" | "price-desc";
 
-function getProductCategory(product: Product): string {
-  if (
-    product.category &&
-    ![
-      "avirex",
-      "pelle-pelle",
-      "schott-nyc",
-      "harley-davidson",
-      "supreme",
-      "leather-haven-craft",
-      "accessories",
-      "others",
-    ].includes(product.category.toLowerCase())
-  ) {
-    return product.category;
-  }
-  const name = (product.name || "").toLowerCase();
-  if (
-    name.includes("bomber") ||
-    name.includes("b-3") ||
-    name.includes("flight") ||
-    name.includes("pilot") ||
-    name.includes("shearling")
-  ) {
-    return "Bomber Jackets";
-  }
-  if (
-    name.includes("racing") ||
-    name.includes("speedway") ||
-    name.includes("moto") ||
-    name.includes("biker") ||
-    name.includes("rider")
-  ) {
-    return "Racing & Moto";
-  }
-  return "Coats & Jackets";
-}
-
 const KNOWN_BRANDS = [
   { slug: "pelle-pelle", name: "Pelle Pelle" },
   { slug: "avirex", name: "Avirex" },
@@ -52,12 +14,6 @@ const KNOWN_BRANDS = [
   { slug: "harley-davidson", name: "Harley-Davidson" },
   { slug: "supreme", name: "Supreme" },
   { slug: "leather-haven-craft", name: "Leather Haven Craft" },
-];
-
-const PRIMARY_SILHOUETTES = [
-  "Bomber Jackets",
-  "Racing & Moto",
-  "Coats & Jackets",
 ];
 
 export type ProductCatalogProps = {
@@ -81,7 +37,6 @@ export function ProductCatalog({
   products,
   initialProducts,
   initialPagination,
-  initialCategory = "all",
   initialBrand = "all",
   initialSort = "featured",
   initialSearch = "",
@@ -110,7 +65,6 @@ export function ProductCatalog({
     totalPages: initialPagination?.totalPages ?? (products ? Math.ceil(products.length / 16) || 1 : 1),
   });
 
-  const [category, setCategory] = useState(initialCategory);
   const [brand, setBrand] = useState(initialBrand);
   const [sort, setSort] = useState<Sort>(initialSort);
   const [search, setSearch] = useState(initialSearch);
@@ -151,7 +105,6 @@ export function ProductCatalog({
   const queryBackend = useCallback(
     async (
       targetPage: number,
-      newCategory: string,
       newBrand: string,
       newSort: Sort,
       append = false,
@@ -161,7 +114,6 @@ export function ProductCatalog({
       const sp = new URLSearchParams();
       sp.set("page", String(targetPage));
       sp.set("limit", "16");
-      if (newCategory !== "all") sp.set("category", newCategory);
       if (newBrand !== "all") sp.set("brand", newBrand);
       if (newSort !== "featured") sp.set("sort", newSort);
       if (activeSearch && activeSearch.trim()) sp.set("search", activeSearch.trim());
@@ -204,7 +156,6 @@ export function ProductCatalog({
             }
             updateUrlQuery({
               page: targetPage,
-              category: newCategory,
               brand: newBrand,
               sort: newSort,
               search: activeSearch,
@@ -221,38 +172,28 @@ export function ProductCatalog({
   // Filter change handler
   const handleFilterChange = useCallback(
     async (
-      newCat = category,
       newBrd = brand,
       newSrt = sort
     ) => {
       if (isDirectMode && products) {
-        setCategory(newCat);
         setBrand(newBrd);
         setSort(newSrt);
         setPagination((prev) => ({ ...prev, page: 1 }));
         return;
       }
       setIsFiltering(true);
-      await queryBackend(1, newCat, newBrd, newSrt, false);
+      await queryBackend(1, newBrd, newSrt, false);
       setIsFiltering(false);
     },
-    [isDirectMode, products, category, brand, sort, queryBackend]
+    [isDirectMode, products, brand, sort, queryBackend]
   );
-
-  // Instant 1-click silhouette filter
-  const handleCategoryClick = (catName: string) => {
-    const nextCat = category === catName && catName !== "all" ? "all" : catName;
-    setCategory(nextCat);
-    handleFilterChange(nextCat, brand, sort);
-  };
 
   // Clear all filters (maintains locked brand on brand pages)
   const clearAllFilters = () => {
     const targetBrand = isBrandLocked ? initialBrand : "all";
-    setCategory("all");
     if (!isBrandLocked) setBrand("all");
     if (!isDirectMode) {
-      handleFilterChange("all", targetBrand, sort);
+      handleFilterChange(targetBrand, sort);
     } else {
       setPagination((prev) => ({ ...prev, page: 1 }));
     }
@@ -262,7 +203,6 @@ export function ProductCatalog({
   const filteredDirectProducts = useMemo(() => {
     if (!isDirectMode || !products) return [];
     const filtered = products.filter((p) => {
-      if (category !== "all" && getProductCategory(p) !== category) return false;
       if (brand !== "all" && p.brand !== brand) return false;
       return true;
     });
@@ -275,7 +215,7 @@ export function ProductCatalog({
     });
 
     return filtered;
-  }, [isDirectMode, products, category, brand, sort]);
+  }, [isDirectMode, products, brand, sort]);
 
   const displayedItems = useMemo(() => {
     if (isDirectMode && products) {
@@ -304,7 +244,7 @@ export function ProductCatalog({
 
     setIsLoadingMore(true);
     const nextPage = pagination.page + 1;
-    await queryBackend(nextPage, category, brand, sort, true);
+    await queryBackend(nextPage, brand, sort, true);
     setIsLoadingMore(false);
   };
 
@@ -325,7 +265,6 @@ export function ProductCatalog({
     const sp = new URLSearchParams();
     sp.set("page", "1");
     sp.set("limit", String(pagination.total));
-    if (category !== "all") sp.set("category", category);
     if (brand !== "all") sp.set("brand", brand);
     if (sort !== "featured") sp.set("sort", sort);
 
@@ -358,11 +297,6 @@ export function ProductCatalog({
     }
   };
 
-  // Active filters count (excluding locked brand on brand pages)
-  const activeFiltersCount =
-    (category !== "all" ? 1 : 0) +
-    (!isBrandLocked && brand !== "all" ? 1 : 0);
-
   return (
     <section className="px-6 pb-20">
       {/* ── Active Search Banner ── */}
@@ -382,7 +316,7 @@ export function ProductCatalog({
               type="button"
               onClick={() => {
                 setSearch("");
-                queryBackend(1, category, brand, sort, false, "");
+                queryBackend(1, brand, sort, false, "");
               }}
               className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] cursor-pointer"
             >
@@ -392,67 +326,25 @@ export function ProductCatalog({
         </div>
       )}
 
-      {/* ── Direct Silhouette Filter Bar ── */}
-      <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-4 backdrop-blur-md">
-        <div className="mx-auto max-w-6xl space-y-3">
-          {/* Row 1: Direct 1-Click Category / Silhouette Pills */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              <button
-                type="button"
-                onClick={() => handleCategoryClick("all")}
-                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
-                  category === "all"
-                    ? "bg-[#2a1810] text-[#faf7f2] shadow-xs"
-                    : "border border-[#ded5c7] bg-white text-[#524438] hover:border-[#8a4d2b] hover:text-[#2a1810]"
-                }`}
-              >
-                {isBrandLocked ? `All ${getBrandLabel(initialBrand)}` : "All Outerwear"}
-              </button>
-
-              {PRIMARY_SILHOUETTES.map((sil) => {
-                const isActive = category === sil;
-                return (
-                  <button
-                    key={sil}
-                    type="button"
-                    onClick={() => handleCategoryClick(sil)}
-                    className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
-                      isActive
-                        ? "bg-[#2a1810] text-[#faf7f2] shadow-xs"
-                        : "border border-[#ded5c7] bg-white text-[#524438] hover:border-[#8a4d2b] hover:text-[#2a1810]"
-                    }`}
-                  >
-                    {sil}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Total Pieces counter */}
-            <span className="shrink-0 text-xs font-medium text-[#706456] hidden md:inline">
-              <span className="font-bold text-[#2a1810]">{totalPieces}</span>{" "}
-              {totalPieces === 1 ? "piece" : "pieces"}
-            </span>
-          </div>
-
-          {/* Row 2: Secondary Controls (House on /products & Sort) */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#ece7de]/70">
-            <div className="flex flex-wrap items-center gap-2">
-              {/* House/Brand Select: Only on /products, hidden if already on brand page */}
-              {!isBrandLocked && (
+      {/* ── Clean Catalog Action Bar ── */}
+      <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-3.5 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
+          {/* Left: House Filter (if on /products) or Brand Header */}
+          <div className="flex flex-wrap items-center gap-3">
+            {!isBrandLocked ? (
+              <div className="flex items-center gap-2">
                 <div className="relative">
                   <select
                     value={brand}
                     onChange={(e) => {
                       const next = e.target.value;
                       setBrand(next);
-                      handleFilterChange(category, next, sort);
+                      handleFilterChange(next, sort);
                     }}
-                    className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
-                    aria-label="Filter by House"
+                    className="h-9 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+                    aria-label="Filter by Heritage House"
                   >
-                    <option value="all">House: All Houses</option>
+                    <option value="all">All Heritage Houses</option>
                     {KNOWN_BRANDS.map((b) => (
                       <option key={b.slug} value={b.slug}>
                         {b.name}
@@ -463,86 +355,72 @@ export function ProductCatalog({
                     ▾
                   </span>
                 </div>
-              )}
 
-              {/* Reset link if filters applied */}
-              {activeFiltersCount > 0 && (
+                {brand !== "all" && (
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] transition-colors cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            ) : (
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a4d2b]">
+                {getBrandLabel(initialBrand)} Collection
+              </span>
+            )}
+
+            {/* Active Brand Chip if filtered on /products */}
+            {!isBrandLocked && brand !== "all" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-1 text-xs font-medium text-[#2a1810]">
+                <span>{getBrandLabel(brand)}</span>
                 <button
                   type="button"
-                  onClick={clearAllFilters}
-                  className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] transition-colors cursor-pointer"
+                  onClick={() => {
+                    setBrand("all");
+                    handleFilterChange("all", sort);
+                  }}
+                  className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
+                  aria-label="Remove brand filter"
                 >
-                  Reset filters
+                  ✕
                 </button>
-              )}
-            </div>
+              </span>
+            )}
+          </div>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 ml-auto">
+          {/* Right: Piece Count & Sort Dropdown */}
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-medium text-[#706456]">
+              <span className="font-bold text-[#2a1810]">{totalPieces}</span>{" "}
+              {totalPieces === 1 ? "piece" : "pieces"}
+            </span>
+
+            <div className="relative">
               <label htmlFor="sort-select" className="sr-only">
                 Sort by
               </label>
-              <div className="relative">
-                <select
-                  id="sort-select"
-                  value={sort}
-                  onChange={(e) => {
-                    const nextSort = e.target.value as Sort;
-                    setSort(nextSort);
-                    handleFilterChange(category, brand, nextSort);
-                  }}
-                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
-                >
-                  <option value="featured">Sort: Featured</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                </select>
-                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
-                  ▾
-                </span>
-              </div>
+              <select
+                id="sort-select"
+                value={sort}
+                onChange={(e) => {
+                  const nextSort = e.target.value as Sort;
+                  setSort(nextSort);
+                  handleFilterChange(brand, nextSort);
+                }}
+                className="h-9 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
+              >
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
+                ▾
+              </span>
             </div>
           </div>
-
-          {/* Row 3: Active Filter Badges */}
-          {activeFiltersCount > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706456] mr-1">
-                Active:
-              </span>
-
-              {category !== "all" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
-                  <span>{category}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleCategoryClick("all")}
-                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
-                    aria-label={`Remove ${category} filter`}
-                  >
-                    ✕
-                  </button>
-                </span>
-              )}
-
-              {!isBrandLocked && brand !== "all" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
-                  <span>House: {getBrandLabel(brand)}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setBrand("all");
-                      handleFilterChange(category, "all", sort);
-                    }}
-                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
-                    aria-label="Remove brand filter"
-                  >
-                    ✕
-                  </button>
-                </span>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
@@ -623,14 +501,14 @@ export function ProductCatalog({
               No matching pieces found
             </h3>
             <p className="mt-2 text-sm text-[#706456]">
-              Try clearing one or more active filters to view available atelier garments.
+              Try clearing the active filter to view available atelier garments.
             </p>
             <button
               type="button"
               onClick={clearAllFilters}
               className="mt-5 inline-flex items-center rounded-md bg-[#2a1810] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-white hover:bg-[#8a4d2b] transition-colors cursor-pointer"
             >
-              Reset All Filters
+              Reset Filters
             </button>
           </div>
         )}

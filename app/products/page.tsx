@@ -9,7 +9,6 @@ type ProductsPageProps = {
   searchParams: Promise<{
     page?: string;
     brand?: string;
-    category?: string;
     sort?: string;
     search?: string;
   }>;
@@ -53,7 +52,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const sp = await searchParams;
   const page = Number(sp.page) || 1;
   const brand = sp.brand || "all";
-  const category = sp.category || "all";
   const search = sp.search || undefined;
   const rawSort = sp.sort || "featured";
   const validSort: "featured" | "price-asc" | "price-desc" = rawSort === "price-asc" || rawSort === "price-desc" ? rawSort : "featured";
@@ -62,7 +60,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const { products, pagination } = await fetchPaginatedProducts({
     page,
     limit: 16,
-    category: category !== "all" ? category : undefined,
     brand: brand !== "all" ? brand : undefined,
     sort: validSort !== "featured" ? validSort : undefined,
     search,
@@ -114,7 +111,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       <ProductCatalog
         initialProducts={products}
         initialPagination={pagination}
-        initialCategory={category}
         initialBrand={brand}
         initialSort={validSort}
         initialSearch={search}
