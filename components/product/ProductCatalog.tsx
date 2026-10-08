@@ -24,9 +24,6 @@ function getProductCategory(product: Product): string {
     return product.category;
   }
   const name = (product.name || "").toLowerCase();
-  if (name.includes("hoodie") || name.includes("hooded")) return "Hoodies";
-  if (name.includes("jersey")) return "Jerseys";
-  if (name.includes("t-shirt") || name.includes("tee")) return "T-Shirts";
   if (
     name.includes("bomber") ||
     name.includes("b-3") ||
@@ -45,43 +42,8 @@ function getProductCategory(product: Product): string {
   ) {
     return "Racing & Moto";
   }
-  if (
-    product.brand === "accessories" ||
-    name.includes("belt") ||
-    name.includes("wallet") ||
-    name.includes("glove")
-  ) {
-    return "Accessories";
-  }
   return "Coats & Jackets";
 }
-
-function getBaseColor(colorName?: string): string {
-  if (!colorName) return "Black";
-  const c = colorName.toLowerCase();
-  if (c.includes("black")) return "Black";
-  if (c.includes("brown") || c.includes("espresso") || c.includes("tan")) return "Brown";
-  if (c.includes("navy") || c.includes("blue")) return "Navy";
-  if (c.includes("yellow") || c.includes("mustard")) return "Yellow";
-  if (c.includes("burgundy") || c.includes("crimson") || c.includes("red")) return "Burgundy & Red";
-  if (c.includes("olive") || c.includes("green")) return "Olive Green";
-  if (c.includes("grey") || c.includes("gray") || c.includes("ash")) return "Grey";
-  if (c.includes("cream") || c.includes("white") || c.includes("ivory")) return "Cream & White";
-  return colorName;
-}
-
-const STANDARD_SIZES = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "2XL",
-  "3XL",
-  "4XL",
-  "5XL",
-  "6XL",
-];
 
 const KNOWN_BRANDS = [
   { slug: "pelle-pelle", name: "Pelle Pelle" },
@@ -96,17 +58,6 @@ const PRIMARY_SILHOUETTES = [
   "Bomber Jackets",
   "Racing & Moto",
   "Coats & Jackets",
-];
-
-const KNOWN_COLORS = [
-  "Black",
-  "Brown",
-  "Navy",
-  "Yellow",
-  "Burgundy & Red",
-  "Olive Green",
-  "Grey",
-  "Cream & White",
 ];
 
 export type ProductCatalogProps = {
@@ -132,12 +83,10 @@ export function ProductCatalog({
   initialPagination,
   initialCategory = "all",
   initialBrand = "all",
-  initialSize = "all",
-  initialColor = "all",
   initialSort = "featured",
   initialSearch = "",
 }: ProductCatalogProps) {
-  // Brand locking: when on a brand page like /brands/pelle-pelle, brand is locked
+  // Brand locking: when on a brand page like /brands/pelle-pelle, brand is fixed
   const isBrandLocked = Boolean(initialBrand && initialBrand !== "all");
 
   // Support direct products prop (e.g. from static fallback) and SSR paginated props
@@ -163,8 +112,6 @@ export function ProductCatalog({
 
   const [category, setCategory] = useState(initialCategory);
   const [brand, setBrand] = useState(initialBrand);
-  const [size, setSize] = useState(initialSize);
-  const [color, setColor] = useState(initialColor);
   const [sort, setSort] = useState<Sort>(initialSort);
   const [search, setSearch] = useState(initialSearch);
 
@@ -206,8 +153,6 @@ export function ProductCatalog({
       targetPage: number,
       newCategory: string,
       newBrand: string,
-      newSize: string,
-      newColor: string,
       newSort: Sort,
       append = false,
       newSearch?: string
@@ -218,8 +163,6 @@ export function ProductCatalog({
       sp.set("limit", "16");
       if (newCategory !== "all") sp.set("category", newCategory);
       if (newBrand !== "all") sp.set("brand", newBrand);
-      if (newSize !== "all") sp.set("size", newSize);
-      if (newColor !== "all") sp.set("color", newColor);
       if (newSort !== "featured") sp.set("sort", newSort);
       if (activeSearch && activeSearch.trim()) sp.set("search", activeSearch.trim());
 
@@ -263,8 +206,6 @@ export function ProductCatalog({
               page: targetPage,
               category: newCategory,
               brand: newBrand,
-              size: newSize,
-              color: newColor,
               sort: newSort,
               search: activeSearch,
             });
@@ -282,31 +223,27 @@ export function ProductCatalog({
     async (
       newCat = category,
       newBrd = brand,
-      newSz = size,
-      newClr = color,
       newSrt = sort
     ) => {
       if (isDirectMode && products) {
         setCategory(newCat);
         setBrand(newBrd);
-        setSize(newSz);
-        setColor(newClr);
         setSort(newSrt);
         setPagination((prev) => ({ ...prev, page: 1 }));
         return;
       }
       setIsFiltering(true);
-      await queryBackend(1, newCat, newBrd, newSz, newClr, newSrt, false);
+      await queryBackend(1, newCat, newBrd, newSrt, false);
       setIsFiltering(false);
     },
-    [isDirectMode, products, category, brand, size, color, sort, queryBackend]
+    [isDirectMode, products, category, brand, sort, queryBackend]
   );
 
   // Instant 1-click silhouette filter
   const handleCategoryClick = (catName: string) => {
     const nextCat = category === catName && catName !== "all" ? "all" : catName;
     setCategory(nextCat);
-    handleFilterChange(nextCat, brand, size, color, sort);
+    handleFilterChange(nextCat, brand, sort);
   };
 
   // Clear all filters (maintains locked brand on brand pages)
@@ -314,10 +251,8 @@ export function ProductCatalog({
     const targetBrand = isBrandLocked ? initialBrand : "all";
     setCategory("all");
     if (!isBrandLocked) setBrand("all");
-    setSize("all");
-    setColor("all");
     if (!isDirectMode) {
-      handleFilterChange("all", targetBrand, "all", "all", sort);
+      handleFilterChange("all", targetBrand, sort);
     } else {
       setPagination((prev) => ({ ...prev, page: 1 }));
     }
@@ -329,8 +264,6 @@ export function ProductCatalog({
     const filtered = products.filter((p) => {
       if (category !== "all" && getProductCategory(p) !== category) return false;
       if (brand !== "all" && p.brand !== brand) return false;
-      if (size !== "all" && !(p.sizes || []).includes(size)) return false;
-      if (color !== "all" && getBaseColor(p.colorName) !== color) return false;
       return true;
     });
 
@@ -342,7 +275,7 @@ export function ProductCatalog({
     });
 
     return filtered;
-  }, [isDirectMode, products, category, brand, size, color, sort]);
+  }, [isDirectMode, products, category, brand, sort]);
 
   const displayedItems = useMemo(() => {
     if (isDirectMode && products) {
@@ -371,7 +304,7 @@ export function ProductCatalog({
 
     setIsLoadingMore(true);
     const nextPage = pagination.page + 1;
-    await queryBackend(nextPage, category, brand, size, color, sort, true);
+    await queryBackend(nextPage, category, brand, sort, true);
     setIsLoadingMore(false);
   };
 
@@ -394,8 +327,6 @@ export function ProductCatalog({
     sp.set("limit", String(pagination.total));
     if (category !== "all") sp.set("category", category);
     if (brand !== "all") sp.set("brand", brand);
-    if (size !== "all") sp.set("size", size);
-    if (color !== "all") sp.set("color", color);
     if (sort !== "featured") sp.set("sort", sort);
 
     try {
@@ -430,9 +361,7 @@ export function ProductCatalog({
   // Active filters count (excluding locked brand on brand pages)
   const activeFiltersCount =
     (category !== "all" ? 1 : 0) +
-    (!isBrandLocked && brand !== "all" ? 1 : 0) +
-    (size !== "all" ? 1 : 0) +
-    (color !== "all" ? 1 : 0);
+    (!isBrandLocked && brand !== "all" ? 1 : 0);
 
   return (
     <section className="px-6 pb-20">
@@ -453,7 +382,7 @@ export function ProductCatalog({
               type="button"
               onClick={() => {
                 setSearch("");
-                queryBackend(1, category, brand, size, color, sort, false, "");
+                queryBackend(1, category, brand, sort, false, "");
               }}
               className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] cursor-pointer"
             >
@@ -463,9 +392,9 @@ export function ProductCatalog({
         </div>
       )}
 
-      {/* ── Direct, Intuitive Filter Toolbar ── */}
+      {/* ── Direct Silhouette Filter Bar ── */}
       <div className="sticky top-[var(--site-header-h)] z-20 -mx-6 mb-8 border-b border-[var(--line)] bg-[var(--bg)]/95 px-6 py-4 backdrop-blur-md">
-        <div className="mx-auto max-w-6xl space-y-3.5">
+        <div className="mx-auto max-w-6xl space-y-3">
           {/* Row 1: Direct 1-Click Category / Silhouette Pills */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
@@ -507,7 +436,7 @@ export function ProductCatalog({
             </span>
           </div>
 
-          {/* Row 2: Clean Dropdown Refinement Bar */}
+          {/* Row 2: Secondary Controls (House on /products & Sort) */}
           <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#ece7de]/70">
             <div className="flex flex-wrap items-center gap-2">
               {/* House/Brand Select: Only on /products, hidden if already on brand page */}
@@ -518,7 +447,7 @@ export function ProductCatalog({
                     onChange={(e) => {
                       const next = e.target.value;
                       setBrand(next);
-                      handleFilterChange(category, next, size, color, sort);
+                      handleFilterChange(category, next, sort);
                     }}
                     className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
                     aria-label="Filter by House"
@@ -536,60 +465,12 @@ export function ProductCatalog({
                 </div>
               )}
 
-              {/* Size Select */}
-              <div className="relative">
-                <select
-                  value={size}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setSize(next);
-                    handleFilterChange(category, brand, next, color, sort);
-                  }}
-                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
-                  aria-label="Filter by Size"
-                >
-                  <option value="all">Size: All Sizes</option>
-                  {STANDARD_SIZES.map((s) => (
-                    <option key={s} value={s}>
-                      Size: {s}
-                    </option>
-                  ))}
-                </select>
-                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
-                  ▾
-                </span>
-              </div>
-
-              {/* Color Select */}
-              <div className="relative">
-                <select
-                  value={color}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setColor(next);
-                    handleFilterChange(category, brand, size, next, sort);
-                  }}
-                  className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
-                  aria-label="Filter by Color"
-                >
-                  <option value="all">Color: All Colors</option>
-                  {KNOWN_COLORS.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#706456]">
-                  ▾
-                </span>
-              </div>
-
               {/* Reset link if filters applied */}
               {activeFiltersCount > 0 && (
                 <button
                   type="button"
                   onClick={clearAllFilters}
-                  className="ml-1 text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] transition-colors cursor-pointer"
+                  className="text-xs font-semibold text-[#8a4d2b] underline hover:text-[#2a1810] transition-colors cursor-pointer"
                 >
                   Reset filters
                 </button>
@@ -608,7 +489,7 @@ export function ProductCatalog({
                   onChange={(e) => {
                     const nextSort = e.target.value as Sort;
                     setSort(nextSort);
-                    handleFilterChange(category, brand, size, color, nextSort);
+                    handleFilterChange(category, brand, nextSort);
                   }}
                   className="h-8.5 rounded-lg border border-[#ded5c7] bg-white pl-3 pr-8 text-xs font-medium text-[#2a1810] hover:border-[#8a4d2b] focus:border-[#8a4d2b] outline-hidden cursor-pointer shadow-2xs appearance-none"
                 >
@@ -623,9 +504,9 @@ export function ProductCatalog({
             </div>
           </div>
 
-          {/* Row 3: Active Filter Badges (Shows only when filters are active) */}
+          {/* Row 3: Active Filter Badges */}
           {activeFiltersCount > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706456] mr-1">
                 Active:
               </span>
@@ -651,44 +532,10 @@ export function ProductCatalog({
                     type="button"
                     onClick={() => {
                       setBrand("all");
-                      handleFilterChange(category, "all", size, color, sort);
+                      handleFilterChange(category, "all", sort);
                     }}
                     className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
                     aria-label="Remove brand filter"
-                  >
-                    ✕
-                  </button>
-                </span>
-              )}
-
-              {size !== "all" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
-                  <span>Size: {size}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSize("all");
-                      handleFilterChange(category, brand, "all", color, sort);
-                    }}
-                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
-                    aria-label="Remove size filter"
-                  >
-                    ✕
-                  </button>
-                </span>
-              )}
-
-              {color !== "all" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4eee6] border border-[#ded5c7] px-2.5 py-0.5 text-xs font-medium text-[#2a1810]">
-                  <span>Color: {color}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setColor("all");
-                      handleFilterChange(category, brand, size, "all", sort);
-                    }}
-                    className="text-[#706456] hover:text-[#2a1810] cursor-pointer font-bold"
-                    aria-label="Remove color filter"
                   >
                     ✕
                   </button>
