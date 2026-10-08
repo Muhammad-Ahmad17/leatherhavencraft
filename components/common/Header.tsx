@@ -108,24 +108,37 @@ export function Header() {
                     ▾
                   </span>
                 </button>
-                <div className="invisible absolute left-0 top-full z-50 mt-2 w-max max-w-[calc(100vw-2rem)] border border-[var(--line)] bg-white p-2.5 shadow-xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                <div className="invisible absolute left-0 top-full z-50 mt-2 w-[460px] rounded-xl border border-[var(--line)] bg-white p-3 shadow-2xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <div className="px-2 py-1.5 mb-1.5 border-b border-[#ece7de] flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                      Brands &amp; Collections
+                    </span>
+                    <Link
+                      href="/products"
+                      className="text-[11px] font-medium text-[#706456] hover:text-[#2a1810] underline"
+                    >
+                      View All Pieces
+                    </Link>
+                  </div>
                   <ul className="grid grid-cols-2 gap-2">
                     {stripBrands.map((brand) => (
                       <li key={brand.slug}>
                         <Link
                           href={`/brands/${brand.slug}`}
                           title={brand.name}
-                          aria-label={brand.name}
-                          className="flex h-12 w-[120px] items-center justify-center rounded-md border border-transparent p-2 transition-all hover:border-[var(--line)] hover:bg-[var(--bg2)]"
+                          className="group/brand flex items-center gap-3 rounded-lg border border-transparent p-2 transition-all hover:border-[#ded5c7] hover:bg-[#faf7f2]"
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={brand.logo}
-                            alt={brand.name}
-                            className={`max-h-7 w-auto max-w-full object-contain ${
-                              brand.slug === "harley-davidson" ? "max-h-8" : ""
-                            }`}
-                          />
+                          <span className="flex h-9 w-14 shrink-0 items-center justify-center rounded bg-white p-1 shadow-2xs border border-[#eee8df]">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={brand.logo}
+                              alt=""
+                              className="max-h-6 w-auto max-w-full object-contain"
+                            />
+                          </span>
+                          <span className="text-xs font-semibold text-[#2a1810] group-hover/brand:text-[#8a4d2b] transition-colors truncate">
+                            {brand.name}
+                          </span>
                         </Link>
                       </li>
                     ))}
@@ -210,23 +223,29 @@ export function Header() {
             >
               Universal Size Guide
             </Link>
-            <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">Brands &amp; Collections</p>
+            <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-2">Brands &amp; Collections</p>
             <ul className="mt-2 border-t border-[var(--line)]">
               {stripBrands.map((brand) => (
                 <li key={brand.slug} className="border-b border-[var(--line)]">
                   <Link
                     href={`/brands/${brand.slug}`}
-                    className="flex items-center justify-between gap-4 py-4"
+                    className="flex items-center justify-between gap-4 py-3.5"
+                    onClick={() => setOpen(false)}
                   >
-                    <span className="flex h-11 w-[140px] items-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={brand.logo}
-                        alt={brand.name}
-                        className="max-h-9 w-auto object-contain"
-                      />
-                    </span>
-                    <span aria-hidden="true" className="text-[var(--muted)]">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <span className="flex h-10 w-16 shrink-0 items-center justify-center rounded-md bg-white p-1.5 shadow-2xs border border-[#eee8df]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={brand.logo}
+                          alt=""
+                          className="max-h-7 w-auto max-w-full object-contain"
+                        />
+                      </span>
+                      <span className="text-base font-semibold text-[var(--ink)] truncate">
+                        {brand.name}
+                      </span>
+                    </div>
+                    <span aria-hidden="true" className="text-[var(--muted)] text-lg">
                       →
                     </span>
                   </Link>

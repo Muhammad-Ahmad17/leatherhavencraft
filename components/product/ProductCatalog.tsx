@@ -8,12 +8,14 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 type Sort = "featured" | "price-asc" | "price-desc";
 
 const KNOWN_BRANDS = [
-  { slug: "pelle-pelle", name: "Pelle Pelle" },
-  { slug: "avirex", name: "Avirex" },
-  { slug: "schott-nyc", name: "Schott NYC" },
-  { slug: "harley-davidson", name: "Harley-Davidson" },
-  { slug: "supreme", name: "Supreme" },
   { slug: "leather-haven-craft", name: "Leather Haven Craft" },
+  { slug: "avirex", name: "Avirex" },
+  { slug: "pelle-pelle", name: "Pelle Pelle" },
+  { slug: "harley-davidson", name: "Harley-Davidson" },
+  { slug: "schott-nyc", name: "Schott NYC" },
+  { slug: "supreme", name: "Supreme" },
+  { slug: "accessories", name: "Accessories" },
+  { slug: "others", name: "Others" },
 ];
 
 export type ProductCatalogProps = {

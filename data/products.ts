@@ -542,12 +542,12 @@ export async function fetchPaginatedProducts(
   sp.set("limit", String(limit));
 
   const brandSlugs = [
-    "pelle-pelle",
-    "avirex",
-    "schott-nyc",
-    "harley-davidson",
-    "supreme",
     "leather-haven-craft",
+    "avirex",
+    "pelle-pelle",
+    "harley-davidson",
+    "schott-nyc",
+    "supreme",
     "accessories",
     "others",
   ];
