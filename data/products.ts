@@ -531,7 +531,10 @@ export async function fetchPaginatedProducts(
   params: ProductQueryParams = {}
 ): Promise<PaginatedResponse> {
   const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.leatherhavencraft.com";
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    (process.env.NODE_ENV === "production"
+      ? "https://api.leatherhavencraft.com"
+      : "http://localhost:5000");
   const { page = 1, limit = 16, category, brand, cut, size, color, sort, search } = params;
 
   const sp = new URLSearchParams();
@@ -576,9 +579,21 @@ export async function fetchPaginatedProducts(
   if (search && search.trim()) sp.set("search", search.trim());
 
   try {
-    const res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
+    let res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
       cache: "no-store",
     });
+
+    if (!res.ok && !backendUrl.includes("localhost:5000")) {
+      try {
+        const localRes = await fetch(`http://localhost:5000/api/products?${sp.toString()}`, {
+          cache: "no-store",
+        });
+        if (localRes.ok) res = localRes;
+      } catch {
+        // local backend not reachable
+      }
+    }
+
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -596,6 +611,31 @@ export async function fetchPaginatedProducts(
       }
     }
   } catch (err) {
+    if (!backendUrl.includes("localhost:5000")) {
+      try {
+        const localRes = await fetch(`http://localhost:5000/api/products?${sp.toString()}`, {
+          cache: "no-store",
+        });
+        if (localRes.ok) {
+          const json = await localRes.json();
+          if (json.success && Array.isArray(json.data)) {
+            const mapped = json.data.map(mapRawProduct);
+            const total = json.pagination?.total ?? mapped.length;
+            return {
+              products: mapped,
+              pagination: {
+                total,
+                page: json.pagination?.page ?? page,
+                limit: json.pagination?.limit ?? limit,
+                totalPages: json.pagination?.totalPages ?? (Math.ceil(total / limit) || 1),
+              },
+            };
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
     console.error("[fetchPaginatedProducts error]", err);
   }
 

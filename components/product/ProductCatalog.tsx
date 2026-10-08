@@ -250,13 +250,21 @@ export function ProductCatalog({
           const data = await res.json();
           if (Array.isArray(data.products)) {
             if (append) {
+              const incoming = (data.products as Product[]) || [];
               setItems((prev) => {
                 const seen = new Set(prev.map((p) => String(p.id)));
-                const uniqueIncoming = (data.products as Product[]).filter(
+                const uniqueIncoming = incoming.filter(
                   (p: Product) => !seen.has(String(p.id))
                 );
                 return [...prev, ...uniqueIncoming];
               });
+              if (data.pagination) {
+                setPagination({
+                  ...data.pagination,
+                  page: targetPage,
+                  totalPages: incoming.length === 0 ? targetPage : data.pagination.totalPages,
+                });
+              }
             } else {
               const seen = new Set<string>();
               const deduped: Product[] = [];
@@ -268,9 +276,9 @@ export function ProductCatalog({
                 }
               }
               setItems(deduped);
-            }
-            if (data.pagination) {
-              setPagination(data.pagination);
+              if (data.pagination) {
+                setPagination(data.pagination);
+              }
             }
             updateUrlQuery({
               page: targetPage,
@@ -373,7 +381,7 @@ export function ProductCatalog({
       return;
     }
 
-    if (items.length >= pagination.total) return;
+    if (items.length >= pagination.total || pagination.page >= pagination.totalPages) return;
 
     setIsLoadingMore(true);
     const nextPage = pagination.page + 1;
@@ -839,7 +847,7 @@ export function ProductCatalog({
                 </div>
 
                 {/* Buttons */}
-                {loadedPieces < totalPieces ? (
+                {loadedPieces < totalPieces && pagination.page < pagination.totalPages ? (
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
                     <button
                       type="button"
