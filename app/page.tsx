@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 const homeFaqSchema = [
   {
     q: "How are your jackets constructed and sourced?",
-    a: "Our jackets are master artisan recreations and custom made-to-measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3–1.5mm full-grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy-gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
+    a: "Our jackets are master artisan recreations and custom made to measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3 to 1.5mm full grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
   },
   {
     q: "What leather types do you offer?",
@@ -41,11 +41,11 @@ const homeFaqSchema = [
   },
   {
     q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
-    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturer for retail boutiques, motorcycle clubs, streetwear labels, and corporate teams. We offer tiered wholesale volume discounts starting from 5+ units, custom embossing, private-label branding, and international bulk shipping. Contact our atelier via WhatsApp or email with your quantity and design details for an immediate wholesale quote.",
+    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturer for retail boutiques, motorcycle clubs, streetwear labels, and corporate teams. We offer tiered wholesale volume discounts starting from 5+ units, custom embossing, private label branding, and international bulk shipping. Contact our atelier via WhatsApp or email with your quantity and design details for an immediate wholesale quote.",
   },
   {
     q: "How do I choose the correct size?",
-    a: "Every jacket has exact pit-to-pit chest, sleeve, back length, and hem measurements listed on its product page and in our Universal Size Guide (XS–6XL). If you are unsure between two sizes, message our concierge for personalized fit advice before ordering.",
+    a: "Every jacket has exact pit to pit chest, sleeve, back length, and hem measurements listed on its product page and in our Universal Size Guide (XS to 6XL). If you are unsure between two sizes, message our concierge for personalized fit advice before ordering.",
   },
   {
     q: "How does the ordering and payment process work?",
@@ -53,7 +53,7 @@ const homeFaqSchema = [
   },
   {
     q: "Where do you ship and what are the delivery times?",
-    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door-to-door tracking and transit insurance.",
+    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door to door tracking and transit insurance.",
   },
 ];
 
@@ -144,7 +144,7 @@ export default async function HomePage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
                 Curated Selection
               </p>
-              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">The edit</h2>
+              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">Best Sellers</h2>
             </div>
             <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
               Shop all jackets &rarr;

@@ -108,24 +108,15 @@ export function Header() {
                     ▾
                   </span>
                 </button>
-                <div className="invisible absolute left-0 top-full z-50 mt-2 w-max max-w-[calc(100vw-2rem)] border border-[var(--line)] bg-white p-2.5 shadow-xl transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  <ul className="grid grid-cols-2 gap-2">
+                <div className="invisible absolute left-0 top-full z-50 mt-1 w-[220px] rounded-none border border-[var(--line)] bg-white py-1 shadow-md transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul>
                     {stripBrands.map((brand) => (
                       <li key={brand.slug}>
                         <Link
                           href={`/brands/${brand.slug}`}
-                          title={brand.name}
-                          aria-label={brand.name}
-                          className="flex h-12 w-[120px] items-center justify-center rounded-md border border-transparent p-2 transition-all hover:border-[var(--line)] hover:bg-[var(--bg2)]"
+                          className="block px-4 py-2 text-xs font-medium tracking-wide text-[#2a1810] transition-colors hover:bg-[#faf7f2] hover:text-[#8a4d2b]"
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={brand.logo}
-                            alt={brand.name}
-                            className={`max-h-7 w-auto max-w-full object-contain ${
-                              brand.slug === "harley-davidson" ? "max-h-8" : ""
-                            }`}
-                          />
+                          {brand.name}
                         </Link>
                       </li>
                     ))}
@@ -210,24 +201,18 @@ export function Header() {
             >
               Universal Size Guide
             </Link>
-            <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">Brands &amp; Collections</p>
+            <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-2">Brands &amp; Collections</p>
             <ul className="mt-2 border-t border-[var(--line)]">
               {stripBrands.map((brand) => (
                 <li key={brand.slug} className="border-b border-[var(--line)]">
                   <Link
                     href={`/brands/${brand.slug}`}
-                    className="flex items-center justify-between gap-4 py-4"
+                    className="flex items-center justify-between py-3.5 text-base font-normal text-[var(--ink)] hover:text-[#8a4d2b] transition-colors"
+                    onClick={() => setOpen(false)}
                   >
-                    <span className="flex h-11 w-[140px] items-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={brand.logo}
-                        alt={brand.name}
-                        className="max-h-9 w-auto object-contain"
-                      />
-                    </span>
-                    <span aria-hidden="true" className="text-[var(--muted)]">
-                      →
+                    <span>{brand.name}</span>
+                    <span aria-hidden="true" className="text-[var(--muted)] text-sm">
+                      &rarr;
                     </span>
                   </Link>
                 </li>

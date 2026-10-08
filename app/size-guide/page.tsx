@@ -5,12 +5,12 @@ import { CustomManufacturing } from "@/components/home/CustomManufacturing";
 import { HOW_TO_MEASURE_STEPS } from "@/data/sizeChart";
 
 export const metadata: Metadata = {
-  title: "Universal Men's Leather Jacket Size Guide (XS–6XL) | Measurement Chart & Fit Guide",
+  title: "Universal Men's Leather Jacket Size Guide (XS to 6XL) | Measurement Chart & Fit Guide",
   description:
-    "Universal gents sizing chart for leather jackets across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft cuts. Exact pit-to-pit chest, waist, back length, shoulder, and sleeve measurements in inches and cm.",
+    "Universal gents sizing chart for leather jackets across Schott NYC, Avirex, Pelle Pelle, and Leather Haven Craft cuts. Exact pit to pit chest, waist, back length, shoulder, and sleeve measurements in inches and cm.",
   alternates: { canonical: "/size-guide" },
   openGraph: {
-    title: "Universal Leather Jacket Size Guide (XS–6XL) | Leather Haven Craft",
+    title: "Universal Leather Jacket Size Guide (XS to 6XL) | Leather Haven Craft",
     description: "Compare flat garment measurements across heritage leather outerwear houses.",
   },
 };
@@ -67,7 +67,7 @@ export default function SizeGuidePage() {
         {/* ── Leather Fit Advisory Note ── */}
         <section className="mt-12 rounded-2xl border border-[#ded5c7] bg-[#f5f0e8] p-6 sm:p-8">
           <h3 className="font-serif text-lg font-bold text-[#221b16] sm:text-xl">
-            The Philosophy of Leather Fit &amp; Break-in
+            The Philosophy of Leather Fit &amp; Break in
           </h3>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed text-[#52453c]">
             <div className="space-y-2">
@@ -75,7 +75,7 @@ export default function SizeGuidePage() {
                 Natural Hide Molding
               </strong>
               <p>
-                Genuine full-grain cowhide, steerhide, and horsehide are dense, natural materials that gently yield to body heat and movement. After 20 to 30 hours of continuous wear, high-grade leather relaxes at pressure points across the shoulders, chest, and elbows, conforming specifically to your physique.
+                Genuine full grain cowhide, steerhide, and horsehide are dense, natural materials that gently yield to body heat and movement. After 20 to 30 hours of continuous wear, high-grade leather relaxes at pressure points across the shoulders, chest, and elbows, conforming specifically to your physique.
               </p>
             </div>
             <div className="space-y-2">

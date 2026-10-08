@@ -36,7 +36,7 @@ export function UniversalSizeChart({
               Universal Standard
             </span>
             <span className="rounded bg-[#8a4d2b]/10 px-2 py-0.5 text-[10px] font-semibold text-[#8a4d2b]">
-              XS – 6XL
+              XS to 6XL
             </span>
           </div>
           <h4 className="mt-1 font-serif text-lg font-bold sm:text-xl text-[#221b16]">
@@ -573,7 +573,7 @@ export function UniversalSizeChart({
               </div>
             ) : (
               <span className="text-[#8a7b70] italic text-[11px]">
-                Hover or click any marker (1–6) or table row to inspect measurement guide
+                Hover or click any marker (1 to 6) or table row to inspect measurement guide
               </span>
             )}
           </div>

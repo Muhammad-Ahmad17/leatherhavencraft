@@ -24,12 +24,14 @@ const POPULAR_SEARCHES = [
 
 const CATEGORIES = [
   { id: "all", label: "All Houses" },
-  { id: "pelle-pelle", label: "Pelle Pelle" },
+  { id: "leather-haven-craft", label: "Leather Haven Craft" },
   { id: "avirex", label: "Avirex" },
-  { id: "schott-nyc", label: "Schott NYC" },
+  { id: "pelle-pelle", label: "Pelle Pelle" },
   { id: "harley-davidson", label: "Harley-Davidson" },
+  { id: "schott-nyc", label: "Schott NYC" },
   { id: "supreme", label: "Supreme" },
-  { id: "leather-haven-craft", label: "Atelier Bespoke" },
+  { id: "accessories", label: "Accessories" },
+  { id: "others", label: "Others" },
 ];
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {

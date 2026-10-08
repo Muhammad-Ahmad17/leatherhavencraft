@@ -148,13 +148,13 @@ export function BrandDossier({ brand }: BrandDossierProps) {
                 Compare Exact Flat Measurements
               </div>
               <p className="text-[#706456] leading-relaxed">
-                Check our universal pit-to-pit chest, shoulder, waist, and sleeve matrix to confirm your ideal size across all heritage houses.
+                Check our universal pit to pit chest, shoulder, waist, and sleeve matrix to confirm your ideal size across all heritage houses.
               </p>
               <Link
                 href="/size-guide"
                 className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#8a4d2b] px-4 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-[#2a1810] shadow-2xs"
               >
-                <span>Universal Size Guide (XS–6XL) &rarr;</span>
+                <span>Universal Size Guide (XS to 6XL) &rarr;</span>
               </Link>
             </div>
           </div>

@@ -4,11 +4,13 @@ import { getBrand, type Brand } from "@/data/brands";
 export function BrandStrip() {
   const lhc = getBrand("leather-haven-craft");
   const otherSlugs = [
-    "schott-nyc",
-    "harley-davidson",
-    "pelle-pelle",
-    "supreme",
     "avirex",
+    "pelle-pelle",
+    "harley-davidson",
+    "schott-nyc",
+    "supreme",
+    "accessories",
+    "others",
   ];
 
   const others = otherSlugs

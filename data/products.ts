@@ -395,11 +395,75 @@ export type ProductQueryParams = {
   limit?: number;
   category?: string;
   brand?: string;
+  cut?: string;
   size?: string;
   color?: string;
   sort?: string;
   search?: string;
 };
+
+export function getProductCategory(product: Product): string {
+  if (
+    product.category &&
+    ![
+      "avirex",
+      "pelle-pelle",
+      "schott-nyc",
+      "harley-davidson",
+      "supreme",
+      "leather-haven-craft",
+      "accessories",
+      "others",
+    ].includes(product.category.toLowerCase())
+  ) {
+    return product.category;
+  }
+  const name = (product.name || "").toLowerCase();
+  if (name.includes("hoodie") || name.includes("hooded")) return "Hoodies";
+  if (name.includes("jersey")) return "Jerseys";
+  if (name.includes("t-shirt") || name.includes("tee")) return "T-Shirts";
+  if (
+    name.includes("bomber") ||
+    name.includes("b-3") ||
+    name.includes("flight") ||
+    name.includes("pilot") ||
+    name.includes("shearling")
+  ) {
+    return "Bomber Jackets";
+  }
+  if (
+    name.includes("racing") ||
+    name.includes("speedway") ||
+    name.includes("moto") ||
+    name.includes("biker") ||
+    name.includes("rider")
+  ) {
+    return "Racing & Moto";
+  }
+  if (
+    product.brand === "accessories" ||
+    name.includes("belt") ||
+    name.includes("wallet") ||
+    name.includes("glove")
+  ) {
+    return "Accessories";
+  }
+  return "Coats & Jackets";
+}
+
+export function getBaseColor(colorName?: string): string {
+  if (!colorName) return "Black";
+  const c = colorName.toLowerCase();
+  if (c.includes("black")) return "Black";
+  if (c.includes("brown") || c.includes("espresso") || c.includes("tan")) return "Brown";
+  if (c.includes("navy") || c.includes("blue")) return "Navy";
+  if (c.includes("yellow") || c.includes("mustard")) return "Yellow";
+  if (c.includes("burgundy") || c.includes("crimson") || c.includes("red")) return "Burgundy & Red";
+  if (c.includes("olive") || c.includes("green")) return "Olive Green";
+  if (c.includes("grey") || c.includes("gray") || c.includes("ash")) return "Grey";
+  if (c.includes("cream") || c.includes("white") || c.includes("ivory")) return "Cream & White";
+  return colorName;
+}
 
 export interface RawProductData {
   _id?: string;
@@ -467,24 +531,69 @@ export async function fetchPaginatedProducts(
   params: ProductQueryParams = {}
 ): Promise<PaginatedResponse> {
   const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.leatherhavencraft.com";
-  const { page = 1, limit = 16, category, brand, size, color, sort, search } = params;
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    (process.env.NODE_ENV === "production"
+      ? "https://api.leatherhavencraft.com"
+      : "http://localhost:5000");
+  const { page = 1, limit = 16, category, brand, cut, size, color, sort, search } = params;
 
   const sp = new URLSearchParams();
   sp.set("page", String(page));
   sp.set("limit", String(limit));
 
-  const targetCategory = (category && category !== "all") ? category : (brand && brand !== "all" ? brand : undefined);
-  if (targetCategory) sp.set("category", targetCategory);
+  const brandSlugs = [
+    "leather-haven-craft",
+    "avirex",
+    "pelle-pelle",
+    "harley-davidson",
+    "schott-nyc",
+    "supreme",
+    "accessories",
+    "others",
+  ];
+
+  if (brand && brand !== "all") {
+    sp.set("brand", brand);
+    sp.set("category", brand);
+  }
+
+  if (cut && cut !== "all") {
+    sp.set("cut", cut);
+  }
+
+  if (category && category !== "all") {
+    if (brandSlugs.includes(category.toLowerCase())) {
+      sp.set("brand", category.toLowerCase());
+      sp.set("category", category.toLowerCase());
+    } else {
+      sp.set("cut", category);
+      if (!sp.has("category")) {
+        sp.set("category", category);
+      }
+    }
+  }
+
   if (size && size !== "all") sp.set("size", size);
   if (color && color !== "all") sp.set("color", color);
   if (sort && sort !== "featured") sp.set("sort", sort);
-  if (search) sp.set("search", search);
+  if (search && search.trim()) sp.set("search", search.trim());
 
   try {
-    const res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
+    let res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
       cache: "no-store",
     });
+
+    if (!res.ok && !backendUrl.includes("localhost:5000")) {
+      try {
+        const localRes = await fetch(`http://localhost:5000/api/products?${sp.toString()}`, {
+          cache: "no-store",
+        });
+        if (localRes.ok) res = localRes;
+      } catch {
+        // local backend not reachable
+      }
+    }
+
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -502,13 +611,42 @@ export async function fetchPaginatedProducts(
       }
     }
   } catch (err) {
+    if (!backendUrl.includes("localhost:5000")) {
+      try {
+        const localRes = await fetch(`http://localhost:5000/api/products?${sp.toString()}`, {
+          cache: "no-store",
+        });
+        if (localRes.ok) {
+          const json = await localRes.json();
+          if (json.success && Array.isArray(json.data)) {
+            const mapped = json.data.map(mapRawProduct);
+            const total = json.pagination?.total ?? mapped.length;
+            return {
+              products: mapped,
+              pagination: {
+                total,
+                page: json.pagination?.page ?? page,
+                limit: json.pagination?.limit ?? limit,
+                totalPages: json.pagination?.totalPages ?? (Math.ceil(total / limit) || 1),
+              },
+            };
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
     console.error("[fetchPaginatedProducts error]", err);
   }
 
   // Fallback if backend is unreachable
+  const brandFilter = sp.get("brand");
+  const cutFilter = sp.get("cut");
   const filtered = products.filter((p) => {
-    if (targetCategory && p.brand !== targetCategory) return false;
+    if (brandFilter && p.brand !== brandFilter) return false;
+    if (cutFilter && getProductCategory(p) !== cutFilter) return false;
     if (size && size !== "all" && !(p.sizes || []).includes(size)) return false;
+    if (color && color !== "all" && getBaseColor(p.colorName) !== color) return false;
     return true;
   });
 
@@ -602,69 +740,6 @@ export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
 export const scrollModelProducts: Product[] = [
   {
     id: "scroll-1",
-    name: "Soda Club 'New York' Archival Plush Leather Jacket",
-    slug: "pelle-pelle-new-york-knicks-plush-leather-jacket",
-    brand: "pelle-pelle",
-    category: "pelle-pelle",
-    description: "Handcrafted master tribute in supple full-grain lambskin with iconic New York chenille lettering, basketball embroidery, and Marc Buchanan atelier crest patches.",
-    price: 350,
-    meta: "Supple full-grain lambskin, custom chenille & Marc Buchanan crest",
-    color: "#e66012",
-    darkColor: "#1d4486",
-    colorName: "Orange / Royal Blue",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
-    featured: true,
-    image: "/scroll-model/jacket-1.png",
-    imageHover: "/scroll-model/jacket-1.png",
-    hem: 410,
-    cuff: 418,
-    svgExtra: "",
-    scrollJacketImage: "/scroll-model/jacket-1.webp",
-  },
-  {
-    id: "scroll-2",
-    name: "Bar & Shield Racing Leather Jacket",
-    slug: "harley-davidson-racing-leather-jacket",
-    brand: "harley-davidson",
-    category: "harley-davidson",
-    description: "Classic track-cut motorcycle jacket handcrafted in heavyweight 1.4mm steerhide featuring high-contrast orange and white racing chest stripes and mandarin snap collar.",
-    price: 300,
-    meta: "Heavyweight 1.4mm steerhide, twin racing stripes & cafe collar",
-    color: "#1a1a1a",
-    darkColor: "#ea580c",
-    colorName: "Black / Orange",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
-    featured: true,
-    image: "/scroll-model/jacket-2.png",
-    imageHover: "/scroll-model/jacket-2.png",
-    hem: 410,
-    cuff: 418,
-    svgExtra: "",
-    scrollJacketImage: "/scroll-model/jacket-2.webp",
-  },
-  {
-    id: "scroll-3",
-    name: "Ghost Rider Flames & Chains Leather Jacket",
-    slug: "supreme-vanson-ghost-rider-leather-jacket",
-    brand: "supreme",
-    category: "supreme",
-    description: "Cult collaboration tribute built in heavy competition steerhide featuring intricate hand-cut flame appliqués, embroidered chains, Ghost Rider skull centerpiece, and Vanson/Supreme sleeve patches.",
-    price: 350,
-    meta: "Competition-weight steerhide, custom flame appliqués & Talon hardware",
-    color: "#f59e0b",
-    darkColor: "#1a1a1a",
-    colorName: "Yellow / Black Flames",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
-    featured: true,
-    image: "/scroll-model/jacket-3.png",
-    imageHover: "/scroll-model/jacket-3.png",
-    hem: 410,
-    cuff: 418,
-    svgExtra: "",
-    scrollJacketImage: "/scroll-model/jacket-3.webp",
-  },
-  {
-    id: "scroll-4",
     name: "WWII Military Spec Heavy B-3 Sheepskin Shearling Bomber",
     slug: "avirex-avirex-b-3-sheepskin-shearling-bomber-300-1",
     brand: "avirex",
@@ -677,15 +752,15 @@ export const scrollModelProducts: Product[] = [
     colorName: "Aged Brown / Cream Shearling",
     sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
     featured: true,
-    image: "/scroll-model/jacket-4.png",
-    imageHover: "/scroll-model/jacket-4.png",
+    image: "/scroll-model/jacket-1.png",
+    imageHover: "/scroll-model/jacket-1.png",
     hem: 410,
     cuff: 418,
     svgExtra: "",
-    scrollJacketImage: "/scroll-model/jacket-4.webp",
+    scrollJacketImage: "/scroll-model/jacket-1.webp",
   },
   {
-    id: "scroll-5",
+    id: "scroll-2",
     name: "Heritage Crocodile-Embossed Leather Bomber",
     slug: "avirex-crocodile-embossed-leather-bomber",
     brand: "avirex",
@@ -696,6 +771,69 @@ export const scrollModelProducts: Product[] = [
     color: "#5c3a21",
     darkColor: "#2a1810",
     colorName: "Cognac Brown",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-2.png",
+    imageHover: "/scroll-model/jacket-2.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-2.webp",
+  },
+  {
+    id: "scroll-3",
+    name: "Soda Club 'New York' Archival Plush Leather Jacket",
+    slug: "pelle-pelle-new-york-knicks-plush-leather-jacket",
+    brand: "pelle-pelle",
+    category: "pelle-pelle",
+    description: "Handcrafted master tribute in supple full-grain lambskin with iconic New York chenille lettering, basketball embroidery, and Marc Buchanan atelier crest patches.",
+    price: 350,
+    meta: "Supple full-grain lambskin, custom chenille & Marc Buchanan crest",
+    color: "#e66012",
+    darkColor: "#1d4486",
+    colorName: "Orange / Royal Blue",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-3.png",
+    imageHover: "/scroll-model/jacket-3.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-3.webp",
+  },
+  {
+    id: "scroll-4",
+    name: "Bar & Shield Racing Leather Jacket",
+    slug: "harley-davidson-racing-leather-jacket",
+    brand: "harley-davidson",
+    category: "harley-davidson",
+    description: "Classic track-cut motorcycle jacket handcrafted in heavyweight 1.4mm steerhide featuring high-contrast orange and white racing chest stripes and mandarin snap collar.",
+    price: 300,
+    meta: "Heavyweight 1.4mm steerhide, twin racing stripes & cafe collar",
+    color: "#1a1a1a",
+    darkColor: "#ea580c",
+    colorName: "Black / Orange",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-4.png",
+    imageHover: "/scroll-model/jacket-4.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-4.webp",
+  },
+  {
+    id: "scroll-5",
+    name: "Ghost Rider Flames & Chains Leather Jacket",
+    slug: "supreme-vanson-ghost-rider-leather-jacket",
+    brand: "supreme",
+    category: "supreme",
+    description: "Cult collaboration tribute built in heavy competition steerhide featuring intricate hand-cut flame appliqués, embroidered chains, Ghost Rider skull centerpiece, and Vanson/Supreme sleeve patches.",
+    price: 350,
+    meta: "Competition-weight steerhide, custom flame appliqués & Talon hardware",
+    color: "#f59e0b",
+    darkColor: "#1a1a1a",
+    colorName: "Yellow / Black Flames",
     sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
     featured: true,
     image: "/scroll-model/jacket-5.png",

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { brands, getBrand } from "@/data/brands";
-import { fetchLiveProductsByBrand } from "@/data/products";
+import { fetchPaginatedProducts } from "@/data/products";
 import { Banner } from "@/components/common/Banner";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
 
   return {
     title: `${brand.name} Leather Jackets & Outerwear Archive | Leather Haven Craft`,
-    description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made-to-measure tailoring. Express shipping to US, UK, and Europe.`,
+    description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made to measure tailoring. Express shipping to US, UK, and Europe.`,
     alternates: { canonical: `/brands/${brand.slug}` },
     openGraph: {
       title: `${brand.name} Leather Jackets | Leather Haven Craft`,
@@ -39,7 +39,11 @@ export default async function BrandPage({ params }: BrandPageProps) {
   const brand = getBrand(slug);
   if (!brand) notFound();
 
-  const items = await fetchLiveProductsByBrand(brand.slug);
+  const { products: items, pagination } = await fetchPaginatedProducts({
+    page: 1,
+    limit: 16,
+    brand: brand.slug,
+  });
   const others = brands.filter((entry) => entry.slug !== brand.slug);
 
   const brandSchema = {
@@ -108,7 +112,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
             <p className="mt-3 max-w-lg text-base leading-7 text-white/80">{brand.tagline}</p>
           </div>
           <p className="text-[11px] uppercase tracking-[0.18em] text-white/75">
-            {items.length} {items.length === 1 ? "piece" : "pieces"}
+            {pagination.total} {pagination.total === 1 ? "piece" : "pieces"}
           </p>
         </div>
       </section>
@@ -117,11 +121,15 @@ export default async function BrandPage({ params }: BrandPageProps) {
         <div className="mx-auto max-w-6xl px-6 pt-6">
           <div className="rounded-lg border border-[#ded5c7] bg-[#faf7f2] p-3 text-xs text-[#706456] leading-relaxed">
             <span className="font-semibold text-[#221b16]">Atelier Notice: </span>
-            Pieces in this section are master handcrafted tributes and custom made-to-measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
+            Pieces in this section are master handcrafted tributes and custom made to measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
           </div>
         </div>
       )}
-<ProductCatalog products={items} />
+<ProductCatalog
+        initialProducts={items}
+        initialPagination={pagination}
+        initialBrand={brand.slug}
+      />
 
       {brand.slug === "leather-haven-craft" && (
         <CustomManufacturing />

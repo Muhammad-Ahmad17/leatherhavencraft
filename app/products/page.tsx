@@ -9,9 +9,6 @@ type ProductsPageProps = {
   searchParams: Promise<{
     page?: string;
     brand?: string;
-    category?: string;
-    size?: string;
-    color?: string;
     sort?: string;
     search?: string;
   }>;
@@ -46,7 +43,7 @@ export async function generateMetadata({
     openGraph: {
       title: fullTitle,
       description:
-        "Handcrafted heritage leather jackets and bespoke made-to-measure outerwear. Worldwide express shipping.",
+        "Handcrafted heritage leather jackets and bespoke made to measure outerwear. Worldwide express shipping.",
     },
   };
 }
@@ -55,9 +52,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const sp = await searchParams;
   const page = Number(sp.page) || 1;
   const brand = sp.brand || "all";
-  const category = sp.category || "all";
-  const size = sp.size || "all";
-  const color = sp.color || "all";
   const search = sp.search || undefined;
   const rawSort = sp.sort || "featured";
   const validSort: "featured" | "price-asc" | "price-desc" = rawSort === "price-asc" || rawSort === "price-desc" ? rawSort : "featured";
@@ -66,10 +60,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const { products, pagination } = await fetchPaginatedProducts({
     page,
     limit: 16,
-    category: category !== "all" ? category : undefined,
     brand: brand !== "all" ? brand : undefined,
-    size: size !== "all" ? size : undefined,
-    color: color !== "all" ? color : undefined,
     sort: validSort !== "featured" ? validSort : undefined,
     search,
   });
@@ -106,24 +97,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             Heritage Atelier &amp; Workshop
           </span>
           <span className="rounded bg-[#8a4d2b]/10 px-2 py-0.5 text-[10px] font-semibold text-[#8a4d2b]">
-            XS – 6XL Universal Sizing
+            XS to 6XL Universal Sizing
           </span>
         </div>
         <h1 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
           Heritage Jackets &amp; Collections
         </h1>
         <p className="mt-4 max-w-2xl text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
-          Every piece in our collection is bench-inspected for authentic hardware, heavyweight hide density, and structural integrity. Filter by size, colorway, or house below.
+          Every piece in our collection is bench-inspected for authentic hardware, heavyweight hide density, and structural integrity. Filter by silhouette or heritage house below.
         </p>
       </div>
 
       <ProductCatalog
         initialProducts={products}
         initialPagination={pagination}
-        initialCategory={category}
         initialBrand={brand}
-        initialSize={size}
-        initialColor={color}
         initialSort={validSort}
         initialSearch={search}
       />
@@ -140,7 +128,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 Artisan Hardware &amp; Heavy Hides
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-[#6b5c51]">
-                Every silhouette inspired by Schott NYC, Avirex, and Pelle Pelle is handcrafted with heavy-gauge brass Talon and YKK zipper hardware, 1.3–1.5mm full-grain hides, and reinforced stress seams.
+                Every silhouette inspired by Schott NYC, Avirex, and Pelle Pelle is handcrafted with heavy gauge brass Talon and YKK zipper hardware, 1.3 to 1.5mm full grain hides, and reinforced stress seams.
               </p>
             </div>
 
@@ -149,7 +137,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 Universal Fit
               </span>
               <h3 className="mt-2 font-serif text-base font-bold text-[#221b16]">
-                Exact Flat Sizing (XS–6XL)
+                Exact Flat Sizing (XS to 6XL)
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-[#6b5c51]">
                 Compare flat pit-to-pit chest, waist, back length, and sleeve measurements against your wardrobe using our{" "}
