@@ -72,7 +72,7 @@ export function Header() {
   return (
     <header id="site-header" className="sticky top-0 z-40">
       <div className="flex min-h-[var(--announcement-h)] items-center justify-center bg-[var(--leather-dark)] px-4 py-1 text-center text-[10px] tracking-[0.12em] text-white/90 uppercase sm:text-[11px]">
-        Free Express Worldwide Delivery (1 Week to 9 Days) · Handcrafted Heritage Leather Outerwear
+        Free Express Worldwide Delivery (7 to 9 Days) · Handcrafted Heritage Leather Outerwear
       </div>
 
       <div className="border-b border-[var(--line)] bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">

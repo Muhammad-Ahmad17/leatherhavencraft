@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free Worldwide Delivery & 7 to 8 Day Return Policy | Leather Haven Craft",
   description:
-    "Free global air delivery timeline (1 week to 9 days), full dispatch updates, tracking, and our official 7 to 8 day return policy.",
+    "Free global air delivery timeline (7 to 9 days), full dispatch updates, tracking, and our official 7 to 8 day return policy.",
   alternates: { canonical: "/shipping" },
   openGraph: {
     title: "Shipping, Delivery & Returns Policy | Leather Haven Craft",
@@ -30,7 +30,7 @@ export default function ShippingPage() {
             Shipping &amp; Returns Policy
           </h1>
           <p className="mt-3 text-xs sm:text-sm text-[#6b5c51] leading-relaxed">
-            Free Worldwide Delivery (1 Week to 9 Days) · Full Dispatch Updates &amp; Tracking · 7 to 8 Day Return Policy
+            Free Worldwide Delivery (7 to 9 Days) · Full Dispatch Updates &amp; Tracking · 7 to 8 Day Return Policy
           </p>
         </header>
 
@@ -49,7 +49,7 @@ export default function ShippingPage() {
                   Estimated Delivery Window
                 </span>
                 <span className="font-mono text-sm font-bold text-[#221b16]">
-                  Around 1 Week to 9 Days
+                  7 to 9 Days
                 </span>
               </div>
               <p className="text-xs text-[#6b5c51]">

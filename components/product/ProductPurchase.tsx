@@ -314,7 +314,7 @@ export function ProductPurchase({
           </button>
           {activeTab === "shipping" && (
             <div className="pb-3 text-[var(--muted)] space-y-1.5 text-xs leading-relaxed">
-              <p>• Free worldwide delivery: Reliable air delivery according to country (around 1 week to 9 days).</p>
+              <p>• Free worldwide delivery: Reliable air delivery according to country (7 to 9 days).</p>
               <p>• Direct order updates until dispatch, followed by live door-to-door tracking.</p>
               <p>• Return Policy: Returns accepted within 7 to 8 days of delivery in original, unused, and undamaged condition (return shipping paid by customer).</p>
               <p>• Wholesale &amp; bulk orders: Custom branding, club patches, and volume freight available on request.</p>

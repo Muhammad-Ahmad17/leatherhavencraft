@@ -14,36 +14,32 @@ export const metadata: Metadata = {
 
 const faqSchemaData = [
   {
-    q: "How are your jackets constructed and sourced?",
-    a: "Our jackets are master artisan recreations and custom made to measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3 to 1.5mm full grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
+    q: "What leather do you use?",
+    a: "We use 100% natural cowhide and sheepskin leather, selected for durability, comfort, and a premium feel.",
   },
   {
-    q: "What leather types and hide grades do you stock?",
-    a: "We specialize in full-grain cowhide, steerhide, lambskin, and sheepskin shearling. Full-grain leather is the highest tier of hide, retaining the complete grain layer for lifetime durability and natural patina development.",
+    q: "Are your jackets comfortable and easy to wear?",
+    a: "Yes. Our jackets are designed for everyday comfort, easy wear, and a secure fit.",
   },
   {
-    q: "How should a genuine leather jacket fit?",
-    a: "A new leather jacket should feel snug across the chest and shoulders without constricting circulation. High-grade cowhide and steerhide break in after 20 to 30 hours of wear, stretching up to half a size to mold precisely to your body contours. Please refer to our Universal Size Guide (XS to 6XL) for exact flat garment measurements across pit to pit chest, waist, length, shoulder, and sleeve.",
+    q: "How long does delivery take?",
+    a: "We offer worldwide delivery, with orders typically arriving within 7 to 9 days.",
   },
   {
-    q: "How do I care for, condition, and clean my leather outerwear?",
-    a: "Store your jacket on a wide shoulder wooden hanger away from direct sunlight and heat radiators. Condition with a natural beeswax, lanolin, or pure neatsfoot oil balm once every 12 to 18 months. Never machine-wash leather; for heavy spots, consult a specialist leather dry cleaner.",
+    q: "How do I choose my size?",
+    a: "Check the size guide on the product page. If you are unsure, contact us for help choosing the right fit.",
+  },
+  {
+    q: "How do I place an order?",
+    a: "Click \"Order Now\" and send us a message on WhatsApp. We will guide you through the order.",
+  },
+  {
+    q: "Do you offer custom or bulk orders?",
+    a: "Yes. We offer custom sizing, branding, and bulk orders. Contact us with your requirements.",
   },
   {
     q: "What is your return policy?",
     a: "We accept returns within 7 to 8 days of delivery. The customer must contact us within 7 to 8 days to request a return. Return shipping costs will be paid by the customer. The product must be returned in its original, unused, and undamaged condition. Once we receive and inspect the returned product, we will process the refund or re-payment. Refunds will only be issued after the returned product has been received and checked. Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.",
-  },
-  {
-    q: "How long does shipping take and how is it tracked?",
-    a: "We provide free worldwide delivery. We use reliable air delivery selected according to destination country with no fixed single company, taking around 1 week to 9 days. We provide direct personal updates on your order throughout production until it is dispatched, after which the respective delivery service provides full online tracking to your doorstep.",
-  },
-  {
-    q: "Do you offer custom made to measure sizing for extended sizes?",
-    a: "Yes. Our atelier creates custom made to measure commissions and offers an inclusive Universal Size Matrix spanning XS through 6XL. Standard sizing spans XS to 2XL, while 3XL through 6XL are crafted with dedicated extra hide panels for a modest +$20 surcharge.",
-  },
-  {
-    q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
-    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturing facility in Sialkot, supplying retail boutiques, motorcycle clubs, streetwear labels, and corporate bulk clients worldwide. We offer tiered wholesale volume pricing starting from 5+ units, custom embossing, private label branding, and international bulk express shipping. Contact our concierge via WhatsApp or email with your target quantity and specifications for a custom quotation.",
   },
 ];
 
