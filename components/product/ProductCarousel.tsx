@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { SVG_VIEWBOX } from "@/lib/constants";
 import { useScrollAnimationContext } from "@/components/animations/scroll-animation-context";
 import { JacketShape } from "@/components/product/ProductSVG";
@@ -19,27 +18,12 @@ export function ProductCarousel() {
     canPrev,
   } = useScrollAnimationContext();
 
-  // Background decode all 5 jackets and model into GPU memory on initial mount
-  useEffect(() => {
-    const urls = [
-      "/scroll-model/model.webp",
-      ...products.map((p) => p.scrollJacketImage).filter((u): u is string => Boolean(u)),
-    ];
-    urls.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      if (typeof img.decode === "function") {
-        img.decode().catch(() => {});
-      }
-    });
-  }, [products]);
-
   return (
     <div className="stage relative overflow-hidden">
       {/* Hidden image preloader to ensure instant zero-latency rendering of all 5 jackets and model */}
       <div className="sr-only" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/scroll-model/model.webp" alt="" loading="eager" fetchPriority="high" />
+        <img src="/scroll-model/model.webp" alt="" />
         {products.map((p) =>
           p.scrollJacketImage ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -74,11 +58,6 @@ export function ProductCarousel() {
         xmlns="http://www.w3.org/2000/svg"
         role="img"
         aria-label="An atelier model wearing iconic leather jackets that change as you scroll"
-        style={{
-          willChange: "transform",
-          contain: "layout paint",
-          touchAction: "pan-y",
-        }}
       >
         {/* Soft floor ambient contact shadow */}
         <ellipse cx="350" cy="1185" rx="160" ry="16" fill="#000" opacity="0.16" />
@@ -91,7 +70,6 @@ export function ProductCarousel() {
           width="700"
           height="1200"
           preserveAspectRatio="xMidYMid meet"
-          
         />
 
         {/* Dynamic Jacket Layers animated via useScrollAnimation */}
@@ -100,7 +78,7 @@ export function ProductCarousel() {
             <g
               key={product.id}
               ref={(node) => setGroupRef(index, node)}
-              style={{ opacity: index === 0 ? 1 : 0, visibility: index === 0 ? "visible" : "hidden", willChange: "opacity", transform: "translateZ(0)" }}
+              style={{ display: index === 0 ? undefined : "none" }}
             >
               {product.scrollJacketImage ? (
                 <image
@@ -110,7 +88,6 @@ export function ProductCarousel() {
                   width="700"
                   height="1200"
                   preserveAspectRatio="xMidYMid meet"
-                  
                 />
               ) : (
                 <JacketShape product={product} />

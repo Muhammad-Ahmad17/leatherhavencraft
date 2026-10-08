@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -59,9 +58,6 @@ const homeFaqSchema = [
 ];
 
 export default async function HomePage() {
-  ReactDOM.preload("/scroll-model/model.webp", { as: "image", type: "image/webp", fetchPriority: "high" });
-  ReactDOM.preload("/scroll-model/jacket-1.webp", { as: "image", type: "image/webp" });
-  ReactDOM.preload("/scroll-model/jacket-2.webp", { as: "image", type: "image/webp" });
   const featuredProducts = await fetchLiveFeaturedProducts();
   const scrollProducts = await fetchLiveScrollProducts(5);
 
