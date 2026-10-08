@@ -301,6 +301,12 @@ export function ProductCatalog({
     ) => {
       if (isDirectMode && products) {
         // Direct in-memory filtering for pages like BrandPage
+        setCategory(newCat);
+        setBrand(newBrd);
+        setSize(newSz);
+        setColor(newClr);
+        setSort(newSrt);
+        setPagination((prev) => ({ ...prev, page: 1 }));
         return;
       }
       setIsFiltering(true);
@@ -317,14 +323,48 @@ export function ProductCatalog({
     setColor("all");
     if (!isDirectMode) {
       handleFilterChange("all", "all", "all", "all", sort);
+    } else {
+      setPagination((prev) => ({ ...prev, page: 1 }));
     }
   };
 
+  // For direct mode (e.g. BrandPage fallback), filter products in memory
+  const filteredDirectProducts = useMemo(() => {
+    if (!isDirectMode || !products) return [];
+    const filtered = products.filter((p) => {
+      if (category !== "all" && getProductCategory(p) !== category) return false;
+      if (brand !== "all" && p.brand !== brand) return false;
+      if (size !== "all" && !(p.sizes || []).includes(size)) return false;
+      if (color !== "all" && getBaseColor(p.colorName) !== color) return false;
+      return true;
+    });
+
+    filtered.sort((a, b) => {
+      if (sort === "price-asc") return a.price - b.price;
+      if (sort === "price-desc") return b.price - a.price;
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      return String(a.id || "").localeCompare(String(b.id || ""));
+    });
+
+    return filtered;
+  }, [isDirectMode, products, category, brand, size, color, sort]);
+
+  const displayedItems = useMemo(() => {
+    if (isDirectMode && products) {
+      return filteredDirectProducts.slice(0, pagination.page * 16);
+    }
+    return items;
+  }, [isDirectMode, products, filteredDirectProducts, items, pagination.page]);
+
+  const totalPieces = isDirectMode && products ? filteredDirectProducts.length : pagination.total;
+  const loadedPieces = displayedItems.length;
+
   // Load More Handler (Progressive append)
   const handleLoadMore = async () => {
-    if (isLoadingMore || items.length >= pagination.total) return;
+    if (isLoadingMore) return;
 
     if (isDirectMode && products) {
+      if (displayedItems.length >= totalPieces) return;
       // In-memory pagination for direct mode
       setPagination((prev) => ({
         ...prev,
@@ -332,6 +372,8 @@ export function ProductCatalog({
       }));
       return;
     }
+
+    if (items.length >= pagination.total) return;
 
     setIsLoadingMore(true);
     const nextPage = pagination.page + 1;
@@ -341,7 +383,17 @@ export function ProductCatalog({
 
   // View All Handler
   const handleViewAll = async () => {
-    if (isLoadingMore || items.length >= pagination.total) return;
+    if (isLoadingMore) return;
+
+    if (isDirectMode && products) {
+      setPagination((prev) => ({
+        ...prev,
+        page: Math.ceil(totalPieces / 16) || 1,
+      }));
+      return;
+    }
+
+    if (items.length >= pagination.total) return;
     setIsLoadingMore(true);
     const sp = new URLSearchParams();
     sp.set("page", "1");
@@ -381,37 +433,11 @@ export function ProductCatalog({
     }
   };
 
-  // For direct mode (e.g. BrandPage), slice items based on pagination page
-  const displayedItems = useMemo(() => {
-    if (isDirectMode && products) {
-      const filtered = products.filter((p) => {
-        if (category !== "all" && getProductCategory(p) !== category) return false;
-        if (brand !== "all" && p.brand !== brand) return false;
-        if (size !== "all" && !(p.sizes || []).includes(size)) return false;
-        if (color !== "all" && getBaseColor(p.colorName) !== color) return false;
-        return true;
-      });
-
-      filtered.sort((a, b) => {
-        if (sort === "price-asc") return a.price - b.price;
-        if (sort === "price-desc") return b.price - a.price;
-        if (a.featured !== b.featured) return a.featured ? -1 : 1;
-        return String(a.id || "").localeCompare(String(b.id || ""));
-      });
-
-      return filtered.slice(0, pagination.page * 16);
-    }
-    return items;
-  }, [isDirectMode, products, items, category, brand, size, color, sort, pagination.page]);
-
   const activeFiltersCount =
     (category !== "all" ? 1 : 0) +
     (brand !== "all" ? 1 : 0) +
     (size !== "all" ? 1 : 0) +
     (color !== "all" ? 1 : 0);
-
-  const totalPieces = isDirectMode && products ? products.length : pagination.total;
-  const loadedPieces = displayedItems.length;
 
   return (
     <section className="px-6 pb-20">

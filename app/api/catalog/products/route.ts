@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const limit = Number(searchParams.get("limit")) || 16;
     const category = searchParams.get("category") || undefined;
     const brand = searchParams.get("brand") || undefined;
+    const cut = searchParams.get("cut") || undefined;
     const size = searchParams.get("size") || undefined;
     const color = searchParams.get("color") || undefined;
     const sort = searchParams.get("sort") || undefined;
@@ -20,6 +21,7 @@ export async function GET(request: Request) {
       limit,
       category,
       brand,
+      cut,
       size,
       color,
       sort,

@@ -395,11 +395,75 @@ export type ProductQueryParams = {
   limit?: number;
   category?: string;
   brand?: string;
+  cut?: string;
   size?: string;
   color?: string;
   sort?: string;
   search?: string;
 };
+
+export function getProductCategory(product: Product): string {
+  if (
+    product.category &&
+    ![
+      "avirex",
+      "pelle-pelle",
+      "schott-nyc",
+      "harley-davidson",
+      "supreme",
+      "leather-haven-craft",
+      "accessories",
+      "others",
+    ].includes(product.category.toLowerCase())
+  ) {
+    return product.category;
+  }
+  const name = (product.name || "").toLowerCase();
+  if (name.includes("hoodie") || name.includes("hooded")) return "Hoodies";
+  if (name.includes("jersey")) return "Jerseys";
+  if (name.includes("t-shirt") || name.includes("tee")) return "T-Shirts";
+  if (
+    name.includes("bomber") ||
+    name.includes("b-3") ||
+    name.includes("flight") ||
+    name.includes("pilot") ||
+    name.includes("shearling")
+  ) {
+    return "Bomber Jackets";
+  }
+  if (
+    name.includes("racing") ||
+    name.includes("speedway") ||
+    name.includes("moto") ||
+    name.includes("biker") ||
+    name.includes("rider")
+  ) {
+    return "Racing & Moto";
+  }
+  if (
+    product.brand === "accessories" ||
+    name.includes("belt") ||
+    name.includes("wallet") ||
+    name.includes("glove")
+  ) {
+    return "Accessories";
+  }
+  return "Coats & Jackets";
+}
+
+export function getBaseColor(colorName?: string): string {
+  if (!colorName) return "Black";
+  const c = colorName.toLowerCase();
+  if (c.includes("black")) return "Black";
+  if (c.includes("brown") || c.includes("espresso") || c.includes("tan")) return "Brown";
+  if (c.includes("navy") || c.includes("blue")) return "Navy";
+  if (c.includes("yellow") || c.includes("mustard")) return "Yellow";
+  if (c.includes("burgundy") || c.includes("crimson") || c.includes("red")) return "Burgundy & Red";
+  if (c.includes("olive") || c.includes("green")) return "Olive Green";
+  if (c.includes("grey") || c.includes("gray") || c.includes("ash")) return "Grey";
+  if (c.includes("cream") || c.includes("white") || c.includes("ivory")) return "Cream & White";
+  return colorName;
+}
 
 export interface RawProductData {
   _id?: string;
@@ -468,18 +532,48 @@ export async function fetchPaginatedProducts(
 ): Promise<PaginatedResponse> {
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.leatherhavencraft.com";
-  const { page = 1, limit = 16, category, brand, size, color, sort, search } = params;
+  const { page = 1, limit = 16, category, brand, cut, size, color, sort, search } = params;
 
   const sp = new URLSearchParams();
   sp.set("page", String(page));
   sp.set("limit", String(limit));
 
-  const targetCategory = (category && category !== "all") ? category : (brand && brand !== "all" ? brand : undefined);
-  if (targetCategory) sp.set("category", targetCategory);
+  const brandSlugs = [
+    "pelle-pelle",
+    "avirex",
+    "schott-nyc",
+    "harley-davidson",
+    "supreme",
+    "leather-haven-craft",
+    "accessories",
+    "others",
+  ];
+
+  if (brand && brand !== "all") {
+    sp.set("brand", brand);
+    sp.set("category", brand);
+  }
+
+  if (cut && cut !== "all") {
+    sp.set("cut", cut);
+  }
+
+  if (category && category !== "all") {
+    if (brandSlugs.includes(category.toLowerCase())) {
+      sp.set("brand", category.toLowerCase());
+      sp.set("category", category.toLowerCase());
+    } else {
+      sp.set("cut", category);
+      if (!sp.has("category")) {
+        sp.set("category", category);
+      }
+    }
+  }
+
   if (size && size !== "all") sp.set("size", size);
   if (color && color !== "all") sp.set("color", color);
   if (sort && sort !== "featured") sp.set("sort", sort);
-  if (search) sp.set("search", search);
+  if (search && search.trim()) sp.set("search", search.trim());
 
   try {
     const res = await fetch(`${backendUrl}/api/products?${sp.toString()}`, {
@@ -506,9 +600,13 @@ export async function fetchPaginatedProducts(
   }
 
   // Fallback if backend is unreachable
+  const brandFilter = sp.get("brand");
+  const cutFilter = sp.get("cut");
   const filtered = products.filter((p) => {
-    if (targetCategory && p.brand !== targetCategory) return false;
+    if (brandFilter && p.brand !== brandFilter) return false;
+    if (cutFilter && getProductCategory(p) !== cutFilter) return false;
     if (size && size !== "all" && !(p.sizes || []).includes(size)) return false;
+    if (color && color !== "all" && getBaseColor(p.colorName) !== color) return false;
     return true;
   });
 
