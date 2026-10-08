@@ -46,13 +46,15 @@ export function useScrollAnimation({
 
   const updateTarget = useCallback(() => {
     if (count < 1) return;
-    if (metricsRef.current.max <= 1) {
-      measure();
-    }
-    const { trackTop, max } = metricsRef.current;
-    const progress = clamp((window.scrollY - trackTop) / max, 0, 1);
+    const track = trackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const max = Math.max(track.offsetHeight - window.innerHeight, 1);
+    // Live viewport bounding client rect calculation ensures 100% accuracy on mobile regardless of layout shifts
+    const progress = clamp(-rect.top / max, 0, 1);
     targetProgressRef.current = progress;
-  }, [count, measure]);
+    metricsRef.current = { trackTop: rect.top + window.scrollY, max };
+  }, [count, trackRef]);
 
   const renderFrame = useCallback(
     (progress: number) => {
@@ -175,13 +177,14 @@ export function useScrollAnimation({
     (index: number) => {
       const track = trackRef.current;
       if (!track || count < 2) return;
-      measure();
-      const { trackTop, max } = metricsRef.current;
+      const rect = track.getBoundingClientRect();
+      const liveTrackTop = rect.top + window.scrollY;
+      const max = Math.max(track.offsetHeight - window.innerHeight, 1);
       const targetIndex = clamp(index, 0, count - 1);
-      const top = trackTop + (targetIndex / (count - 1)) * max;
+      const top = liveTrackTop + (targetIndex / (count - 1)) * max;
       window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
     },
-    [count, trackRef, measure]
+    [count, trackRef]
   );
 
   const nextJacket = useCallback(() => {
@@ -251,10 +254,45 @@ export function useScrollAnimation({
     window.addEventListener("resize", onResize);
     window.addEventListener("keydown", onKeyDown);
 
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.changedTouches.length === 1) {
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        // Horizontal swipe threshold: 45px and dominant over vertical
+        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+          const track = trackRef.current;
+          if (!track) return;
+          const rect = track.getBoundingClientRect();
+          if (rect.top <= window.innerHeight * 0.8 && rect.bottom >= window.innerHeight * 0.2) {
+            if (deltaX < 0) {
+              nextJacket();
+            } else {
+              prevJacket();
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
       }

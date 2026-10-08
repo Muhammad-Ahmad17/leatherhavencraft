@@ -1,6 +1,6 @@
 .scroll-track {
   position: relative;
-  height: 420vh;
+  height: 280vh;
 }
 
 .scroll-track-single {
@@ -26,8 +26,8 @@
 }
 
 svg.scene {
-  height: 68vh;
-  height: 68dvh;
+  height: 56vh;
+  height: 56dvh;
   width: auto;
   max-width: 100%;
   overflow: visible;
