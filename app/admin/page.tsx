@@ -46,6 +46,7 @@ interface Product {
   category: string;
   description: string;
   price: number;
+  discountPercent?: number;
   meta?: string;
   color?: string;
   colorName: string;
@@ -59,6 +60,53 @@ interface Product {
   imagePublicId?: string;
   imageHoverPublicId?: string;
   imagesPublicIds?: string[];
+  createdAt: string;
+}
+
+interface AdminOrderItem {
+  productId?: string;
+  name: string;
+  slug: string;
+  brandName?: string;
+  price: number;
+  size: string;
+  color?: string;
+  quantity: number;
+}
+
+interface AdminOrder {
+  _id: string;
+  orderNumber: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone?: string;
+  items: AdminOrderItem[];
+  totalAmount: number;
+  orderStatus: string;
+  courier?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  shippingAddress?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+  };
+  statusHistory?: Array<{ status: string; note: string; timestamp: string }>;
+  createdAt: string;
+}
+
+interface AdminReview {
+  _id: string;
+  clientName: string;
+  clientLocation?: string;
+  rating: number;
+  title: string;
+  content: string;
+  piecePurchased?: string;
+  status: "pending" | "approved" | "rejected";
+  verifiedPurchase: boolean;
   createdAt: string;
 }
 
@@ -117,7 +165,7 @@ interface AdminBlog {
 export default function AdminDashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<AdminUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "catalog" | "blogs" | "subscribers" | "media" | "system">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "catalog" | "blogs" | "reviews" | "subscribers" | "media" | "system">("overview");
 
   // Catalog State
   const [products, setProducts] = useState<Product[]>([]);
@@ -139,6 +187,7 @@ export default function AdminDashboardPage() {
     name: "",
     category: "schott-nyc",
     price: 0,
+    discountPercent: 0,
     description: "",
     meta: "",
     color: "#1a1a1a",
@@ -156,6 +205,25 @@ export default function AdminDashboardPage() {
   const [customColorName, setCustomColorName] = useState("");
   const [customColorHex, setCustomColorHex] = useState("#1a1a1a");
   const [manualImageUrl, setManualImageUrl] = useState("");
+
+  // Orders State
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    orderStatus: "order_placed",
+    courier: "DHL Express",
+    trackingNumber: "",
+    trackingUrl: "",
+    note: "",
+  });
+
+  // Reviews State
+  const [reviews, setReviews] = useState<AdminReview[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
+  const [reviewStatusFilter, setReviewStatusFilter] = useState("all");
 
   // Blogs State
   const [blogs, setBlogs] = useState<AdminBlog[]>([]);
@@ -233,6 +301,36 @@ export default function AdminDashboardPage() {
     }
   }, [showToast]);
 
+  const loadOrders = useCallback(async () => {
+    setLoadingOrders(true);
+    try {
+      const res = await adminFetch("/api/orders/admin");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setOrders(data.data);
+      }
+    } catch {
+      showToast("Could not load orders", "error");
+    } finally {
+      setLoadingOrders(false);
+    }
+  }, [showToast]);
+
+  const loadReviews = useCallback(async () => {
+    setLoadingReviews(true);
+    try {
+      const res = await adminFetch("/api/reviews/admin");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setReviews(data.data);
+      }
+    } catch {
+      showToast("Could not load client reviews", "error");
+    } finally {
+      setLoadingReviews(false);
+    }
+  }, [showToast]);
+
   const loadBlogs = useCallback(async () => {
     setLoadingBlogs(true);
     try {
@@ -260,11 +358,73 @@ export default function AdminDashboardPage() {
     loadProducts();
     loadSubscribers();
     loadBlogs();
-  }, [router, loadProducts, loadSubscribers, loadBlogs]);
+    loadReviews();
+    loadOrders();
+  }, [router, loadProducts, loadSubscribers, loadBlogs, loadReviews, loadOrders]);
 
   function handleLogout() {
     clearAdminSession();
     router.replace("/admin/login");
+  }
+
+  function openEditOrder(ord: AdminOrder) {
+    setSelectedOrder(ord);
+    setOrderForm({
+      orderStatus: ord.orderStatus || "order_placed",
+      courier: ord.courier || "DHL Express",
+      trackingNumber: ord.trackingNumber || "",
+      trackingUrl: ord.trackingUrl || "",
+      note: "",
+    });
+    setShowOrderModal(true);
+  }
+
+  async function handleOrderFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedOrder) return;
+    try {
+      const res = await adminFetch(`/api/orders/admin/${selectedOrder._id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderForm),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to update order");
+      showToast("Order status & tracking updated");
+      setShowOrderModal(false);
+      setOrders((prev) => prev.map((o) => (o._id === selectedOrder._id ? data.data : o)));
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Failed to update order", "error");
+    }
+  }
+
+  async function handleReviewStatus(id: string, status: "approved" | "rejected") {
+    try {
+      const res = await adminFetch(`/api/reviews/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message);
+      showToast(`Review marked as ${status}`);
+      setReviews((prev) => prev.map((r) => (r._id === id ? { ...r, status } : r)));
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Failed to update review", "error");
+    }
+  }
+
+  async function handleDeleteReview(id: string) {
+    if (!confirm("Are you sure you want to permanently delete this review?")) return;
+    try {
+      const res = await adminFetch(`/api/reviews/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message);
+      showToast("Review deleted");
+      setReviews((prev) => prev.filter((r) => r._id !== id));
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Failed to delete review", "error");
+    }
   }
 
   // Product CRUD
@@ -274,6 +434,7 @@ export default function AdminDashboardPage() {
       name: "",
       category: "schott-nyc",
       price: 650,
+      discountPercent: 0,
       description: "Handcrafted top-grade leather with authentic hardware.",
       meta: "Full-grain, satin lining",
       color: "#1a1a1a",
@@ -309,6 +470,7 @@ export default function AdminDashboardPage() {
       name: prod.name,
       category: prod.category,
       price: prod.price,
+      discountPercent: prod.discountPercent || 0,
       description: prod.description,
       meta: prod.meta || "",
       color: prod.color || initialColors[0]?.hex || "#1a1a1a",
@@ -357,6 +519,7 @@ export default function AdminDashboardPage() {
         image: finalImages[0] || "",
         imageHover: finalImages[1] || finalImages[0] || "",
         price: Number(productForm.price),
+        discountPercent: Number(productForm.discountPercent || 0),
         colors: finalColors,
         colorName: finalColors[0]?.name || productForm.colorName || "Black",
         color: finalColors[0]?.hex || productForm.color || "#1a1a1a",
@@ -948,8 +1111,10 @@ export default function AdminDashboardPage() {
         <div className="mx-auto flex max-w-7xl gap-8 px-6 text-xs">
           {[
             { id: "overview", label: "Overview & Analytics" },
+            { id: "orders", label: `Orders (${orders.length})` },
             { id: "catalog", label: `Catalog (${products.length})` },
             { id: "blogs", label: `Journal / Blogs (${blogs.length})` },
+            { id: "reviews", label: `Reviews (${reviews.length})` },
             { id: "subscribers", label: `Audience (${subscribers.length})` },
             { id: "media", label: "Media Studio" },
             { id: "system", label: "System Status" },
@@ -1157,6 +1322,149 @@ export default function AdminDashboardPage() {
         )}
 
         {/* ================= TAB 2: CATALOG MANAGEMENT ================= */}
+        {activeTab === "orders" && (
+          <div className="space-y-6">
+            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#6b6052]">Stage:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: "all", label: `All (${orders.length})` },
+                    { id: "order_placed", label: `Placed (${orders.filter((o) => o.orderStatus === "order_placed").length})` },
+                    { id: "leather_selected", label: `Hide (${orders.filter((o) => o.orderStatus === "leather_selected").length})` },
+                    { id: "crafting_in_progress", label: `Crafting (${orders.filter((o) => o.orderStatus === "crafting_in_progress").length})` },
+                    { id: "quality_inspection", label: `Inspection (${orders.filter((o) => o.orderStatus === "quality_inspection").length})` },
+                    { id: "dispatched", label: `Dispatched (${orders.filter((o) => o.orderStatus === "dispatched").length})` },
+                    { id: "delivered", label: `Delivered (${orders.filter((o) => o.orderStatus === "delivered").length})` },
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      onClick={() => setOrderStatusFilter(filter.id)}
+                      className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                        orderStatusFilter === filter.id
+                          ? "bg-[#2a1810] text-white shadow-xs"
+                          : "bg-[#faf8f5] text-[#6b5c51] hover:bg-[#f2ece4]"
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-[#e8e2d8] bg-[#f4efe8] text-[11px] uppercase tracking-wider text-[#5e5346]">
+                  <tr>
+                    <th className="px-4 py-3">Order ID</th>
+                    <th className="px-4 py-3">Client</th>
+                    <th className="px-4 py-3">Pieces Ordered</th>
+                    <th className="px-4 py-3">Total</th>
+                    <th className="px-4 py-3">Workshop Stage</th>
+                    <th className="px-4 py-3">Air Courier &amp; Tracking</th>
+                    <th className="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#ede7df]">
+                  {loadingOrders ? (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-xs text-[#827668]">
+                        Loading orders...
+                      </td>
+                    </tr>
+                  ) : orders.filter((o) => orderStatusFilter === "all" || o.orderStatus === orderStatusFilter).length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-xs text-[#827668]">
+                        No orders found for this stage.
+                      </td>
+                    </tr>
+                  ) : (
+                    orders
+                      .filter((o) => orderStatusFilter === "all" || o.orderStatus === orderStatusFilter)
+                      .map((ord) => (
+                        <tr key={ord._id} className="transition-colors hover:bg-[#faf7f2]">
+                          <td className="px-4 py-3 align-top font-bold text-[#1e1915]">
+                            <div className="font-mono text-xs">{ord.orderNumber}</div>
+                            <div className="text-[10px] text-[#85796b] font-normal">
+                              {new Date(ord.createdAt).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            <div className="font-semibold text-[#1e1915]">{ord.clientName}</div>
+                            <div className="text-[11px] text-[#706456]">{ord.clientEmail}</div>
+                            {ord.shippingAddress?.country && (
+                              <div className="text-[10px] text-[#8a4d2b] font-medium">{ord.shippingAddress.country}</div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 align-top max-w-xs">
+                            <div className="space-y-1">
+                              {ord.items.map((it, i) => (
+                                <div key={i} className="text-[11px] text-[#52443a]">
+                                  <span className="font-semibold">{it.quantity}x</span> {it.name} ({it.size})
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 align-top font-bold text-[#1e1915]">
+                            ${ord.totalAmount.toLocaleString()}
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            <span
+                              className={`rounded px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${
+                                ord.orderStatus === "delivered"
+                                  ? "bg-emerald-50 text-emerald-800 border border-emerald-300"
+                                  : ord.orderStatus === "dispatched" || ord.orderStatus === "in_transit"
+                                  ? "bg-blue-50 text-blue-800 border border-blue-300"
+                                  : ord.orderStatus === "crafting_in_progress" || ord.orderStatus === "quality_inspection"
+                                  ? "bg-amber-50 text-amber-800 border border-amber-300"
+                                  : "bg-stone-100 text-stone-800 border border-stone-300"
+                              }`}
+                            >
+                              {ord.orderStatus.replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            {ord.courier ? (
+                              <div className="space-y-0.5">
+                                <div className="font-semibold text-[#1e1915]">{ord.courier}</div>
+                                {ord.trackingNumber && (
+                                  <div className="font-mono text-[11px] text-[#706456]">{ord.trackingNumber}</div>
+                                )}
+                                {ord.trackingUrl && (
+                                  <a
+                                    href={ord.trackingUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] font-bold text-[#8a4d2b] hover:underline block"
+                                  >
+                                    Live Link ↗
+                                  </a>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-[11px] text-[#9a8e80] italic">Not dispatched yet</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 align-top text-right">
+                            <button
+                              type="button"
+                              onClick={() => openEditOrder(ord)}
+                              className="rounded-lg bg-[#2a1810] px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] shadow-xs cursor-pointer"
+                            >
+                              Update Status
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {activeTab === "catalog" && (
           <div className="space-y-6">
             {/* Filter & Action Toolbar */}
@@ -1242,7 +1550,23 @@ export default function AdminDashboardPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3 font-semibold text-[#1e1915]">
-                            ${prod.price.toLocaleString()}
+                            {prod.discountPercent && prod.discountPercent > 0 ? (
+                              <div className="flex flex-col">
+                                <span className="font-bold text-[#8a4d2b]">
+                                  ${Math.round(prod.price * (1 - prod.discountPercent / 100)).toLocaleString()}
+                                </span>
+                                <div className="flex items-center gap-1.5 text-[11px]">
+                                  <span className="text-[#85796b] line-through">
+                                    ${prod.price.toLocaleString()}
+                                  </span>
+                                  <span className="rounded bg-[#9e2a2b]/10 px-1 py-0.2 text-[10px] font-bold text-[#9e2a2b]">
+                                    -{prod.discountPercent}%
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
+                              <span>${prod.price.toLocaleString()}</span>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-[#706456]">
                             <div className="flex flex-col gap-1">
@@ -1496,6 +1820,145 @@ export default function AdminDashboardPage() {
         )}
 
         {/* ================= TAB 3: AUDIENCE & SUBSCRIBERS ================= */}
+        {activeTab === "reviews" && (
+          <div className="space-y-6">
+            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#6b6052]">Status:</span>
+                <div className="flex gap-1.5">
+                  {[
+                    { id: "all", label: `All (${reviews.length})` },
+                    { id: "approved", label: `Approved (${reviews.filter((r) => r.status === "approved").length})` },
+                    { id: "pending", label: `Pending (${reviews.filter((r) => r.status === "pending").length})` },
+                    { id: "rejected", label: `Rejected (${reviews.filter((r) => r.status === "rejected").length})` },
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      onClick={() => setReviewStatusFilter(filter.id)}
+                      className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                        reviewStatusFilter === filter.id
+                          ? "bg-[#2a1810] text-white shadow-xs"
+                          : "bg-[#faf8f5] text-[#6b5c51] hover:bg-[#f2ece4]"
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-xs text-[#706456]">
+                Average Rating: <strong className="text-[#2a1810] font-bold">
+                  {reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : "5.0"} / 5.0
+                </strong>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-[#e8e2d8] bg-[#f4efe8] text-[11px] uppercase tracking-wider text-[#5e5346]">
+                  <tr>
+                    <th className="px-4 py-3">Client</th>
+                    <th className="px-4 py-3">Rating</th>
+                    <th className="px-4 py-3">Review &amp; Piece</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Moderation Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#ede7df]">
+                  {loadingReviews ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-xs text-[#827668]">
+                        Loading client reviews...
+                      </td>
+                    </tr>
+                  ) : reviews.filter((r) => reviewStatusFilter === "all" || r.status === reviewStatusFilter).length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-xs text-[#827668]">
+                        No reviews found for selected filter.
+                      </td>
+                    </tr>
+                  ) : (
+                    reviews
+                      .filter((r) => reviewStatusFilter === "all" || r.status === reviewStatusFilter)
+                      .map((rev) => (
+                        <tr key={rev._id} className="transition-colors hover:bg-[#faf7f2]">
+                          <td className="px-4 py-3 align-top font-medium text-[#1e1915]">
+                            <div className="font-semibold">{rev.clientName}</div>
+                            {rev.clientLocation && (
+                              <div className="text-[11px] text-[#85796b]">{rev.clientLocation}</div>
+                            )}
+                            <div className="text-[10px] text-[#a09485] mt-1">
+                              {new Date(rev.createdAt).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            <span className="text-[#8a4d2b] font-bold text-sm">
+                              {"★".repeat(Math.min(5, Math.max(1, rev.rating)))}
+                            </span>
+                            <span className="ml-1 text-[11px] text-[#706456]">({rev.rating}/5)</span>
+                          </td>
+                          <td className="px-4 py-3 align-top max-w-md">
+                            <div className="font-bold text-[#1e1915]">&ldquo;{rev.title}&rdquo;</div>
+                            <div className="text-[#52443a] text-xs mt-1 leading-relaxed line-clamp-3">
+                              {rev.content}
+                            </div>
+                            {rev.piecePurchased && (
+                              <div className="mt-1 text-[10px] font-medium text-[#8a4d2b]">
+                                Piece: {rev.piecePurchased}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            <span
+                              className={`rounded px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+                                rev.status === "approved"
+                                  ? "bg-emerald-50 text-emerald-800 border border-emerald-300"
+                                  : rev.status === "pending"
+                                  ? "bg-amber-50 text-amber-800 border border-amber-300"
+                                  : "bg-rose-50 text-rose-800 border border-rose-300"
+                              }`}
+                            >
+                              {rev.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 align-top text-right space-x-1 whitespace-nowrap">
+                            {rev.status !== "approved" && (
+                              <button
+                                type="button"
+                                onClick={() => handleReviewStatus(rev._id, "approved")}
+                                className="rounded bg-emerald-700 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-emerald-800 shadow-2xs"
+                              >
+                                Approve
+                              </button>
+                            )}
+                            {rev.status !== "rejected" && (
+                              <button
+                                type="button"
+                                onClick={() => handleReviewStatus(rev._id, "rejected")}
+                                className="rounded border border-[#ded5c7] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#6b5c51] hover:bg-[#faf8f5]"
+                              >
+                                Reject
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteReview(rev._id)}
+                              className="rounded bg-rose-700 px-2 py-1 text-[11px] font-semibold text-white hover:bg-rose-800 shadow-2xs"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {activeTab === "subscribers" && (
           <div className="space-y-6">
             <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -1723,10 +2186,10 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                    Category (Brands & Others)
+                    Category (Brands &amp; Others)
                   </label>
                   <select
                     value={productForm.category}
@@ -1753,6 +2216,26 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
                     className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Discount (% Off)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    placeholder="0"
+                    value={productForm.discountPercent || 0}
+                    onChange={(e) => setProductForm({ ...productForm, discountPercent: Math.min(100, Math.max(0, Number(e.target.value))) })}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                  {Boolean(productForm.discountPercent > 0) && (
+                    <span className="mt-1 block text-[10px] font-bold text-[#8a4d2b]">
+                      Sale: ${Math.round(productForm.price * (1 - productForm.discountPercent / 100))} (-{productForm.discountPercent}%)
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -2581,6 +3064,122 @@ export default function AdminDashboardPage() {
                     {editingBlog ? "Save Changes" : "Publish Article"}
                   </button>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Order Status & Courier Tracking Modal ── */}
+      {showOrderModal && selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1a110c]/70 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-[#ded5c7] bg-[#fbf9f6] p-6 sm:p-8 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-3 mb-5">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
+                  Order Management
+                </span>
+                <h3 className="font-serif text-xl font-bold text-[#2a1810]">
+                  Update {selectedOrder.orderNumber}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowOrderModal(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ded5c7] bg-white text-xs font-bold text-[#6b5c51] hover:text-[#2a1810] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleOrderFormSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Workshop &amp; Delivery Stage
+                </label>
+                <select
+                  value={orderForm.orderStatus}
+                  onChange={(e) => setOrderForm({ ...orderForm, orderStatus: e.target.value })}
+                  className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                >
+                  <option value="order_placed">1. Order Placed &amp; Ticket Drafted</option>
+                  <option value="leather_selected">2. Premium Hide Selected &amp; Bench-Cut</option>
+                  <option value="crafting_in_progress">3. Artisan Tailoring &amp; Hardware Assembly</option>
+                  <option value="quality_inspection">4. Workshop Quality &amp; Fit Inspection</option>
+                  <option value="dispatched">5. Dispatched via Air Freight</option>
+                  <option value="in_transit">6. In International Transit</option>
+                  <option value="delivered">7. Successfully Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Air Courier Carrier
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. DHL Express, FedEx, UPS"
+                    value={orderForm.courier}
+                    onChange={(e) => setOrderForm({ ...orderForm, courier: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Airway Bill / Tracking Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 982348123"
+                    value={orderForm.trackingNumber}
+                    onChange={(e) => setOrderForm({ ...orderForm, trackingNumber: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Live Courier Tracking URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://www.dhl.com/en/express/tracking.html?AWB=..."
+                  value={orderForm.trackingUrl}
+                  onChange={(e) => setOrderForm({ ...orderForm, trackingUrl: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Atelier Activity Log Note
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Handed over to DHL Express Air Freight at JFK depot."
+                  value={orderForm.note}
+                  onChange={(e) => setOrderForm({ ...orderForm, note: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowOrderModal(false)}
+                  className="rounded-lg border border-[#ded5c7] px-4 py-2 text-xs font-semibold text-[#6b5c51]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] shadow-xs"
+                >
+                  Save &amp; Update Order
+                </button>
               </div>
             </form>
           </div>

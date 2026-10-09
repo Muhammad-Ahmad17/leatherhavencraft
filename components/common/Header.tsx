@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { getBrandStrip } from "@/data/brands";
 import { SiteLogo } from "@/components/common/SiteLogo";
 import { useCart } from "@/context/CartContext";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { SearchModal } from "@/components/search/SearchModal";
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -41,6 +42,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { openCart, totalItems } = useCart();
+  const { customer, openLogin } = useCustomerAuth();
   const stripBrands = getBrandStrip();
 
   useEffect(() => {
@@ -150,6 +152,34 @@ export function Header() {
                 <path d="M20 20l-3-3" />
               </svg>
             </button>
+            {customer ? (
+              <Link
+                href="/account"
+                className="flex h-9 items-center gap-1.5 px-1.5 rounded-md text-xs font-semibold text-[#2a1810] hover:text-[#8a4d2b] transition-colors"
+                title={`Signed in as ${customer.name}`}
+              >
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span className="hidden sm:inline max-w-[70px] truncate text-[11px] font-medium">
+                  {customer.name.split(" ")[0]}
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={openLogin}
+                className="flex h-9 w-9 items-center justify-center text-[var(--ink)] transition-opacity hover:opacity-70 cursor-pointer"
+                aria-label="Atelier Client Sign In"
+                title="Account / Sign In"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </button>
+            )}
             <button
               type="button"
               onClick={openCart}
@@ -201,6 +231,26 @@ export function Header() {
             >
               Universal Size Guide
             </Link>
+            {customer ? (
+              <Link
+                href="/account"
+                onClick={() => setOpen(false)}
+                className="block border-b border-[var(--line)] py-3 text-lg font-medium tracking-tight text-[#8a4d2b]"
+              >
+                Client Portal ({customer.name})
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  openLogin();
+                }}
+                className="block w-full text-left border-b border-[var(--line)] py-3 text-lg font-medium tracking-tight text-[#8a4d2b] cursor-pointer"
+              >
+                Sign In / Register
+              </button>
+            )}
             <p className="mt-8 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase mb-2">Brands &amp; Collections</p>
             <ul className="mt-2 border-t border-[var(--line)]">
               {stripBrands.map((brand) => (

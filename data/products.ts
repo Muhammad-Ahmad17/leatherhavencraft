@@ -13,6 +13,8 @@ export interface Product {
   category?: string;
   description: string;
   price: number;
+  /** Discount percentage (0-100). When > 0, sale price and discount badges are displayed. */
+  discountPercent?: number;
   /** Short line shown under the name while scrolling. */
   meta: string;
   color: string;
@@ -473,6 +475,7 @@ export interface RawProductData {
   category?: string;
   description?: string;
   price?: number;
+  discountPercent?: number;
   meta?: string;
   color?: string;
   darkColor?: string;
@@ -499,6 +502,7 @@ export function mapRawProduct(raw: RawProductData): Product {
     brand: raw.category || "leather-haven-craft",
     description: raw.description || "",
     price: raw.price || 0,
+    discountPercent: raw.discountPercent !== undefined ? Number(raw.discountPercent) : 0,
     meta: raw.meta || "",
     color: raw.color || "#1a1a1a",
     darkColor: raw.darkColor || "#0f0f0f",

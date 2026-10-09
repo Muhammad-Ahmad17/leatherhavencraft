@@ -5,6 +5,8 @@ import { Header } from "@/components/common/Header";
 import { Footer } from "@/components/common/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
+import { CustomerAuthModal } from "@/components/auth/CustomerAuthModal";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,11 +18,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <CartProvider>
-      <Header />
-      {children}
-      {!isProductDetail && <Footer />}
-      <CartDrawer />
-    </CartProvider>
+    <CustomerAuthProvider>
+      <CartProvider>
+        <Header />
+        {children}
+        {!isProductDetail && <Footer />}
+        <CartDrawer />
+        <CustomerAuthModal />
+      </CartProvider>
+    </CustomerAuthProvider>
   );
 }
