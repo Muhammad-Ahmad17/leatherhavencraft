@@ -51,85 +51,75 @@ export function ProductCarousel() {
       )}
 
       {/* ── Center: Main Model & Interactive SVG Layer ── */}
-      <svg
-        ref={svgRef}
-        className="scene"
-        viewBox={`0 0 ${SVG_VIEWBOX.width} ${SVG_VIEWBOX.height}`}
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-label="An atelier model wearing iconic leather jackets that change as you scroll"
-      >
-        <defs>
-          {/* Soft studio floor shadow filters and radial gradient */}
-          <filter id="studio-ground-blur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
-          </filter>
-          <filter id="studio-contact-blur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
-          </filter>
-          <radialGradient id="studio-shadow-radial" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#1a0f08" stopOpacity="0.4" />
-            <stop offset="40%" stopColor="#2a1810" stopOpacity="0.25" />
-            <stop offset="75%" stopColor="#2a1810" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#2a1810" stopOpacity="0" />
-          </radialGradient>
-        </defs>
+      <div className="relative flex flex-col items-center justify-center">
+        <svg
+          ref={svgRef}
+          className="scene relative z-10"
+          viewBox={`0 0 ${SVG_VIEWBOX.width} ${SVG_VIEWBOX.height}`}
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="An atelier model wearing iconic leather jackets that change as you scroll"
+        >
+          {/* Base Model (stationary real model) */}
+          <image
+            href="/scroll-model/model.webp"
+            x="0"
+            y="0"
+            width="700"
+            height="1200"
+            preserveAspectRatio="xMidYMid meet"
+          />
 
-        {/* 1. Broad soft studio ambient floor shadow under feet */}
-        <ellipse
-          cx="350"
-          cy="1184"
-          rx="190"
-          ry="26"
-          fill="url(#studio-shadow-radial)"
-          filter="url(#studio-ground-blur)"
-        />
+          {/* Dynamic Jacket Layers animated via useScrollAnimation */}
+          <g>
+            {products.map((product, index) => (
+              <g
+                key={product.id}
+                ref={(node) => setGroupRef(index, node)}
+                style={{ display: index === 0 ? undefined : "none" }}
+              >
+                {product.scrollJacketImage ? (
+                  <image
+                    href={product.scrollJacketImage}
+                    x="0"
+                    y="0"
+                    width="700"
+                    height="1200"
+                    preserveAspectRatio="xMidYMid meet"
+                  />
+                ) : (
+                  <JacketShape product={product} />
+                )}
+              </g>
+            ))}
+          </g>
+        </svg>
 
-        {/* 2. Direct contact occlusion shadow anchoring shoes to floor */}
-        <ellipse
-          cx="345"
-          cy="1182"
-          rx="125"
-          ry="10"
-          fill="#140a05"
-          opacity="0.32"
-          filter="url(#studio-contact-blur)"
-        />
-
-        {/* Base Model (stationary real model) */}
-        <image
-          href="/scroll-model/model.webp"
-          x="0"
-          y="0"
-          width="700"
-          height="1200"
-          preserveAspectRatio="xMidYMid meet"
-        />
-
-        {/* Dynamic Jacket Layers animated via useScrollAnimation */}
-        <g>
-          {products.map((product, index) => (
-            <g
-              key={product.id}
-              ref={(node) => setGroupRef(index, node)}
-              style={{ display: index === 0 ? undefined : "none" }}
-            >
-              {product.scrollJacketImage ? (
-                <image
-                  href={product.scrollJacketImage}
-                  x="0"
-                  y="0"
-                  width="700"
-                  height="1200"
-                  preserveAspectRatio="xMidYMid meet"
-                />
-              ) : (
-                <JacketShape product={product} />
-              )}
-            </g>
-          ))}
-        </g>
-      </svg>
+        {/* ── Real Photo Studio Soft Blurry Drop Shadow directly under feet ── */}
+        <div
+          className="pointer-events-none absolute -bottom-3 sm:-bottom-5 left-1/2 -translate-x-1/2 z-0 flex flex-col items-center select-none"
+          aria-hidden="true"
+        >
+          {/* Broad, soft, diffuse photo studio floor falloff shadow */}
+          <div
+            className="w-[280px] sm:w-[420px] lg:w-[480px] h-7 sm:h-10 rounded-[50%]"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 50%, rgba(20, 10, 5, 0.35) 0%, rgba(35, 20, 12, 0.18) 45%, rgba(42, 24, 16, 0.04) 75%, transparent 100%)",
+              filter: "blur(12px)",
+            }}
+          />
+          {/* Tighter core contact occlusion shadow grounding the model */}
+          <div
+            className="w-[180px] sm:w-[270px] lg:w-[320px] h-3.5 sm:h-5 rounded-[50%] -mt-5 sm:-mt-7"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 50%, rgba(15, 8, 4, 0.50) 0%, rgba(25, 15, 10, 0.25) 55%, transparent 100%)",
+              filter: "blur(4px)",
+            }}
+          />
+        </div>
+      </div>
 
       {/* ── Right Edge Floating Chevron Arrow (Desktop) ── */}
       {canNext && (

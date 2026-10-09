@@ -22,8 +22,8 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  background-color: #f9f9f9;
-  background: radial-gradient(ellipse at 50% 58%, #ffffff 0%, #f9f9f9 55%, #f2ede6 100%);
+  background-color: #f9f9f9 !important;
+  background: #f9f9f9 !important;
 }
 
 svg.scene {
@@ -33,12 +33,15 @@ svg.scene {
   max-width: 100%;
   overflow: visible;
   display: block;
+  /* Authentic studio lighting ambient shadow behind model */
+  filter: drop-shadow(0 20px 32px rgba(30, 16, 9, 0.18));
 }
 
 @media (min-width: 768px) {
   svg.scene {
     height: 78vh;
     height: 78dvh;
+    filter: drop-shadow(0 28px 45px rgba(30, 16, 9, 0.20));
   }
 }
 
