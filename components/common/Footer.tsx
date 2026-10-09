@@ -10,115 +10,143 @@ export function Footer() {
   const stripBrands = getBrandStrip();
 
   return (
-    <footer className="border-t border-[#ded5c7] bg-[#f7f4ef] text-[#221b16]">
-      {/* ══════════ 2. BRAND ARCHITECTURE & NAVIGATION ══════════ */}
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-4">
-          <SiteLogo />
-          <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#6b5c51]">
-            {SITE_NAME} is an independent leather workshop, bespoke atelier, and direct manufacturer. We handcraft master tributes to iconic silhouettes alongside bespoke made-to-measure tailoring and wholesale bulk production for boutiques, clubs, and retailers worldwide.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2.5">
-            <a
-              href={buildWhatsAppUrl("Hi Leather Haven Craft — I would like to inquire about a jacket.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-9 items-center justify-center rounded bg-[#25D366] px-4 text-xs font-semibold uppercase tracking-wider text-black transition-opacity hover:opacity-90 shadow-2xs"
-            >
-              WhatsApp
-            </a>
-            <a
-              href="mailto:support@leatherhavencraft.com?subject=Jacket%20Inquiry"
-              className="inline-flex h-9 items-center justify-center rounded border border-[#ded5c7] bg-white px-4 text-xs font-semibold uppercase tracking-wider text-[#221b16] transition-colors hover:border-[#8a4d2b] hover:bg-[#f0ebe3] shadow-2xs"
-            >
-              Email Us
-            </a>
+    <footer className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#221b16]">
+      {/* ── TOP TIER: Atelier Identity & Newsletter / Social ── */}
+      <div className="mx-auto max-w-6xl px-6 pt-12 pb-10">
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
+          {/* Atelier Brand & Contact */}
+          <div className="lg:col-span-5 space-y-4">
+            <SiteLogo />
+            <p className="text-xs leading-relaxed text-[#706456] max-w-sm">
+              Artisan leather workshop and bespoke outerwear atelier bench-crafting master archival tributes and made-to-measure commissions with worldwide express delivery.
+            </p>
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+              <a
+                href={buildWhatsAppUrl("Hi Leather Haven Craft — I would like to inquire about a jacket.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-8 items-center justify-center rounded-md bg-[#25D366] px-3.5 text-[11px] font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90 shadow-2xs"
+              >
+                WhatsApp Concierge
+              </a>
+              <a
+                href="mailto:support@leatherhavencraft.com?subject=Jacket%20Inquiry"
+                className="inline-flex h-8 items-center justify-center rounded-md border border-[#ded5c7] bg-white px-3.5 text-[11px] font-bold uppercase tracking-wider text-[#221b16] transition-colors hover:border-[#8a4d2b] hover:bg-[#f4efe8] shadow-2xs"
+              >
+                Email Atelier
+              </a>
+            </div>
           </div>
 
-
+          {/* Newsletter & Social Connect Card */}
+          <div className="lg:col-span-7 rounded-xl border border-[#ded5c7] bg-[#f4efe8]/70 p-5 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                  Private Atelier Access
+                </p>
+                <p className="text-xs text-[#706456] mt-0.5">
+                  Early alerts on archive jacket releases, private bespoke drops and workshops.
+                </p>
+              </div>
+              <SocialChannels variant="compact" className="shrink-0" />
+            </div>
+            <NewsletterForm />
+          </div>
         </div>
+      </div>
 
-        <div className="lg:col-span-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Heritage Silhouettes
-          </p>
-          <ul className="mt-4 space-y-2.5 text-xs">
-            {stripBrands.map((brand) => (
-              <li key={brand.slug}>
-                <Link
-                  href={"/brands/" + brand.slug}
-                  className="text-[#6b5c51] transition-colors hover:text-[#221b16] hover:underline underline-offset-4"
-                >
-                  {brand.name}
+      {/* ── MIDDLE TIER: Compact Navigation Grid (2-cols on mobile to prevent endless scrolling) ── */}
+      <div className="border-t border-[#ded5c7] px-6 py-10">
+        <div className="mx-auto max-w-6xl grid grid-cols-2 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 text-xs">
+          {/* Col 1: Heritage Silhouettes */}
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+              Heritage Silhouettes
+            </p>
+            <ul className="mt-3.5 space-y-2">
+              {stripBrands.map((brand) => (
+                <li key={brand.slug}>
+                  <Link
+                    href={`/brands/${brand.slug}`}
+                    className="text-[#706456] transition-colors hover:text-[#221b16] hover:underline underline-offset-4"
+                  >
+                    {brand.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 2: Client Services */}
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+              Client Services
+            </p>
+            <ul className="mt-3.5 space-y-2 text-[#706456]">
+              <li>
+                <Link href="/products" className="transition-colors hover:text-[#221b16]">
+                  All Outerwear Catalog
                 </Link>
               </li>
-            ))}
-          </ul>
-        </div>
+              <li>
+                <Link href="/blog" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                  Journal &amp; Leather Guides
+                </Link>
+              </li>
+              <li>
+                <Link href="/size-guide" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                  Size Guide (XS to 6XL)
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="transition-colors hover:text-[#221b16]">
+                  Frequently Asked Questions
+                </Link>
+              </li>
+              <li>
+                <Link href="/shipping" className="transition-colors hover:text-[#221b16]">
+                  Shipping &amp; 7–8 Day Returns
+                </Link>
+              </li>
+              <li>
+                <Link href="/#custom-manufacturing" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
+                  Wholesale &amp; Bulk Dealing
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        <div className="lg:col-span-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Client Services
-          </p>
-          <ul className="mt-4 space-y-2.5 text-xs text-[#6b5c51]">
-            <li>
-              <Link href="/products" className="transition-colors hover:text-[#221b16]">
-                All Leather Outerwear
-              </Link>
-            </li>
-            <li>
-              <Link href="/blog" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
-                The Journal &amp; Guides
-              </Link>
-            </li>
-            <li>
-              <Link href="/size-guide" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
-                Universal Size Guide (XS to 6XL)
-              </Link>
-            </li>
-            <li>
-              <Link href="/faq" className="transition-colors hover:text-[#221b16]">
-                Frequently Asked Questions
-              </Link>
-            </li>
-            <li>
-              <Link href="/shipping" className="transition-colors hover:text-[#221b16]">
-                Shipping &amp; Returns
-              </Link>
-            </li>
-            <li>
-              <Link href="/#custom-manufacturing" className="transition-colors hover:text-[#221b16] font-medium text-[#8a4d2b]">
-                Wholesale &amp; Bulk Dealing
-              </Link>
-            </li>
-            <li>
-              <span className="text-[#221b16] font-medium">Bespoke Fit Consultation</span>
-            </li>
-            <li>
-              <span className="text-[#8a7b70]">Authenticity Guarantee</span>
-            </li>
-          </ul>
-        </div>
+          {/* Col 3: Support & Hours */}
+          <div className="col-span-2 sm:col-span-1 lg:col-span-1">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+              Concierge &amp; Delivery
+            </p>
+            <div className="mt-3.5 space-y-2.5 text-[#706456]">
+              <div>
+                <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Hours</span>
+                <span className="text-[#221b16] font-medium">Mon to Sat · 09:00–20:00 CET</span>
+              </div>
+              <div>
+                <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Express Delivery</span>
+                <span className="text-[#221b16] font-medium">USA, UK &amp; Europe · 7 to 9 Days</span>
+              </div>
+              <div>
+                <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Direct Response</span>
+                <span className="text-[#8a4d2b] font-semibold">Under 30 Minutes</span>
+              </div>
+            </div>
+          </div>
 
-        <div className="lg:col-span-2">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-            Customer Support
-          </p>
-          <div className="mt-4 space-y-2.5 text-xs text-[#6b5c51]">
-            <div>
-              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Support Hours</span>
-              <span className="text-[#221b16] font-medium">Mon to Sat · 09:00 to 20:00 CET</span>
-            </div>
-            <div>
-              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Transit</span>
-              <span className="text-[#221b16] font-medium">USA, UK &amp; Europe Express</span>
-            </div>
-            <div>
-              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Response Time</span>
-              <span className="text-[#8a4d2b] font-semibold">Within 30 minutes</span>
-            </div>
-            <div>
-              <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Atelier &amp; Workshop</span>
+          {/* Col 4: Atelier Workshop */}
+          <div className="col-span-2 sm:col-span-1 lg:col-span-1">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+              Atelier Workshop
+            </p>
+            <div className="mt-3.5 space-y-2.5 text-[#706456]">
+              <p className="text-xs text-[#706456] leading-relaxed">
+                Direct manufacturing workshop and artisan tailoring studio.
+              </p>
               <a
                 href="https://maps.app.goo.gl/JPg45EsFFu8Y5Qa69?g_st=aw"
                 target="_blank"
@@ -134,64 +162,34 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ══════════ 2.4 SOCIAL CONNECT & NEWSLETTER (PARALLEL) ══════════ */}
-      <div className="border-t border-[#ded5c7] bg-[#f4eee6]/60 px-6 py-10">
-        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-5">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2">
-              Social &amp; Connect
-            </span>
-            <p className="text-xs text-[#6b5c51] mb-3">
-              Follow our master craftsmen, archive documentation and ateliers.
-            </p>
-            <SocialChannels />
-          </div>
-          <div className="md:col-span-7 md:border-l md:border-[#ded5c7] md:pl-8">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-1">
-              Newsletter
-            </span>
-            <p className="text-xs text-[#6b5c51] mb-3">
-              Updates on new archive arrivals, bespoke drops and workshop releases.
-            </p>
-            <div className="max-w-md">
-              <NewsletterForm />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ══════════ 2.5 LEGAL NOTICE & NON-AFFILIATION DISCLAIMER ══════════ */}
-      <div className="border-t border-[#ded5c7] bg-[#f4eee6]/60 px-6 py-4">
+      {/* ── LEGAL & TRADEMARK NOTICE (CONCISE) ── */}
+      <div className="border-t border-[#ded5c7] px-6 py-4">
         <div className="mx-auto max-w-6xl text-[11px] leading-relaxed text-[#7a6b5e]">
           <p>
-            <span className="font-semibold text-[#221b16]">Legal &amp; Trademark Notice: </span>
-            {SITE_NAME} is an independent custom leathercraft workshop and bespoke outerwear atelier based in Sialkot, Pakistan. Outerwear pieces referencing historical or archival silhouettes (such as cuts popularized by Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson) are handcrafted master tributes bench-built using genuine full-grain hides, authentic brass hardware, and custom anatomical tailoring. All third-party trademarks, brand names, and model designations belong strictly to their respective owners and are used under nominative fair use for descriptive silhouette and historical style identification. Leather Haven Craft is not affiliated with, endorsed by, sponsored by, or an authorized distributor of any referenced brand.
+            <strong className="text-[#221b16]">Trademark Notice: </strong>
+            {SITE_NAME} is an independent bespoke leathercraft atelier. Archival silhouettes are handcrafted master tributes bench-built with genuine full-grain hides. All third-party trademarks, brand names, and model designations belong strictly to their respective owners and are cited under nominative fair use solely for descriptive historical style identification. {SITE_NAME} is not affiliated with, endorsed by, sponsored by, or an authorized distributor of any referenced brand.
           </p>
         </div>
       </div>
 
-      {/* ══════════ 3. BOTTOM COPYRIGHT & REGIONAL BAR ══════════ */}
-      <div className="border-t border-[#ded5c7] bg-[#ede7de]">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 text-xs text-[#6b5c51] sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <p>
-              © {new Date().getFullYear()} {SITE_NAME}. Artisan Leather Atelier. All rights reserved.
-            </p>
-            <div className="hidden sm:block text-[#ded5c7]">·</div>
-            <SocialChannels variant="compact" />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px]">
+      {/* ── BOTTOM COPYRIGHT & LEGAL LINKS BAR ── */}
+      <div className="border-t border-[#ded5c7] bg-[#f4efe8]/50">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4 text-[11px] text-[#706456] sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} {SITE_NAME}. Artisan Leather Atelier. All rights reserved.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
             <Link href="/blog" className="hover:text-[#221b16] transition-colors font-medium">Journal</Link>
             <span className="text-[#ded5c7]">·</span>
             <Link href="/size-guide" className="hover:text-[#221b16] transition-colors font-medium">Size Guide</Link>
             <span className="text-[#ded5c7]">·</span>
             <Link href="/faq" className="hover:text-[#221b16] transition-colors">FAQ</Link>
             <span className="text-[#ded5c7]">·</span>
-            <Link href="/shipping" className="hover:text-[#221b16] transition-colors">Shipping</Link>
+            <Link href="/shipping" className="hover:text-[#221b16] transition-colors">Shipping &amp; Returns</Link>
             <span className="text-[#ded5c7]">·</span>
-            <Link href="/terms" className="hover:text-[#221b16] transition-colors">Terms of Service</Link>
+            <Link href="/terms" className="hover:text-[#221b16] transition-colors">Terms</Link>
             <span className="text-[#ded5c7]">·</span>
-            <Link href="/privacy" className="hover:text-[#221b16] transition-colors">Privacy Policy</Link>
+            <Link href="/privacy" className="hover:text-[#221b16] transition-colors">Privacy</Link>
           </div>
         </div>
       </div>
