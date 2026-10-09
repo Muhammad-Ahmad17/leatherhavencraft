@@ -39,3 +39,13 @@ export function isPlusSize(size?: string): boolean {
 export function getProductPriceForSize(basePrice: number, size?: string): number {
   return isPlusSize(size) ? basePrice + PLUS_SIZE_SURCHARGE : basePrice;
 }
+
+/**
+ * Calculates the final sale price after applying discount percentage.
+ * Returns rounded integer price (or base price if no discount).
+ */
+export function getDiscountedPrice(basePrice: number, discountPercent?: number): number {
+  if (!discountPercent || discountPercent <= 0) return basePrice;
+  const pct = Math.min(100, Math.max(0, discountPercent));
+  return Math.round(basePrice * (1 - pct / 100));
+}

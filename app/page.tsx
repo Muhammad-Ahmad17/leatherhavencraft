@@ -12,6 +12,7 @@ import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimatio
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
 import { OurProcess } from "@/components/home/OurProcess";
+import { StoreReviews } from "@/components/home/StoreReviews";
 
 export const dynamic = "force-dynamic";
 
@@ -172,7 +173,10 @@ export default async function HomePage() {
       {/* ── 6. Our Process (Animated 4-step artisan journey) ── */}
       <OurProcess />
 
-      {/* ── 7. Client FAQ & Care Guidance ── */}
+      {/* ── 7. Client Reviews & Workshop Acclaim ── */}
+      <StoreReviews />
+
+      {/* ── 8. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
     </main>
   );

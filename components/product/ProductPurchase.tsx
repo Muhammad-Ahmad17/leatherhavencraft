@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { buildOrderMessage, buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contact";
-import { formatPrice, getProductPriceForSize, isPlusSize, PLUS_SIZE_SURCHARGE } from "@/lib/utils";
+import { formatPrice, getDiscountedPrice, getProductPriceForSize, isPlusSize, PLUS_SIZE_SURCHARGE } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { UniversalSizeChart } from "@/components/common/UniversalSizeChart";
 
@@ -11,6 +11,7 @@ type ProductPurchaseProps = {
   productName: string;
   brandName?: string;
   price: number;
+  discountPercent?: number;
   sizes: string[];
   productPath: string;
   image?: string;
@@ -26,6 +27,7 @@ export function ProductPurchase({
   productName,
   brandName,
   price,
+  discountPercent = 0,
   sizes,
   productPath,
   image,
@@ -68,10 +70,14 @@ export function ProductPurchase({
     return productPath;
   }, [productPath]);
 
-  // Dynamic price calculation: base price + $20 if size is 2XL or above
+  // Dynamic price calculation: discounted base price + $20 if size is 3XL or above
+  const discountedBasePrice = useMemo(() => {
+    return getDiscountedPrice(price, discountPercent);
+  }, [price, discountPercent]);
+
   const effectivePrice = useMemo(() => {
-    return getProductPriceForSize(price, size);
-  }, [price, size]);
+    return getProductPriceForSize(discountedBasePrice, size);
+  }, [discountedBasePrice, size]);
 
   const effectivePriceLabel = useMemo(() => {
     return formatPrice(effectivePrice);
@@ -111,6 +117,8 @@ export function ProductPurchase({
       slug,
       brandName,
       price: effectivePrice,
+      originalPrice: getProductPriceForSize(price, size),
+      discountPercent: discountPercent || 0,
       size: size || (sizes[0] ?? "One Size"),
       color: selectedColor?.name,
       image: image || "/catalog/field-bomber.jpg",
@@ -127,6 +135,16 @@ export function ProductPurchase({
           <span className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
             {effectivePriceLabel}
           </span>
+          {Boolean(discountPercent && discountPercent > 0) && (
+            <span className="flex items-center gap-2">
+              <span className="text-base text-[var(--muted)] line-through">
+                {formatPrice(getProductPriceForSize(price, size))}
+              </span>
+              <span className="rounded-full bg-[#9e2a2b]/10 text-[#9e2a2b] border border-[#9e2a2b]/20 px-2 py-0.5 text-xs font-bold">
+                -{discountPercent}% OFF
+              </span>
+            </span>
+          )}
           {hasPlusSurcharge && (
             <span className="inline-flex items-center gap-1 rounded-full border border-[#8a4d2b]/30 bg-[#faf6f0] px-2.5 py-0.5 text-[11px] font-semibold text-[#8a4d2b]">
               <span>+${PLUS_SIZE_SURCHARGE}</span>

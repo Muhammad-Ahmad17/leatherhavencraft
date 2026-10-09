@@ -140,7 +140,19 @@ export function CartDrawer() {
                         </span>
                       )}
                       <span>·</span>
-                      <span className="text-[#1e1713] font-bold">{formatPrice(it.price)}</span>
+                      {Boolean(it.originalPrice && it.originalPrice > it.price) ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-[#8a4d2b] font-bold">{formatPrice(it.price)}</span>
+                          <span className="text-[11px] text-[#7a6b5e] line-through">{formatPrice(it.originalPrice!)}</span>
+                          {it.discountPercent ? (
+                            <span className="rounded bg-[#9e2a2b]/10 text-[#9e2a2b] px-1 py-0.2 text-[9px] font-bold">
+                              -{it.discountPercent}%
+                            </span>
+                          ) : null}
+                        </span>
+                      ) : (
+                        <span className="text-[#1e1713] font-bold">{formatPrice(it.price)}</span>
+                      )}
                     </div>
                   </div>
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBrand } from "@/data/brands";
 import { fetchLiveProductBySlug, fetchLiveProductsByBrand, fetchLiveProducts, products } from "@/data/products";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getDiscountedPrice } from "@/lib/utils";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductGallery } from "@/components/product/ProductGallery";
 
@@ -138,6 +138,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               productName={product.name}
               brandName={brand?.name}
               price={product.price}
+              discountPercent={product.discountPercent}
               sizes={product.sizes}
               productPath={`/products/${product.slug}`}
               image={product.image}
@@ -189,6 +190,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <div className="absolute top-2.5 left-2.5 rounded bg-[#2a1810]/85 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
                       {rel.colorName || "Leather"}
                     </div>
+                    {Boolean(rel.discountPercent && rel.discountPercent > 0) && (
+                      <div className="absolute top-2.5 right-2.5 rounded bg-[#9e2a2b] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+                        -{rel.discountPercent}% OFF
+                      </div>
+                    )}
                   </div>
                   <div className="p-3.5">
                     <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
@@ -197,9 +203,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <div className="mt-1 font-serif text-sm font-bold text-[var(--ink)] group-hover:text-[#8a4d2b] transition-colors truncate">
                       {rel.name}
                     </div>
-                    <div className="mt-1 font-semibold text-xs text-[var(--ink)]">
-                      {formatPrice(rel.price)}
-                    </div>
+                    {rel.discountPercent && rel.discountPercent > 0 ? (
+                      <div className="mt-1 flex items-baseline gap-1.5 text-xs">
+                        <span className="font-bold text-[#8a4d2b]">
+                          {formatPrice(getDiscountedPrice(rel.price, rel.discountPercent))}
+                        </span>
+                        <span className="text-[11px] text-[var(--muted)] line-through">
+                          {formatPrice(rel.price)}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="mt-1 font-semibold text-xs text-[var(--ink)]">
+                        {formatPrice(rel.price)}
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}
