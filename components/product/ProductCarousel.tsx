@@ -23,11 +23,24 @@ export function ProductCarousel() {
       {/* Hidden image preloader to ensure instant zero-latency rendering of all 5 jackets and model */}
       <div className="sr-only" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/scroll-model/model.webp" alt="" />
+        <img
+          src="/scroll-model/model.webp"
+          alt=""
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
         {products.map((p) =>
           p.scrollJacketImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={p.id} src={p.scrollJacketImage} alt="" />
+            <img
+              key={p.id}
+              src={p.scrollJacketImage}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+            />
           ) : null
         )}
       </div>

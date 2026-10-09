@@ -103,10 +103,12 @@ export default async function BrandPage({ params }: BrandPageProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/15" />
         <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="mb-5 inline-flex h-14 items-center bg-white px-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={brand.logo} alt="" className="h-8 w-auto max-w-[140px] object-contain" />
-            </span>
+            {brand.logo ? (
+              <span className="mb-5 inline-flex h-14 items-center bg-white px-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={brand.logo} alt="" className="h-8 w-auto max-w-[140px] object-contain" />
+              </span>
+            ) : null}
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-white/70">Archival Tributes &amp; Silhouettes</p>
             <h1 className="mt-1 text-4xl font-medium tracking-tight sm:text-5xl">{brand.name}</h1>
             <p className="mt-3 max-w-lg text-base leading-7 text-white/80">{brand.tagline}</p>

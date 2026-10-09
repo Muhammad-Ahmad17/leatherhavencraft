@@ -53,18 +53,24 @@ function BrandBanner({
         {/* Top Bar: Brand Logo Inset + Index Counter */}
         <div className="relative z-10 flex items-center justify-between">
           <span className="flex h-9 sm:h-10 items-center rounded-lg bg-white px-3 sm:px-3.5 shadow-md">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logo}
-              alt={name}
-              className={`max-h-5 sm:max-h-6 w-auto object-contain ${
-                isHarley
-                  ? "max-w-[110px] sm:max-w-[125px]"
-                  : isLHC
-                  ? "max-w-[130px] sm:max-w-[145px]"
-                  : "max-w-[95px] sm:max-w-[110px]"
-              }`}
-            />
+            {logo ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logo}
+                alt={name}
+                className={`max-h-5 sm:max-h-6 w-auto object-contain ${
+                  isHarley
+                    ? "max-w-[110px] sm:max-w-[125px]"
+                    : isLHC
+                    ? "max-w-[130px] sm:max-w-[145px]"
+                    : "max-w-[95px] sm:max-w-[110px]"
+                }`}
+              />
+            ) : (
+              <span className="font-serif text-xs font-bold tracking-widest text-[#2a1810] uppercase px-1">
+                {name}
+              </span>
+            )}
           </span>
           <span className="rounded-full bg-[#1a110c]/65 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-md border border-white/15">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}

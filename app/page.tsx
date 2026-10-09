@@ -89,6 +89,14 @@ export default async function HomePage() {
 
   return (
     <main>
+      {/* High-priority preload links for the flagship interactive model animation assets */}
+      <link rel="preload" href="/scroll-model/model.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-1.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-2.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-3.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-4.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-5.webp" as="image" type="image/webp" />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}

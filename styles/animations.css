@@ -34,8 +34,8 @@ svg.scene {
   max-width: 100%;
   overflow: visible;
   display: block;
-  /* Authentic studio lighting ambient shadow behind model */
-  filter: drop-shadow(0 20px 32px rgba(30, 16, 9, 0.18));
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @media (min-width: 768px) {

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { clamp, prefersReducedMotion } from "@/lib/utils";
 import { easeInOut } from "@/lib/easing";
-import { useViewportSize } from "@/hooks/useViewportSize";
 
 type UseScrollAnimationOptions = {
   trackRef: RefObject<HTMLElement | null>;
@@ -23,7 +22,6 @@ export function useScrollAnimation({
   const groupsRef = useRef<(SVGGElement | null)[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hintVisible, setHintVisible] = useState(true);
-  const viewport = useViewportSize();
 
   const metricsRef = useRef({ trackTop: 0, max: 1 });
   const targetProgressRef = useRef(0);
@@ -297,7 +295,7 @@ export function useScrollAnimation({
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [triggerAnimation, updateTarget, renderFrame, measure, nextJacket, prevJacket, trackRef, viewport.height, viewport.width]);
+  }, [triggerAnimation, updateTarget, renderFrame, measure, nextJacket, prevJacket, trackRef]);
 
   return {
     currentIndex,

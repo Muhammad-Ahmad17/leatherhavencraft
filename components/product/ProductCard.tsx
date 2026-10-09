@@ -36,9 +36,6 @@ export function ProductCard({ product }: { product: Product }) {
             Best Seller
           </span>
         )}
-        <span className="absolute top-2.5 right-2.5 z-10 rounded-[3px] bg-[#1a110c]/75 backdrop-blur-xs px-1.5 py-0.5 text-[10px] font-semibold text-white shadow-xs tracking-tight">
-          Free Delivery
-        </span>
       </span>
       <span className="mt-3 block text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
         {getBrandLabel(product.brand)}
