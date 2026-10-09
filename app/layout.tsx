@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SiteShell } from "@/components/common/SiteShell";
 import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/constants";
 import "./globals.css";
@@ -12,6 +12,11 @@ const fontSans = localFont({
 });
 
 const siteUrl = getSiteUrl();
+
+export const viewport: Viewport = {
+  themeColor: "#f7f5f2",
+  colorScheme: "light",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -165,8 +170,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${fontSans.variable} font-sans antialiased`}>
+    <html lang="en" className="light" style={{ colorScheme: "light only" }}>
+      <head>
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light" />
+      </head>
+      <body className={`${fontSans.variable} font-sans antialiased`} style={{ colorScheme: "light only" }}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
