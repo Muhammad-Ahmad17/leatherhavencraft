@@ -139,28 +139,19 @@ export default async function HomePage() {
         </ScrollAnimationContainer>
       </section>
 
-      {/* ── 3. Best Sellers (Swapped before Brand Showcase) ── */}
-      <section className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-20">
+      {/* ── 3. Featured Archival Collection ── */}
+      <section aria-label="Featured jackets" className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                  Curated Selection
-                </p>
-                <span className="inline-flex items-center rounded-sm bg-[#22722b]/10 px-2 py-0.5 text-[10px] font-semibold text-[#22722b]">
-                  Free Delivery
-                </span>
-              </div>
-              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">Best Sellers</h2>
-            </div>
-            <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
+          <h2 className="sr-only">Featured jackets</h2>
+          <div className="flex justify-end mb-6 sm:mb-8">
+            <Link
+              href="/products"
+              className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4"
+            >
               Shop all jackets &rarr;
             </Link>
           </div>
-          <div className="mt-10">
-            <ProductGrid products={featuredProducts} />
-          </div>
+          <ProductGrid products={featuredProducts} />
         </div>
       </section>
 
