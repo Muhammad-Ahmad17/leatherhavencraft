@@ -1,14 +1,14 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/common/SiteShell";
 import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/constants";
 import "./globals.css";
 
-
-const fontSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  display: "swap",
+const fontSans = localFont({
+  src: "./fonts/PlusJakartaSans-Variable.woff2",
   variable: "--font-sans",
+  display: "swap",
+  weight: "200 800",
 });
 
 const siteUrl = getSiteUrl();

@@ -134,10 +134,19 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ══════════ 2.4 NEWSLETTER & SOCIAL CONNECT (PARALLEL) ══════════ */}
+      {/* ══════════ 2.4 SOCIAL CONNECT & NEWSLETTER (PARALLEL) ══════════ */}
       <div className="border-t border-[#ded5c7] bg-[#f4eee6]/60 px-6 py-10">
         <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-7">
+          <div className="md:col-span-5">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2">
+              Social &amp; Connect
+            </span>
+            <p className="text-xs text-[#6b5c51] mb-3">
+              Follow our master craftsmen, archive documentation and ateliers.
+            </p>
+            <SocialChannels />
+          </div>
+          <div className="md:col-span-7 md:border-l md:border-[#ded5c7] md:pl-8">
             <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-1">
               Newsletter
             </span>
@@ -147,15 +156,6 @@ export function Footer() {
             <div className="max-w-md">
               <NewsletterForm />
             </div>
-          </div>
-          <div className="md:col-span-5 md:border-l md:border-[#ded5c7] md:pl-8">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2">
-              Social &amp; Connect
-            </span>
-            <p className="text-xs text-[#6b5c51] mb-3">
-              Follow our master craftsmen, archive documentation and ateliers.
-            </p>
-            <SocialChannels />
           </div>
         </div>
       </div>
