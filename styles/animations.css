@@ -27,8 +27,9 @@
 }
 
 svg.scene {
-  height: 56vh;
-  height: 56dvh;
+  /* Scaled 1.3x on mobile: 56dvh * 1.3 = 72.8dvh */
+  height: 72.8vh;
+  height: 72.8dvh;
   width: auto;
   max-width: 100%;
   overflow: visible;

@@ -102,7 +102,7 @@ export function ProductCarousel() {
         >
           {/* Broad, soft, diffuse photo studio floor falloff shadow */}
           <div
-            className="w-[280px] sm:w-[420px] lg:w-[480px] h-7 sm:h-10 rounded-[50%]"
+            className="w-[360px] sm:w-[420px] lg:w-[480px] h-8 sm:h-10 rounded-[50%]"
             style={{
               background:
                 "radial-gradient(ellipse at 50% 50%, rgba(20, 10, 5, 0.35) 0%, rgba(35, 20, 12, 0.18) 45%, rgba(42, 24, 16, 0.04) 75%, transparent 100%)",
@@ -111,7 +111,7 @@ export function ProductCarousel() {
           />
           {/* Tighter core contact occlusion shadow grounding the model */}
           <div
-            className="w-[180px] sm:w-[270px] lg:w-[320px] h-3.5 sm:h-5 rounded-[50%] -mt-5 sm:-mt-7"
+            className="w-[240px] sm:w-[270px] lg:w-[320px] h-4 sm:h-5 rounded-[50%] -mt-6 sm:-mt-7"
             style={{
               background:
                 "radial-gradient(ellipse at 50% 50%, rgba(15, 8, 4, 0.50) 0%, rgba(25, 15, 10, 0.25) 55%, transparent 100%)",
