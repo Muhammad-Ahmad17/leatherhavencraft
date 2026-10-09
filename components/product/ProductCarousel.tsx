@@ -59,8 +59,42 @@ export function ProductCarousel() {
         role="img"
         aria-label="An atelier model wearing iconic leather jackets that change as you scroll"
       >
-        {/* Soft floor ambient contact shadow */}
-        <ellipse cx="350" cy="1185" rx="160" ry="16" fill="#000" opacity="0.16" />
+        <defs>
+          {/* Soft studio floor shadow filters and radial gradient */}
+          <filter id="studio-ground-blur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
+          </filter>
+          <filter id="studio-contact-blur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+          </filter>
+          <radialGradient id="studio-shadow-radial" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#1a0f08" stopOpacity="0.4" />
+            <stop offset="40%" stopColor="#2a1810" stopOpacity="0.25" />
+            <stop offset="75%" stopColor="#2a1810" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#2a1810" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* 1. Broad soft studio ambient floor shadow under feet */}
+        <ellipse
+          cx="350"
+          cy="1184"
+          rx="190"
+          ry="26"
+          fill="url(#studio-shadow-radial)"
+          filter="url(#studio-ground-blur)"
+        />
+
+        {/* 2. Direct contact occlusion shadow anchoring shoes to floor */}
+        <ellipse
+          cx="345"
+          cy="1182"
+          rx="125"
+          ry="10"
+          fill="#140a05"
+          opacity="0.32"
+          filter="url(#studio-contact-blur)"
+        />
 
         {/* Base Model (stationary real model) */}
         <image

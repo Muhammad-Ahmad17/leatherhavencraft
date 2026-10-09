@@ -22,7 +22,8 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: radial-gradient(ellipse at 50% 58%, #fbfaf8, var(--bg2) 72%);
+  background-color: #f9f9f9;
+  background: radial-gradient(ellipse at 50% 58%, #ffffff 0%, #f9f9f9 55%, #f2ede6 100%);
 }
 
 svg.scene {

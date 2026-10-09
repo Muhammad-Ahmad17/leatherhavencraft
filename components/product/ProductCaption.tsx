@@ -40,13 +40,27 @@ export function ProductCaption() {
                 </p>
               </div>
               {product.slug && (
-                <div className="mt-3 pointer-events-auto">
+                <div className="mt-4 pointer-events-auto">
                   <Link
                     href={`/products/${product.slug}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#8a4d2b]/30 bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8a4d2b] backdrop-blur-xs transition-all hover:border-[#8a4d2b] hover:bg-[#8a4d2b] hover:text-white shadow-2xs"
+                    className="group inline-flex items-center gap-2 rounded-full border border-[#1f110a] bg-[#2a1810] px-6 py-2.5 text-xs sm:text-[13px] font-extrabold uppercase tracking-wider text-white shadow-md transition-all duration-200 hover:bg-[#3e2216] hover:shadow-lg hover:scale-105 active:scale-95"
                   >
-                    <span>View Piece</span>
-                    <span aria-hidden="true">&rarr;</span>
+                    <svg
+                      className="h-4 w-4 transition-transform group-hover:scale-110"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      />
+                    </svg>
+                    <span>BUY NOW</span>
+                    <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">&rarr;</span>
                   </Link>
                 </div>
               )}

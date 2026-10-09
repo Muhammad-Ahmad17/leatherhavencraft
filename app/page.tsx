@@ -130,7 +130,7 @@ export default async function HomePage() {
       </div>
 
       {/* ── 2. Scroll the collection (Curated flagship archive pieces) ── */}
-      <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
+      <section aria-labelledby="scroll-collection" className="bg-[#f9f9f9]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
