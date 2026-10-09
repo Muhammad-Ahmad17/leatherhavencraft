@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/common/Banner";
 import { BrandStrip } from "@/components/brand/BrandStrip";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
-import { OrderPath } from "@/components/home/OrderPath";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ScrollAnimationContainer } from "@/components/animations/ScrollAnimationContainer";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { CustomManufacturing } from "@/components/home/CustomManufacturing";
-import { HomeJournalSection } from "@/components/home/HomeJournalSection";
 import { OurProcess } from "@/components/home/OurProcess";
 
 export const dynamic = "force-dynamic";
@@ -20,40 +18,44 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Leather Haven Craft | Handcrafted Heritage Leather Jackets & Bespoke Atelier",
   description:
-    "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear inspired by iconic heritage silhouettes. Shipped express across Europe and America.",
+    "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear inspired by iconic heritage silhouettes. Free worldwide delivery across Europe and America.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Leather Haven Craft | Heritage Leather Outerwear",
     description:
-      "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear.",
+      "Artisan handcrafted leather jackets, master archival tributes, and bespoke made-to-measure outerwear with free worldwide delivery.",
     images: [{ url: "/banners/home-desktop.jpg" }],
   },
 };
 
 const homeFaqSchema = [
   {
-    q: "How are your jackets constructed and sourced?",
-    a: "Our jackets are master artisan recreations and custom made to measure pieces handcrafted in our Sialkot workshop. Each piece is individually bench-crafted using heavy 1.3 to 1.5mm full grain steerhide, genuine merino shearling pelts, or supple lambskin with heavy gauge brass hardware (Talon, Ideal, YKK) mirroring the exact drape, cut, and weight of iconic archival silhouettes.",
+    q: "What leather do you use?",
+    a: "We use 100% natural cowhide and sheepskin leather, selected for durability, comfort, and a premium feel.",
   },
   {
-    q: "What leather types do you offer?",
-    a: "We curate premium heavyweight steerhide and cowhide (Schott Perfecto & Cafe Racers), thick shearling sheepskin pelt (Avirex B-3 Bombers), supple lambskin (Pelle Pelle Plush Bombers), and competition-weight full-grain Horween Chromexcel for our bespoke creations.",
+    q: "Are your jackets comfortable and easy to wear?",
+    a: "Yes. Our jackets are designed for everyday comfort, easy wear, and a secure fit.",
   },
   {
-    q: "Do you offer wholesale pricing, bulk dealing, or private-label production?",
-    a: "Yes. In addition to individual orders, Leather Haven Craft operates as a direct leathercraft manufacturer for retail boutiques, motorcycle clubs, streetwear labels, and corporate teams. We offer tiered wholesale volume discounts starting from 5+ units, custom embossing, private label branding, and international bulk shipping. Contact our atelier via WhatsApp or email with your quantity and design details for an immediate wholesale quote.",
+    q: "How long does delivery take?",
+    a: "We offer worldwide delivery, with orders typically arriving within 7 to 9 days.",
   },
   {
-    q: "How do I choose the correct size?",
-    a: "Every jacket has exact pit to pit chest, sleeve, back length, and hem measurements listed on its product page and in our Universal Size Guide (XS to 6XL). If you are unsure between two sizes, message our concierge for personalized fit advice before ordering.",
+    q: "How do I choose my size?",
+    a: "Check the size guide on the product page. If you are unsure, contact us for help choosing the right fit.",
   },
   {
-    q: "How does the ordering and payment process work?",
-    a: "Click 'Inquire / Order' on any jacket to reach our concierge via WhatsApp or email. We confirm exact measurements, live inventory, and shipping address, then issue a secure, encrypted payment link via Stripe or invoice.",
+    q: "How do I place an order?",
+    a: "Click 'Order Now' and send us a message on WhatsApp. We will guide you through the order.",
   },
   {
-    q: "Where do you ship and what are the delivery times?",
-    a: "We ship express worldwide with DHL Express and FedEx Priority. Deliveries to the United States, United Kingdom, and Europe typically arrive in 3 to 5 business days with full door to door tracking and transit insurance.",
+    q: "Do you offer custom or bulk orders?",
+    a: "Yes. We offer custom sizing, branding, and bulk orders. Contact us with your requirements.",
+  },
+  {
+    q: "What is your return policy?",
+    a: "We accept returns within 7 to 8 days of delivery. The customer must contact us within 7 to 8 days to request a return. Return shipping costs will be paid by the customer. The product must be returned in its original, unused, and undamaged condition. Once we receive and inspect the returned product, we will process the refund or re-payment. Refunds will only be issued after the returned product has been received and checked. Any item that is damaged, used, altered, or not in its original condition may not be eligible for a refund.",
   },
 ];
 
@@ -87,6 +89,14 @@ export default async function HomePage() {
 
   return (
     <main>
+      {/* High-priority preload links for the flagship interactive model animation assets */}
+      <link rel="preload" href="/scroll-model/model.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-1.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-2.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-3.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-4.webp" as="image" type="image/webp" />
+      <link rel="preload" href="/scroll-model/jacket-5.webp" as="image" type="image/webp" />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
@@ -99,14 +109,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
           <div className="relative flex h-full items-end px-6 pb-8 sm:px-10 sm:pb-12">
             <div className="max-w-xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-xs border border-white/20 mb-3 shadow-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
+                Free Worldwide Delivery · 7 to 9 Days
+              </span>
               <p className="text-[11px] uppercase tracking-[0.22em] text-white/75">
                 Bespoke Outerwear &amp; Wholesale Production · Europe &amp; America
               </p>
-              <h1 className="mt-3 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
+              <h1 className="mt-2 max-w-lg text-4xl font-medium tracking-tight sm:text-6xl">
                 The brands. The cut. In stock.
               </h1>
               <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke tailoring and wholesale bulk orders for clubs, boutiques, and retailers.
+                Master handcrafted recreations and archival silhouettes inspired by Avirex, Harley-Davidson, Pelle Pelle, and Schott NYC, plus bespoke tailoring and wholesale bulk orders with free worldwide delivery.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button href="/products" variant="light">
@@ -123,8 +137,8 @@ export default async function HomePage() {
         <BrandStrip />
       </div>
 
-      {/* ── 2. Scroll the collection (Curated 6 flagship pieces for 5–6 smooth scrolls) ── */}
-      <section aria-labelledby="scroll-collection" className="bg-[#faf7f2]">
+      {/* ── 2. Scroll the collection (Curated flagship archive pieces) ── */}
+      <section aria-labelledby="scroll-collection" className="bg-[#f9f9f9]">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
@@ -133,43 +147,33 @@ export default async function HomePage() {
         </ScrollAnimationContainer>
       </section>
 
-      {/* ── 3. Shop by brand & category (Swapped after scroll collection) ── */}
-      <BrandShowcase />
-
-      {/* ── 4. Featured picks ── */}
-      <section className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-20">
+      {/* ── 3. Featured Archival Collection ── */}
+      <section aria-label="Featured jackets" className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
-                Curated Selection
-              </p>
-              <h2 className="mt-1 text-3xl font-medium tracking-tight text-[#221b16]">Best Sellers</h2>
-            </div>
-            <Link href="/products" className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4">
+          <h2 className="sr-only">Featured jackets</h2>
+          <div className="flex justify-end mb-6 sm:mb-8">
+            <Link
+              href="/products"
+              className="text-xs font-bold uppercase tracking-wider text-[#8a4d2b] hover:text-[#221b16] transition-colors underline underline-offset-4"
+            >
               Shop all jackets &rarr;
             </Link>
           </div>
-          <div className="mt-10">
-            <ProductGrid products={featuredProducts} />
-          </div>
+          <ProductGrid products={featuredProducts} />
         </div>
       </section>
+
+      {/* ── 4. Shop by brand & category ── */}
+      <BrandShowcase />
 
       {/* ── 5. Custom Manufacturing (Message or mail us) ── */}
       <CustomManufacturing />
 
-      {/* ── 6. How ordering works + CTA + trust badges ── */}
-      <OrderPath />
-
-      {/* ── 7. Our Process ── */}
+      {/* ── 6. Our Process (Animated 4-step artisan journey) ── */}
       <OurProcess />
 
-      {/* ── 8. Client FAQ & Care Guidance ── */}
+      {/* ── 7. Client FAQ & Care Guidance ── */}
       <HomeFAQ />
-
-      {/* ── 9. From The Journal (Editorial & Collector Guides - Directly above footer) ── */}
-      <HomeJournalSection />
     </main>
   );
 }

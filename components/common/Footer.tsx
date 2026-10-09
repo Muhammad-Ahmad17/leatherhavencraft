@@ -11,52 +11,6 @@ export function Footer() {
 
   return (
     <footer className="border-t border-[#ded5c7] bg-[#f7f4ef] text-[#221b16]">
-      {/* ══════════ 1. ATTRACTIVE EDITORIAL DISPATCH BANNER (WARM COHESIVE THEME) ══════════ */}
-      <div className="border-b border-[#ded5c7] bg-[#f0ebe3] px-6 py-14 sm:py-16">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-[#8a4d2b]">
-            Newsletter
-          </p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#221b16] sm:text-3xl lg:text-4xl">
-            Stay Connected
-          </h2>
-          <p className="mt-3 text-xs leading-relaxed text-[#6b5c51] sm:text-sm max-w-xl mx-auto">
-            Subscribe to receive updates on new jacket arrivals, seasonal archive restocks, and exclusive releases from Schott NYC, Avirex, and our workshop.
-          </p>
-
-          <div className="mt-6 max-w-md mx-auto">
-            <NewsletterForm />
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 border-t border-[#ded5c7] pt-8 text-left sm:text-center">
-            <div className="space-y-1">
-              <span className="block text-xs font-bold text-[#221b16] uppercase tracking-wider">
-                Verified Provenance
-              </span>
-              <p className="text-[11px] text-[#6b5c51]">
-                Heavy 1.3 to 1.5mm full grain hides &amp; solid brass hardware.
-              </p>
-            </div>
-            <div className="space-y-1">
-              <span className="block text-xs font-bold text-[#221b16] uppercase tracking-wider">
-                Express Transit
-              </span>
-              <p className="text-[11px] text-[#6b5c51]">
-                3 to 5 days DHL / FedEx air courier to US &amp; EU.
-              </p>
-            </div>
-            <div className="space-y-1">
-              <span className="block text-xs font-bold text-[#221b16] uppercase tracking-wider">
-                Dedicated Concierge
-              </span>
-              <p className="text-[11px] text-[#6b5c51]">
-                WhatsApp &amp; email customer support.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* ══════════ 2. BRAND ARCHITECTURE & NAVIGATION ══════════ */}
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
@@ -81,12 +35,7 @@ export function Footer() {
             </a>
           </div>
 
-          <div className="mt-5 border-t border-[#ded5c7] pt-4">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2.5">
-              Social &amp; Connect
-            </span>
-            <SocialChannels />
-          </div>
+
         </div>
 
         <div className="lg:col-span-3">
@@ -180,6 +129,32 @@ export function Footer() {
                 <span>Kashmir Road, Sialkot</span>
                 <span aria-hidden="true" className="text-[10px] text-[#8a4d2b] group-hover:translate-x-0.5 transition-transform">↗</span>
               </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════ 2.4 SOCIAL CONNECT & NEWSLETTER (PARALLEL) ══════════ */}
+      <div className="border-t border-[#ded5c7] bg-[#f4eee6]/60 px-6 py-10">
+        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-12 md:items-center">
+          <div className="md:col-span-5">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-2">
+              Social &amp; Connect
+            </span>
+            <p className="text-xs text-[#6b5c51] mb-3">
+              Follow our master craftsmen, archive documentation and ateliers.
+            </p>
+            <SocialChannels />
+          </div>
+          <div className="md:col-span-7 md:border-l md:border-[#ded5c7] md:pl-8">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b] mb-1">
+              Newsletter
+            </span>
+            <p className="text-xs text-[#6b5c51] mb-3">
+              Updates on new archive arrivals, bespoke drops and workshop releases.
+            </p>
+            <div className="max-w-md">
+              <NewsletterForm />
             </div>
           </div>
         </div>

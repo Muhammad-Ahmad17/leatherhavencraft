@@ -11,18 +11,41 @@
   --announcement-h: 1.875rem;
   --header-main-h: 4.25rem;
   --site-header-h: calc(var(--announcement-h) + var(--header-main-h));
-  color-scheme: light;
+  color-scheme: light only;
+  supported-color-schemes: light;
 }
 
 html {
   scroll-padding-top: calc(env(safe-area-inset-top, 0px) + var(--site-header-h));
+  color-scheme: light only;
+  background-color: var(--bg);
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--ink);
+  color-scheme: light only;
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Enforce light scheme on form controls across iOS and Android */
+input,
+textarea,
+select,
+button {
+  color-scheme: light only;
+}
+
+/* Prevent mobile OS dark mode auto-inversion */
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body {
+    color-scheme: light only !important;
+    background-color: #f7f5f2 !important;
+    color: #2a1810 !important;
+  }
 }
 
 ::selection {

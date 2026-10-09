@@ -281,7 +281,7 @@ export const brands: Brand[] = [
 {
     slug: "others",
     name: "Others",
-    logo: "/logo.png",
+    logo: "",
     tagline: "Archival varsity outerwear, European café racers, and custom bespoke commissions.",
     accent: "#3a2618",
     heroDesktop: "/banners/home-desktop.jpg",
