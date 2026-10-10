@@ -480,8 +480,8 @@ export default function AdminDashboardPage() {
         setShowAddUserModal(false);
       }
       loadUsers();
-    } catch (err: any) {
-      showToast(err.message || "Failed to save user", "error");
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to save user", "error");
     } finally {
       setSavingUser(false);
     }
@@ -511,8 +511,8 @@ export default function AdminDashboardPage() {
       }
       showToast(`Password updated for ${selectedUserForPassword.email}`, "success");
       setSelectedUserForPassword(null);
-    } catch (err: any) {
-      showToast(err.message || "Failed to update password", "error");
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to update password", "error");
     } finally {
       setSavingPassword(false);
     }
@@ -532,8 +532,8 @@ export default function AdminDashboardPage() {
       showToast("User successfully removed", "success");
       setUserToDelete(null);
       loadUsers();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete user", "error");
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to delete user", "error");
     } finally {
       setDeletingUser(false);
     }
