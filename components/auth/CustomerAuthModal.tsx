@@ -11,16 +11,22 @@ export function CustomerAuthModal() {
     closeAuthModal,
     openLogin,
     openRegister,
+    openForgotPassword,
+    openResetPassword,
     login,
     register,
     verifyEmail,
     resendCode,
+    forgotPassword,
+    resetPassword,
   } = useCustomerAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [hpWebsite, setHpWebsite] = useState(""); // Honeypot bot trap
   const [errorMsg, setErrorMsg] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,11 +34,15 @@ export function CustomerAuthModal() {
   // Email verification state
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
+  const [resetCode, setResetCode] = useState("");
   const [isResending, setIsResending] = useState(false);
 
   if (!isAuthModalOpen) return null;
 
   const isLogin = authModalMode === "login";
+  const isRegister = authModalMode === "register";
+  const isForgot = authModalMode === "forgot";
+  const isReset = authModalMode === "reset";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,8 +56,8 @@ export function CustomerAuthModal() {
         if (!res.success) {
           setErrorMsg(res.message || "Failed to log in.");
         }
-      } else {
-        const res = await register(name, email, password, phone);
+      } else if (isRegister) {
+        const res = await register(name, email, password, phone, hpWebsite);
         if (!res.success) {
           setErrorMsg(res.message || "Failed to create account.");
         } else if (res.requiresVerification) {
@@ -98,11 +108,68 @@ export function CustomerAuthModal() {
     }
   }
 
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || !email.trim()) {
+      setErrorMsg("Please provide your account email address.");
+      return;
+    }
+
+    setErrorMsg("");
+    setInfoMsg("");
+    setIsSubmitting(true);
+
+    try {
+      const res = await forgotPassword(email.trim(), hpWebsite);
+      if (!res.success) {
+        setErrorMsg(res.message || "Failed to initiate password reset.");
+      } else {
+        setInfoMsg(res.message || "A 6-digit reset code has been dispatched to your email.");
+        openResetPassword();
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!resetCode || resetCode.trim().length < 6) {
+      setErrorMsg("Please enter the 6-digit password reset code.");
+      return;
+    }
+    if (!newPassword || newPassword.length < 6) {
+      setErrorMsg("New password must be at least 6 characters long.");
+      return;
+    }
+
+    setErrorMsg("");
+    setInfoMsg("");
+    setIsSubmitting(true);
+
+    try {
+      const res = await resetPassword(email.trim(), resetCode.trim(), newPassword);
+      if (!res.success) {
+        setErrorMsg(res.message || "Failed to reset password.");
+      } else {
+        setInfoMsg("Password updated successfully. You are now signed in.");
+        setTimeout(() => {
+          closeAuthModal();
+        }, 1500);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   function handleClose() {
     setIsVerifying(false);
     setVerificationCode("");
+    setResetCode("");
+    setNewPassword("");
     setErrorMsg("");
     setInfoMsg("");
+    setHpWebsite("");
     closeAuthModal();
   }
 
@@ -118,6 +185,10 @@ export function CustomerAuthModal() {
             <h3 className="font-serif text-xl font-bold text-[#2a1810]">
               {isVerifying
                 ? "Verify Email Address"
+                : isForgot
+                ? "Reset Your Password"
+                : isReset
+                ? "Create New Password"
                 : isLogin
                 ? "Sign In to Your Account"
                 : "Create Atelier Account"}
@@ -132,8 +203,8 @@ export function CustomerAuthModal() {
           </button>
         </div>
 
-        {/* Tab Toggle (Hidden during verification) */}
-        {!isVerifying && (
+        {/* Tab Toggle (Only shown on Login / Register views) */}
+        {!isVerifying && !isForgot && !isReset && (
           <div className="flex rounded-lg border border-[#ded5c7] bg-[#faf8f5] p-1 mb-5">
             <button
               type="button"
@@ -177,6 +248,20 @@ export function CustomerAuthModal() {
             {errorMsg}
           </div>
         )}
+
+        {/* Invisible Honeypot Field (Bot Trap) */}
+        <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
+          <label htmlFor="hp_website">Leave this field empty</label>
+          <input
+            id="hp_website"
+            type="text"
+            name="hp_website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={hpWebsite}
+            onChange={(e) => setHpWebsite(e.target.value)}
+          />
+        </div>
 
         {/* Verification Form */}
         {isVerifying ? (
@@ -232,6 +317,119 @@ export function CustomerAuthModal() {
               </button>
             </div>
           </form>
+        ) : isForgot ? (
+          /* Forgot Password View */
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="text-xs text-[#52453c] leading-relaxed">
+              Enter your email address and we will send a 6-digit security code to reset your atelier password.
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                autoFocus
+                placeholder="e.g. client@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || !email}
+              className="w-full h-10 rounded-lg bg-[#2a1810] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#3d2417] active:bg-[#1a0e08] transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? "Dispatching Code..." : "Send Password Reset Code"}
+            </button>
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setErrorMsg("");
+                  setInfoMsg("");
+                  openLogin();
+                }}
+                className="text-xs text-[#706456] hover:text-[#1e1915] cursor-pointer"
+              >
+                &larr; Back to Sign In
+              </button>
+            </div>
+          </form>
+        ) : isReset ? (
+          /* Reset Password View */
+          <form onSubmit={handleResetPassword} className="space-y-4">
+            <div className="text-xs text-[#52453c] leading-relaxed">
+              Enter the 6-digit code sent to <strong className="text-[#1e1915]">{email}</strong> along with your new password.
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                6-Digit Reset Code
+              </label>
+              <input
+                type="text"
+                required
+                maxLength={6}
+                autoFocus
+                placeholder="000000"
+                value={resetCode}
+                onChange={(e) => setResetCode(e.target.value.replace(/\D/g, ""))}
+                className="mt-1 h-12 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-center text-xl font-bold tracking-[0.35em] text-[#2a1810] font-mono focus:border-[#8a4d2b] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                New Password (Minimum 6 Characters)
+              </label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || resetCode.length < 6 || newPassword.length < 6}
+              className="w-full h-10 rounded-lg bg-[#2a1810] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#3d2417] active:bg-[#1a0e08] transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? "Updating Password..." : "Update Password & Sign In"}
+            </button>
+
+            <div className="flex items-center justify-between pt-2 text-xs text-[#706456]">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isSubmitting}
+                className="font-semibold text-[#8a4d2b] hover:underline cursor-pointer disabled:opacity-50"
+              >
+                Resend Code
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setErrorMsg("");
+                  setInfoMsg("");
+                  openLogin();
+                }}
+                className="text-[#706456] hover:text-[#1e1915] cursor-pointer"
+              >
+                &larr; Back to Sign In
+              </button>
+            </div>
+          </form>
         ) : (
           /* Standard Sign In / Register Form */
           <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -266,9 +464,24 @@ export function CustomerAuthModal() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Password
+                </label>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setErrorMsg("");
+                      setInfoMsg("");
+                      openForgotPassword();
+                    }}
+                    className="text-[11px] text-[#8a4d2b] hover:underline font-medium cursor-pointer"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <input
                 type="password"
                 required
