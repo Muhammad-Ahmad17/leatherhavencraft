@@ -58,6 +58,7 @@ export const products: Product[] = [
     "category": "avirex",
     "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
     "price": 300,
+    "discountPercent": 15,
     "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
     "color": "#3e271a",
     "darkColor": "#0a0a0a",
@@ -124,6 +125,7 @@ export const products: Product[] = [
     "category": "avirex",
     "description": "Artisan master tribute to the historical Avirex aviation flight silhouette. Constructed from genuine heavy top-grain steerhide with period-accurate Talon zipper hardware, reinforced storm flap, quilted satin thermal lining, and tailored rib-knit cuffs.",
     "price": 300,
+    "discountPercent": 20,
     "meta": "Full-grain steerhide, heavy brass hardware, tailored anatomical fit",
     "color": "#1e1e1e",
     "darkColor": "#0a0a0a",
@@ -697,31 +699,7 @@ export async function fetchLiveProductBySlug(slug: string): Promise<Product | un
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {
-        const raw = json.data;
-        return {
-          id: raw._id || raw.id,
-          slug: raw.slug,
-          name: raw.name,
-          brand: raw.category,
-          description: raw.description,
-          price: raw.price,
-          meta: raw.meta || "",
-          color: raw.color || "#1a1a1a",
-          darkColor: raw.darkColor || "#0f0f0f",
-          colorName: raw.colorName || "Black",
-          colors: Array.isArray(raw.colors) && raw.colors.length > 0 ? raw.colors : [{ name: raw.colorName || "Black", hex: raw.color || "#1a1a1a" }],
-          sizes: Array.isArray(raw.sizes) && raw.sizes.length > 0 ? raw.sizes : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
-          featured: Boolean(raw.featured),
-          image: raw.image,
-          imagePublicId: raw.imagePublicId,
-          imageHover: raw.imageHover || raw.image,
-          imageHoverPublicId: raw.imageHoverPublicId,
-          images: Array.isArray(raw.images) && raw.images.length > 0 ? raw.images : [raw.image, raw.imageHover].filter(Boolean),
-          imagesPublicIds: raw.imagesPublicIds || [],
-          hem: raw.hem || 410,
-          cuff: raw.cuff || 418,
-          svgExtra: raw.svgExtra || "",
-        };
+        return mapRawProduct(json.data);
       }
     }
   } catch {
@@ -742,6 +720,28 @@ export async function fetchLiveFeaturedProducts(): Promise<Product[]> {
 
 
 export const scrollModelProducts: Product[] = [
+  {
+    id: "scroll-6",
+    name: "Master Archive Double Rider Motorcycle Leather Jacket",
+    slug: "schott-nyc-double-rider-motorcycle-leather-jacket",
+    brand: "schott-nyc",
+    category: "schott-nyc",
+    description: "Iconic asymmetrical double rider motorcycle jacket handcrafted in heavyweight 1.4mm full-grain steerhide featuring vintage nickel Talon zippers, snap-down lapels, adjustable waist belt, and tailored bi-swing action back.",
+    price: 350,
+    discountPercent: 15,
+    meta: "1.4mm full-grain steerhide, vintage Talon zippers, belted waist & bi-swing back",
+    color: "#1a1a1a",
+    darkColor: "#0a0a0a",
+    colorName: "Classic Black",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"],
+    featured: true,
+    image: "/scroll-model/jacket-6.png",
+    imageHover: "/scroll-model/jacket-6.png",
+    hem: 410,
+    cuff: 418,
+    svgExtra: "",
+    scrollJacketImage: "/scroll-model/jacket-6.webp",
+  },
   {
     id: "scroll-1",
     name: "Heritage Crocodile-Embossed Leather Bomber",
@@ -849,7 +849,7 @@ export const scrollModelProducts: Product[] = [
   },
 ];
 
-export async function fetchLiveScrollProducts(limit = 5): Promise<Product[]> {
+export async function fetchLiveScrollProducts(limit = 6): Promise<Product[]> {
   return scrollModelProducts.slice(0, limit);
 }
 

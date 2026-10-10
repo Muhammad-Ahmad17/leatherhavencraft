@@ -1,0 +1,61 @@
+## Why NOT Lemon Squeezy
+
+**Payoneer is not a payout option.** Full stop.
+
+Lemon Squeezy's only payout methods are:
+- **Bank wire** (via Stripe) → 1% fee per payout for non-US
+- **PayPal** → 3% capped at $30 per payout for non-US
+
+Your Citibank/Payoneer account **cannot** be officially selected as a payout destination. You'd be forced to either:
+- Use it as a "US bank" for the wire (unofficial, risky — Stripe could flag it)
+- Use PayPal (extra 3% fee, and PayPal merchant accounts are unreliable in Pakistan)
+
+Plus: Lemon Squeezy is **transitioning to Stripe Managed Payments** (announced Jan 2026), which adds more Stripe dependency — and Stripe doesn't work in Pakistan.
+
+## Why Paddle
+
+| | Paddle | Lemon Squeezy |
+|---|---|---|
+| **Payoneer payout** | ✅ Official, one-click link | ❌ Not supported |
+| Payout fee from platform | **$0** (only Payoneer's own fees apply) | 1% (bank) or 3% (PayPal) |
+| Stripe dependency | None | Increasing (2026 transition) |
+| Pakistan onboarding | Individual, no business docs needed (SaaS) | Lighter but Stripe verification risk |
+| Payout schedule | Monthly, $100 min | Twice monthly, $50 min, 13-day hold |
+
+## The exact process with your Payoneer account
+
+Here's what actually happens step by step:
+
+```
+1. Customer buys from your store (USD/EUR/GBP)
+       ↓
+2. Paddle processes payment (5% + $0.50)
+       ↓
+3. Paddle accumulates balance in your Paddle dashboard
+       ↓
+4. On the 1st of each month (if balance ≥ $100):
+   Paddle sends payout → directly to your Payoneer account
+       ↓
+5. Money lands in your Payoneer balance (USD)
+   (This is the same account that gives you the Citibank
+   receiving details you shared — you don't enter those
+   anywhere. Paddle links to your Payoneer account directly.)
+       ↓
+6. You withdraw from Payoneer → Pakistani bank
+   (HBL real-time withdrawal available since April 2026)
+```
+
+**Key point:** You never enter your Citibank account number, routing number, or SWIFT code anywhere. In Paddle's payout settings, you just **link your Payoneer account** (log in with your Payoneer credentials). Paddle sends the money to Payoneer's system, and it appears in your balance. The Citibank details are just a *receiving alias* — useful if someone else wants to wire you USD directly, but irrelevant for Paddle→Payoneer flow.
+
+### Cost per $100 sale (international customer)
+
+| Step | Cost |
+|------|------|
+| Paddle fee | 5% + $0.50 = $5.50 |
+| FX margin (if customer paid in non-USD) | ~2–3% (baked in) |
+| Paddle → Payoneer payout | **$0** |
+| Payoneer → PKR bank withdrawal | ~$1–2 (or free via HBL) |
+| **You keep** | **~$93–94** |
+
+With Lemon Squeezy, that same $100 would cost you an extra 1% (bank) or 3% (PayPal) on payout → you'd keep **~$91–92** at best, with more friction.
+

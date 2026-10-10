@@ -106,7 +106,7 @@ export function BrandShowcase() {
   const brands = getBrandStrip();
 
   return (
-    <section aria-label="Shop by brand and category" className="border-t border-[#ded5c7] bg-white px-4 sm:px-6 lg:px-10 xl:px-14 py-16 sm:py-24">
+    <section aria-label="Shop by brand and category" className="border-t border-[#ded5c7] bg-[#faf7f2] px-4 sm:px-6 lg:px-10 xl:px-14 py-16 sm:py-24">
       <div className="mx-auto max-w-[1920px] w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>

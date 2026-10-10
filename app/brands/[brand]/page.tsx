@@ -4,7 +4,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { brands, getBrand } from "@/data/brands";
 import { fetchPaginatedProducts } from "@/data/products";
-import { Banner } from "@/components/common/Banner";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +28,6 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
     openGraph: {
       title: `${brand.name} Leather Jackets | Leather Haven Craft`,
       description: brand.tagline,
-      images: [{ url: brand.heroDesktop }],
     },
   };
 }
@@ -75,7 +73,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           {
             "@type": "ListItem",
             position: 2,
-            name: "Houses & Brands",
+            name: "Collections & Brands",
             item: "https://www.leatherhavencraft.com/products",
           },
           {
@@ -90,44 +88,73 @@ export default async function BrandPage({ params }: BrandPageProps) {
   };
 
   return (
-    <main>
+    <main className="pt-8 sm:pt-12 bg-[var(--bg)] text-[var(--ink)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(brandSchema) }}
       />
-      <section
-        className="relative flex min-h-[520px] items-end overflow-hidden px-6 pt-10 pb-10 text-white md:min-h-[45vh] md:pb-12"
-        style={{ background: brand.accent }}
-      >
-        <Banner desktop={brand.heroDesktop} mobile={brand.heroMobile} alt="" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/15" />
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+
+      {/* ── Breadcrumb Navigation ── */}
+      <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-6 mb-5">
+        <ol className="flex flex-wrap items-center gap-2 text-xs text-[#706456]">
+          <li>
+            <Link href="/" className="hover:text-[#2a1810] transition-colors">
+              Home
+            </Link>
+          </li>
+          <li>/</li>
+          <li>
+            <Link href="/products" className="hover:text-[#2a1810] transition-colors">
+              Collections
+            </Link>
+          </li>
+          <li>/</li>
+          <li className="font-semibold text-[#2a1810]">{brand.name}</li>
+        </ol>
+      </nav>
+
+      {/* ── Brand Header (Clean atelier layout without banner) ── */}
+      <div className="mx-auto max-w-6xl px-6 pb-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between border-b border-[#ded5c7] pb-8">
           <div>
-            {brand.logo ? (
-              <span className="mb-5 inline-flex h-14 items-center bg-white px-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={brand.logo} alt="" className="h-8 w-auto max-w-[140px] object-contain" />
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#8a4d2b]">
+                Archival Tributes &amp; Silhouettes
               </span>
-            ) : null}
-            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-white/70">Archival Tributes &amp; Silhouettes</p>
-            <h1 className="mt-1 text-4xl font-medium tracking-tight sm:text-5xl">{brand.name}</h1>
-            <p className="mt-3 max-w-lg text-base leading-7 text-white/80">{brand.tagline}</p>
+              <span className="rounded-full bg-[#8a4d2b]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#8a4d2b] border border-[#8a4d2b]/20">
+                {pagination.total} {pagination.total === 1 ? "piece" : "pieces"}
+              </span>
+            </div>
+
+            <div className="mt-4 flex items-center gap-4">
+              {brand.logo ? (
+                <span className="inline-flex h-12 items-center rounded-md border border-[#ded5c7] bg-white px-3 shadow-2xs">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={brand.logo} alt="" className="h-7 w-auto max-w-[120px] object-contain" />
+                </span>
+              ) : null}
+              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#2a1810]">
+                {brand.name}
+              </h1>
+            </div>
+
+            <p className="mt-4 max-w-2xl text-xs sm:text-sm leading-relaxed text-[#706456]">
+              {brand.tagline} Handcrafted from heavyweight 1.3 to 1.5mm full-grain hides, authentic period hardware, and bespoke sizing from XS to 6XL.
+            </p>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-white/75">
-            {pagination.total} {pagination.total === 1 ? "piece" : "pieces"}
-          </p>
         </div>
-      </section>
+      </div>
 
       {brand.slug !== "leather-haven-craft" && (
-        <div className="mx-auto max-w-6xl px-6 pt-6">
-          <div className="rounded-lg border border-[#ded5c7] bg-[#faf7f2] p-3 text-xs text-[#706456] leading-relaxed">
+        <div className="mx-auto max-w-6xl px-6 pt-2 pb-4">
+          <div className="rounded-lg border border-[#ded5c7] bg-[#fbf9f6] p-3.5 text-xs text-[#706456] leading-relaxed">
             <span className="font-semibold text-[#221b16]">Atelier Notice: </span>
             Pieces in this section are master handcrafted tributes and custom made to measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
           </div>
         </div>
       )}
-<ProductCatalog
+
+      <ProductCatalog
         initialProducts={items}
         initialPagination={pagination}
         initialBrand={brand.slug}

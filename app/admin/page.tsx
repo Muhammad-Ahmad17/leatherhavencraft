@@ -97,6 +97,20 @@ interface AdminOrder {
   createdAt: string;
 }
 
+interface AdminUserItem {
+  _id: string;
+  accountType: "admin" | "customer";
+  name: string;
+  email: string;
+  role: string;
+  phone?: string;
+  isVerified?: boolean;
+  avatar?: string;
+  createdAt: string;
+  updatedAt?: string;
+  lastLogin?: string;
+}
+
 interface AdminReview {
   _id: string;
   clientName: string;
@@ -165,13 +179,43 @@ interface AdminBlog {
 export default function AdminDashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<AdminUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "catalog" | "blogs" | "reviews" | "subscribers" | "media" | "system">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "catalog" | "users" | "blogs" | "reviews" | "subscribers" | "media" | "system">("overview");
+
+  // Users Management State (Supabase style)
+  const [users, setUsers] = useState<AdminUserItem[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState("all");
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState<AdminUserItem | null>(null);
+  const [selectedUserForPassword, setSelectedUserForPassword] = useState<AdminUserItem | null>(null);
+  const [userToDelete, setUserToDelete] = useState<AdminUserItem | null>(null);
+  const [deletingUser, setDeletingUser] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [savingUser, setSavingUser] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [showPasswordEye, setShowPasswordEye] = useState(false);
+
+  const [userForm, setUserForm] = useState({
+    name: "",
+    email: "",
+    role: "customer",
+    accountType: "customer" as "admin" | "customer",
+    phone: "",
+    isVerified: true,
+    password: "",
+  });
+
+  const [passwordForm, setPasswordForm] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   // Catalog State
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [catalogSearch, setCatalogSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [discountFilter, setDiscountFilter] = useState<"all" | "discounted" | "non-discounted">("all");
 
   // Subscribers State
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -183,6 +227,10 @@ export default function AdminDashboardPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState(false);
+  // Quick Discount State
+  const [productForDiscount, setProductForDiscount] = useState<Product | null>(null);
+  const [quickDiscountVal, setQuickDiscountVal] = useState<number>(0);
+  const [savingQuickDiscount, setSavingQuickDiscount] = useState(false);
   const [productForm, setProductForm] = useState({
     name: "",
     category: "schott-nyc",
@@ -274,7 +322,7 @@ export default function AdminDashboardPage() {
   const loadProducts = useCallback(async () => {
     setLoadingProducts(true);
     try {
-      const res = await adminFetch("/api/products?limit=100");
+      const res = await adminFetch("/api/products?limit=500&inStock=all");
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
@@ -315,6 +363,181 @@ export default function AdminDashboardPage() {
       setLoadingOrders(false);
     }
   }, [showToast]);
+
+  const loadUsers = useCallback(async () => {
+    setLoadingUsers(true);
+    try {
+      const res = await adminFetch("/api/admin/users");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.users)) {
+        setUsers(data.users);
+      }
+    } catch {
+      showToast("Could not load users directory", "error");
+    } finally {
+      setLoadingUsers(false);
+    }
+  }, [showToast]);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((u) => {
+      const q = userSearch.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.phone && u.phone.toLowerCase().includes(q)) ||
+        (u._id && u._id.toLowerCase().includes(q));
+
+      const matchesFilter =
+        userRoleFilter === "all" ||
+        (userRoleFilter === "admin" && u.accountType === "admin") ||
+        (userRoleFilter === "customer" && u.accountType === "customer") ||
+        (u.role && u.role.toLowerCase() === userRoleFilter.toLowerCase());
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [users, userSearch, userRoleFilter]);
+
+  function openAddUserModal() {
+    setUserForm({
+      name: "",
+      email: "",
+      role: "customer",
+      accountType: "customer",
+      phone: "",
+      isVerified: true,
+      password: "",
+    });
+    setShowAddUserModal(true);
+  }
+
+  function openEditUserModal(u: AdminUserItem) {
+    setSelectedUserForEdit(u);
+    setUserForm({
+      name: u.name || "",
+      email: u.email || "",
+      role: u.role || "customer",
+      accountType: u.accountType || "customer",
+      phone: u.phone || "",
+      isVerified: u.isVerified !== false,
+      password: "",
+    });
+  }
+
+  function openPasswordModal(u: AdminUserItem) {
+    setSelectedUserForPassword(u);
+    setPasswordForm({
+      newPassword: "",
+      confirmPassword: "",
+    });
+    setShowPasswordEye(false);
+  }
+
+  async function handleSaveUser(e: React.FormEvent) {
+    e.preventDefault();
+    if (!userForm.name.trim() || !userForm.email.trim()) {
+      showToast("Name and email are required", "error");
+      return;
+    }
+    setSavingUser(true);
+    try {
+      if (selectedUserForEdit) {
+        const res = await adminFetch(`/api/admin/users/${selectedUserForEdit._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: userForm.name,
+            email: userForm.email,
+            role: userForm.role,
+            accountType: userForm.accountType,
+            phone: userForm.phone,
+            isVerified: userForm.isVerified,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Failed to update user");
+        }
+        showToast("User details successfully updated", "success");
+        setSelectedUserForEdit(null);
+      } else {
+        if (!userForm.password || userForm.password.length < 6) {
+          showToast("Password must be at least 6 characters", "error");
+          setSavingUser(false);
+          return;
+        }
+        const res = await adminFetch("/api/admin/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userForm),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Failed to create user");
+        }
+        showToast("User successfully created", "success");
+        setShowAddUserModal(false);
+      }
+      loadUsers();
+    } catch (err: any) {
+      showToast(err.message || "Failed to save user", "error");
+    } finally {
+      setSavingUser(false);
+    }
+  }
+
+  async function handleSavePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedUserForPassword) return;
+    if (!passwordForm.newPassword || passwordForm.newPassword.length < 6) {
+      showToast("Password must be at least 6 characters", "error");
+      return;
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      showToast("Passwords do not match", "error");
+      return;
+    }
+    setSavingPassword(true);
+    try {
+      const res = await adminFetch(`/api/admin/users/${selectedUserForPassword._id}/password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordForm.newPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update password");
+      }
+      showToast(`Password updated for ${selectedUserForPassword.email}`, "success");
+      setSelectedUserForPassword(null);
+    } catch (err: any) {
+      showToast(err.message || "Failed to update password", "error");
+    } finally {
+      setSavingPassword(false);
+    }
+  }
+
+  async function handleConfirmDeleteUser() {
+    if (!userToDelete) return;
+    setDeletingUser(true);
+    try {
+      const res = await adminFetch(`/api/admin/users/${userToDelete._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to delete user");
+      }
+      showToast("User successfully removed", "success");
+      setUserToDelete(null);
+      loadUsers();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete user", "error");
+    } finally {
+      setDeletingUser(false);
+    }
+  }
 
   const loadReviews = useCallback(async () => {
     setLoadingReviews(true);
@@ -528,7 +751,8 @@ export default function AdminDashboardPage() {
 
       if (editingProduct) {
         // PUT update
-        const res = await adminFetch(`/api/products/${editingProduct._id}`, {
+        const targetId = editingProduct._id || editingProduct.id || editingProduct.slug;
+        const res = await adminFetch(`/api/products/${encodeURIComponent(targetId)}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -552,6 +776,33 @@ export default function AdminDashboardPage() {
       loadProducts();
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : "Error saving product", "error");
+    }
+  }
+
+  async function handleApplyQuickDiscount(targetDiscount: number) {
+    if (!productForDiscount) return;
+    setSavingQuickDiscount(true);
+    try {
+      const targetId = productForDiscount._id || productForDiscount.id || productForDiscount.slug;
+      const res = await adminFetch(`/api/products/${encodeURIComponent(targetId)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ discountPercent: Math.min(100, Math.max(0, targetDiscount)) }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to update discount");
+      showToast(
+        targetDiscount > 0
+          ? `Discount of ${targetDiscount}% applied to ${productForDiscount.name}`
+          : `Discount removed from ${productForDiscount.name}`,
+        "success"
+      );
+      setProductForDiscount(null);
+      loadProducts();
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Error updating discount", "error");
+    } finally {
+      setSavingQuickDiscount(false);
     }
   }
 
@@ -986,6 +1237,12 @@ export default function AdminDashboardPage() {
     showToast("Subscribers exported to CSV");
   }
 
+  // Catalog Discount Counts
+  const discountedCount = useMemo(() => {
+    return products.filter((p) => Boolean(p.discountPercent && p.discountPercent > 0)).length;
+  }, [products]);
+  const regularPriceCount = products.length - discountedCount;
+
   // Filtered Products
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -993,9 +1250,14 @@ export default function AdminDashboardPage() {
         p.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
         p.category.toLowerCase().includes(catalogSearch.toLowerCase());
       const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
-      return matchesSearch && matchesCategory;
+      const isDiscounted = Boolean(p.discountPercent && p.discountPercent > 0);
+      const matchesDiscount =
+        discountFilter === "all" ||
+        (discountFilter === "discounted" && isDiscounted) ||
+        (discountFilter === "non-discounted" && !isDiscounted);
+      return matchesSearch && matchesCategory && matchesDiscount;
     });
-  }, [products, catalogSearch, categoryFilter]);
+  }, [products, catalogSearch, categoryFilter, discountFilter]);
 
   // Filtered Subscribers
   const filteredSubscribers = useMemo(() => {
@@ -1113,6 +1375,7 @@ export default function AdminDashboardPage() {
             { id: "overview", label: "Overview & Analytics" },
             { id: "orders", label: `Orders (${orders.length})` },
             { id: "catalog", label: `Catalog (${products.length})` },
+            { id: "users", label: `Users (${users.length})` },
             { id: "blogs", label: `Journal / Blogs (${blogs.length})` },
             { id: "reviews", label: `Reviews (${reviews.length})` },
             { id: "subscribers", label: `Audience (${subscribers.length})` },
@@ -1150,7 +1413,7 @@ export default function AdminDashboardPage() {
                   {products.length}
                 </div>
                 <div className="mt-2 text-[11px] text-[#827668]">
-                  {products.filter((p) => p.inStock).length} in stock · {products.filter((p) => p.featured).length} featured
+                  {products.filter((p) => p.inStock).length} in stock · {discountedCount} on sale · {products.filter((p) => p.featured).length} featured
                 </div>
               </div>
 
@@ -1468,36 +1731,113 @@ export default function AdminDashboardPage() {
         {activeTab === "catalog" && (
           <div className="space-y-6">
             {/* Filter & Action Toolbar */}
-            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-                <input
-                  type="text"
-                  placeholder="Search styles by name or category..."
-                  value={catalogSearch}
-                  onChange={(e) => setCatalogSearch(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9a8e80] focus:border-[#8a4d2b] focus:bg-white focus:outline-none sm:w-72"
-                />
+            <div className="space-y-3 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+                  <input
+                    type="text"
+                    placeholder="Search styles by name or category..."
+                    value={catalogSearch}
+                    onChange={(e) => setCatalogSearch(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] placeholder-[#9a8e80] focus:border-[#8a4d2b] focus:bg-white focus:outline-none sm:w-72"
+                  />
 
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="h-10 rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="h-10 rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  >
+                    <option value="all">All Brands (7 Houses)</option>
+                    {BRAND_CATEGORIES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={discountFilter}
+                    onChange={(e) => setDiscountFilter(e.target.value as "all" | "discounted" | "non-discounted")}
+                    className="h-10 rounded-lg border border-[#d8d0c4] bg-[#faf8f5] px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  >
+                    <option value="all">Pricing: All Items ({products.length})</option>
+                    <option value="discounted">On Sale / Discounted ({discountedCount})</option>
+                    <option value="non-discounted">Regular Full Price ({regularPriceCount})</option>
+                  </select>
+                </div>
+
+                <button
+                  onClick={openCreateModal}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-4 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all hover:brightness-105 active:scale-[0.99]"
                 >
-                  <option value="all">All Brands (7 Houses)</option>
-                  {BRAND_CATEGORIES.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                  <span>+ Add Product</span>
+                </button>
               </div>
 
-              <button
-                onClick={openCreateModal}
-                className="flex h-10 items-center justify-center gap-1.5 rounded-lg border border-[#8a4d2b]/60 bg-gradient-to-r from-[#8a4d2b] to-[#a35c34] px-4 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all hover:brightness-105 active:scale-[0.99]"
-              >
-                <span>+ Add Product</span>
-              </button>
+              {/* Quick Segment Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2 border-t border-[#f0eae1] pt-3">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8a7d6e]">
+                  Pricing Filter:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setDiscountFilter("all")}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                    discountFilter === "all"
+                      ? "bg-[#2a1810] text-[#faf7f2] shadow-sm"
+                      : "border border-[#e0d7cb] bg-[#faf7f2] text-[#6b5c4d] hover:border-[#8a4d2b] hover:text-[#2a1810]"
+                  }`}
+                >
+                  <span>All Pieces</span>
+                  <span className={`rounded-full px-1.5 py-0.2 text-[10px] ${discountFilter === "all" ? "bg-white/20 text-white" : "bg-[#ece4d8] text-[#4d4033]"}`}>
+                    {products.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDiscountFilter("discounted")}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                    discountFilter === "discounted"
+                      ? "bg-[#9e2a2b] text-white shadow-sm ring-2 ring-[#9e2a2b]/30"
+                      : "border border-[#e0d7cb] bg-[#faf7f2] text-[#8a4d2b] hover:border-[#9e2a2b] hover:text-[#9e2a2b]"
+                  }`}
+                >
+                  <span>On Sale / Discounted</span>
+                  <span className={`rounded-full px-1.5 py-0.2 text-[10px] ${discountFilter === "discounted" ? "bg-white/20 text-white" : "bg-[#9e2a2b]/10 text-[#9e2a2b]"}`}>
+                    {discountedCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDiscountFilter("non-discounted")}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                    discountFilter === "non-discounted"
+                      ? "bg-[#2a1810] text-[#faf7f2] shadow-sm"
+                      : "border border-[#e0d7cb] bg-[#faf7f2] text-[#6b5c4d] hover:border-[#8a4d2b] hover:text-[#2a1810]"
+                  }`}
+                >
+                  <span>Regular Full Price</span>
+                  <span className={`rounded-full px-1.5 py-0.2 text-[10px] ${discountFilter === "non-discounted" ? "bg-white/20 text-white" : "bg-[#ece4d8] text-[#4d4033]"}`}>
+                    {regularPriceCount}
+                  </span>
+                </button>
+
+                {(discountFilter !== "all" || categoryFilter !== "all" || catalogSearch.trim().length > 0) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDiscountFilter("all");
+                      setCategoryFilter("all");
+                      setCatalogSearch("");
+                    }}
+                    className="ml-auto text-[11px] font-medium text-[#8a4d2b] underline underline-offset-2 hover:text-[#2a1810]"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Catalog Table */}
@@ -1551,8 +1891,16 @@ export default function AdminDashboardPage() {
                           </td>
                           <td className="px-4 py-3 font-semibold text-[#1e1915]">
                             {prod.discountPercent && prod.discountPercent > 0 ? (
-                              <div className="flex flex-col">
-                                <span className="font-bold text-[#8a4d2b]">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setProductForDiscount(prod);
+                                  setQuickDiscountVal(prod.discountPercent || 0);
+                                }}
+                                className="flex flex-col text-left group cursor-pointer"
+                                title="Click to manage discount"
+                              >
+                                <span className="font-bold text-[#8a4d2b] group-hover:underline">
                                   ${Math.round(prod.price * (1 - prod.discountPercent / 100)).toLocaleString()}
                                 </span>
                                 <div className="flex items-center gap-1.5 text-[11px]">
@@ -1563,9 +1911,19 @@ export default function AdminDashboardPage() {
                                     -{prod.discountPercent}%
                                   </span>
                                 </div>
-                              </div>
+                              </button>
                             ) : (
-                              <span>${prod.price.toLocaleString()}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setProductForDiscount(prod);
+                                  setQuickDiscountVal(0);
+                                }}
+                                className="text-left hover:text-[#8a4d2b] hover:underline cursor-pointer"
+                                title="Click to apply discount"
+                              >
+                                <span>${prod.price.toLocaleString()}</span>
+                              </button>
                             )}
                           </td>
                           <td className="px-4 py-3 text-[#706456]">
@@ -1615,6 +1973,21 @@ export default function AdminDashboardPage() {
                           <td className="px-4 py-3 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <button
+                                type="button"
+                                onClick={() => {
+                                  setProductForDiscount(prod);
+                                  setQuickDiscountVal(prod.discountPercent || 0);
+                                }}
+                                className={`rounded px-2.5 py-1 text-[11px] font-semibold transition-colors cursor-pointer ${
+                                  prod.discountPercent && prod.discountPercent > 0
+                                    ? "bg-[#9e2a2b]/10 text-[#9e2a2b] border border-[#9e2a2b]/30 hover:bg-[#9e2a2b]/20"
+                                    : "border border-[#dcd4c8] bg-white text-[#786c5f] hover:bg-[#faf6f0] hover:text-[#1e1915]"
+                                }`}
+                                title="Manage product discount"
+                              >
+                                {prod.discountPercent && prod.discountPercent > 0 ? `-${prod.discountPercent}%` : "% Discount"}
+                              </button>
+                              <button
                                 onClick={() => openEditModal(prod)}
                                 className="rounded border border-[#dcd4c8] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a4d2b] transition-colors hover:bg-[#faf6f0]"
                               >
@@ -1634,7 +2007,22 @@ export default function AdminDashboardPage() {
                     {filteredProducts.length === 0 && !loadingProducts && (
                       <tr>
                         <td colSpan={6} className="py-12 text-center text-xs text-[#827668]">
-                          No products match the selected criteria.
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <span>No products match the selected criteria.</span>
+                            {(discountFilter !== "all" || categoryFilter !== "all" || catalogSearch) && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setDiscountFilter("all");
+                                  setCategoryFilter("all");
+                                  setCatalogSearch("");
+                                }}
+                                className="rounded border border-[#8a4d2b] bg-[#8a4d2b]/10 px-3 py-1 text-xs font-medium text-[#8a4d2b] hover:bg-[#8a4d2b] hover:text-white"
+                              >
+                                Reset Filters
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -1959,6 +2347,264 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+        
+        {/* ================= TAB: USERS MANAGEMENT (SUPABASE STYLE) ================= */}
+        {activeTab === "users" && (
+          <div className="space-y-6">
+            {/* Top Toolbar */}
+            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+                {/* Search */}
+                <div className="relative flex-1 sm:max-w-xs">
+                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#9a8e80]">
+                    🔍
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search name, email, phone, UUID..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-[#d8d0c4] bg-[#faf8f5] pl-9 pr-3 text-xs text-[#1e1915] placeholder-[#9a8e80] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                  {userSearch && (
+                    <button
+                      onClick={() => setUserSearch("")}
+                      className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-xs text-[#9a8e80] hover:text-[#1e1915]"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter Pills */}
+                <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                  {[
+                    { id: "all", label: "All Users", count: users.length },
+                    {
+                      id: "customer",
+                      label: "Customers",
+                      count: users.filter((u) => u.accountType === "customer").length,
+                    },
+                    {
+                      id: "admin",
+                      label: "Atelier Admins",
+                      count: users.filter((u) => u.accountType === "admin").length,
+                    },
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      onClick={() => setUserRoleFilter(filter.id)}
+                      className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                        userRoleFilter === filter.id
+                          ? "bg-[#2a1810] text-white shadow-xs"
+                          : "border border-[#ded5c7] bg-[#faf8f5] text-[#706456] hover:bg-[#f4efe8] hover:text-[#1e1915]"
+                      }`}
+                    >
+                      {filter.label}{" "}
+                      <span className="ml-1 opacity-70 text-[10px]">({filter.count})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={loadUsers}
+                  disabled={loadingUsers}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-lg border border-[#ded5c7] bg-[#faf8f5] px-3 text-xs font-medium text-[#706456] hover:bg-[#f4efe8] hover:text-[#1e1915] disabled:opacity-50"
+                  title="Refresh users"
+                >
+                  <span className={loadingUsers ? "animate-spin" : ""}>🔄</span>
+                  <span className="hidden sm:inline">Refresh</span>
+                </button>
+
+                <button
+                  onClick={openAddUserModal}
+                  className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#2a1810] px-4 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#3d2417]"
+                >
+                  <span>+ Add User</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Supabase-style Data Table */}
+            <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[850px] text-left text-xs">
+                  <thead className="border-b border-[#e8e2d8] bg-[#f4efe8] text-[11px] font-semibold uppercase tracking-wider text-[#5e5346]">
+                    <tr>
+                      <th className="px-4 py-3">User</th>
+                      <th className="px-4 py-3">Email &amp; Auth</th>
+                      <th className="px-4 py-3">Role &amp; Type</th>
+                      <th className="px-4 py-3">Phone</th>
+                      <th className="px-4 py-3">Created</th>
+                      <th className="px-4 py-3">Last Sign In</th>
+                      <th className="px-4 py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#ede7df]">
+                    {loadingUsers ? (
+                      <tr>
+                        <td colSpan={7} className="py-16 text-center text-xs text-[#827668]">
+                          <div className="inline-flex items-center gap-2">
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#8a4d2b] border-t-transparent" />
+                            <span>Loading user directory...</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : filteredUsers.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-16 text-center text-xs text-[#827668]">
+                          No users found matching query &quot;{userSearch}&quot;.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredUsers.map((u) => {
+                        const initial = (u.name || u.email || "U").charAt(0).toUpperCase();
+                        const isVerified = u.isVerified !== false;
+                        const roleColor =
+                          u.role === "superadmin"
+                            ? "bg-purple-50 text-purple-700 border-purple-200"
+                            : u.role === "stakeholder"
+                            ? "bg-sky-50 text-sky-700 border-sky-200"
+                            : u.role === "editor"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : "bg-emerald-50 text-emerald-700 border-emerald-200";
+
+                        return (
+                          <tr
+                            key={u._id}
+                            className="transition-colors hover:bg-[#faf7f2]"
+                          >
+                            {/* User avatar & name */}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#faf4ec] border border-[#d8cdbf] font-bold text-[#8a4d2b] text-xs">
+                                  {initial}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-semibold text-[#1e1915] truncate">
+                                    {u.name || "Unnamed"}
+                                  </p>
+                                  <p className="font-mono text-[10px] text-[#9a8e80] truncate max-w-[120px]">
+                                    #{u._id.slice(-6)}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Email & Verified */}
+                            <td className="px-4 py-3">
+                              <div className="flex flex-col gap-1">
+                                <span className="font-medium text-[#1e1915]">{u.email}</span>
+                                <div>
+                                  {isVerified ? (
+                                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                                      <span>✓</span> Verified
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                                      <span>!</span> Unverified
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Role & Type */}
+                            <td className="px-4 py-3">
+                              <div className="flex flex-col gap-1">
+                                <span
+                                  className={`inline-block self-start rounded-md border px-2 py-0.5 text-[11px] font-semibold capitalize ${roleColor}`}
+                                >
+                                  {u.role}
+                                </span>
+                                <span className="text-[10px] uppercase tracking-wider text-[#9a8e80]">
+                                  {u.accountType === "admin" ? "Atelier Admin" : "Client User"}
+                                </span>
+                              </div>
+                            </td>
+
+                            {/* Phone */}
+                            <td className="px-4 py-3 font-mono text-[11px] text-[#706456]">
+                              {u.phone || <span className="text-[#b8ad9e]">—</span>}
+                            </td>
+
+                            {/* Created */}
+                            <td className="px-4 py-3 text-[#706456]">
+                              <div>{new Date(u.createdAt).toLocaleDateString()}</div>
+                              <div className="text-[10px] text-[#9a8e80]">
+                                {new Date(u.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                            </td>
+
+                            {/* Last Sign In */}
+                            <td className="px-4 py-3 text-[#706456]">
+                              {u.lastLogin ? (
+                                <>
+                                  <div>{new Date(u.lastLogin).toLocaleDateString()}</div>
+                                  <div className="text-[10px] text-[#9a8e80]">
+                                    {new Date(u.lastLogin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </div>
+                                </>
+                              ) : (
+                                <span className="text-[11px] text-[#b8ad9e]">Never</span>
+                              )}
+                            </td>
+
+                            {/* Actions */}
+                            <td className="px-4 py-3 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {/* Edit Details */}
+                                <button
+                                  onClick={() => openEditUserModal(u)}
+                                  className="rounded-lg border border-[#ded5c7] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#706456] hover:border-[#8a4d2b] hover:text-[#8a4d2b] transition-colors"
+                                  title="Edit user details"
+                                >
+                                  ✏️ Edit
+                                </button>
+
+                                {/* Manual Password */}
+                                <button
+                                  onClick={() => openPasswordModal(u)}
+                                  className="rounded-lg border border-[#ded5c7] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#8a4d2b] hover:bg-[#faf4ec] transition-colors"
+                                  title="Change password manually"
+                                >
+                                  🔑 Password
+                                </button>
+
+                                {/* Delete */}
+                                <button
+                                  onClick={() => setUserToDelete(u)}
+                                  className="rounded-lg border border-rose-200 bg-white p-1.5 text-rose-600 hover:bg-rose-50 transition-colors"
+                                  title="Delete user"
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Table Footer */}
+              <div className="border-t border-[#ede7df] bg-[#faf8f5] px-4 py-3 text-[11px] text-[#7a6f62] flex items-center justify-between">
+                <span>
+                  Showing {filteredUsers.length} of {users.length} total users
+                </span>
+                <span className="text-[#a89d91]">
+                  Supabase User Grid
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === "subscribers" && (
           <div className="space-y-6">
             <div className="flex flex-col gap-4 rounded-xl border border-[#e8e2d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -2227,8 +2873,15 @@ export default function AdminDashboardPage() {
                     min={0}
                     max={100}
                     placeholder="0"
-                    value={productForm.discountPercent || 0}
-                    onChange={(e) => setProductForm({ ...productForm, discountPercent: Math.min(100, Math.max(0, Number(e.target.value))) })}
+                    value={productForm.discountPercent === 0 ? "" : (productForm.discountPercent ?? "")}
+                    onChange={(e) => {
+                      const raw = e.target.value.trim();
+                      const val = raw === "" ? 0 : Number(raw);
+                      setProductForm({
+                        ...productForm,
+                        discountPercent: isNaN(val) ? 0 : Math.min(100, Math.max(0, val)),
+                      });
+                    }}
                     className="mt-1 h-10 w-full rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
                   />
                   {Boolean(productForm.discountPercent > 0) && (
@@ -2718,6 +3371,137 @@ export default function AdminDashboardPage() {
                   "Permanently Delete"
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Quick Discount Modal ── */}
+      {productForDiscount && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-[#ded5c7] bg-white p-6 shadow-2xl text-[#1e1915]">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-3 mb-4">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                  Catalog Pricing
+                </span>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Set Product Discount
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setProductForDiscount(null)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ded5c7] bg-[#faf8f5] text-xs font-bold text-[#6b5c51] hover:text-[#2a1810] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              {/* Product Info Banner */}
+              <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-3 flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-[#1e1915] line-clamp-1">{productForDiscount.name}</p>
+                  <p className="text-[11px] text-[#706456] uppercase tracking-wider mt-0.5">{productForDiscount.category}</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-[10px] uppercase tracking-wider text-[#8a7b70]">Base Price</span>
+                  <span className="text-sm font-bold text-[#1e1915]">${productForDiscount.price.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Quick Preset Buttons */}
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6b6052] mb-1.5">
+                  Quick Percentage Presets
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[0, 10, 15, 20, 25, 30, 40, 50].map((pct) => (
+                    <button
+                      key={pct}
+                      type="button"
+                      onClick={() => setQuickDiscountVal(pct)}
+                      className={`h-9 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                        quickDiscountVal === pct
+                          ? "border-[#8a4d2b] bg-[#8a4d2b] text-white shadow-xs"
+                          : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#8a4d2b] hover:bg-[#faf6f0]"
+                      }`}
+                    >
+                      {pct === 0 ? "0% (Clear)" : `${pct}% Off`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Input */}
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6b6052] mb-1">
+                  Custom Discount Percentage (0 - 100%)
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={quickDiscountVal === 0 ? "" : quickDiscountVal}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setQuickDiscountVal(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)));
+                    }}
+                    placeholder="0"
+                    className="h-10 flex-1 rounded-lg border border-[#d6cdbf] bg-[#faf8f5] px-3 text-sm font-bold text-[#1e1915] focus:border-[#8a4d2b] focus:bg-white focus:outline-none"
+                  />
+                  <span className="text-sm font-bold text-[#6b6052]">%</span>
+                </div>
+              </div>
+
+              {/* Calculation Preview Box */}
+              <div className="rounded-xl border border-[#ded5c7] bg-white p-3.5 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#706456]">Original Price:</span>
+                  <span className="text-[#706456]">${productForDiscount.price.toLocaleString()}</span>
+                </div>
+                {quickDiscountVal > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between text-xs text-[#9e2a2b] font-medium">
+                      <span>Discount ({quickDiscountVal}%):</span>
+                      <span>-${Math.round((productForDiscount.price * quickDiscountVal) / 100).toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-[#ded5c7] pt-2 text-sm font-bold">
+                      <span className="text-[#1e1915]">Customer Sale Price:</span>
+                      <span className="text-[#8a4d2b]">
+                        ${Math.round(productForDiscount.price * (1 - quickDiscountVal / 100)).toLocaleString()}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between border-t border-[#ded5c7] pt-2 text-xs font-semibold text-[#706456]">
+                    <span>Status:</span>
+                    <span>Regular Full Price (No Sale)</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#eee7de]">
+                <button
+                  type="button"
+                  disabled={savingQuickDiscount}
+                  onClick={() => setProductForDiscount(null)}
+                  className="rounded-lg border border-[#ded5c7] bg-white px-4 py-2 text-xs font-semibold text-[#6b5c51] hover:bg-[#faf7f2] disabled:opacity-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={savingQuickDiscount}
+                  onClick={() => handleApplyQuickDiscount(quickDiscountVal)}
+                  className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] disabled:opacity-50 cursor-pointer shadow-xs"
+                >
+                  {savingQuickDiscount ? "Saving..." : quickDiscountVal === 0 ? "Remove Discount" : `Apply ${quickDiscountVal}% Discount`}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -3224,6 +4008,443 @@ export default function AdminDashboardPage() {
                 className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-rose-700 disabled:opacity-50 cursor-pointer shadow-xs flex items-center gap-2"
               >
                 {deletingBlog ? (
+                  <>
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Permanently Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Edit User Modal ── */}
+      {selectedUserForEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-lg rounded-2xl border border-[#ded5c7] bg-white p-6 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Edit User Profile
+                </h3>
+                <p className="text-xs text-[#827668]">
+                  Update user information, credentials, and access roles
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedUserForEdit(null)}
+                className="text-[#9a8e80] hover:text-[#1e1915] text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveUser} className="mt-5 space-y-4">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={userForm.name}
+                  onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={userForm.email}
+                  onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  value={userForm.phone}
+                  onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Account Type
+                  </label>
+                  <select
+                    value={userForm.accountType}
+                    onChange={(e) =>
+                      setUserForm({
+                        ...userForm,
+                        accountType: e.target.value as "admin" | "customer",
+                        role: e.target.value === "admin" ? "editor" : "customer",
+                      })
+                    }
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  >
+                    <option value="customer">Client Customer</option>
+                    <option value="admin">Atelier Admin</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Role Assignment
+                  </label>
+                  <select
+                    value={userForm.role}
+                    onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  >
+                    {userForm.accountType === "customer" ? (
+                      <option value="customer">Customer</option>
+                    ) : (
+                      <>
+                        <option value="editor">Editor</option>
+                        <option value="stakeholder">Stakeholder</option>
+                        <option value="superadmin">Superadmin</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="flex items-center gap-2 text-xs text-[#1e1915] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={userForm.isVerified}
+                    onChange={(e) => setUserForm({ ...userForm, isVerified: e.target.checked })}
+                    className="h-4 w-4 rounded border-[#d6cdbf] text-[#8a4d2b] focus:ring-[#8a4d2b]"
+                  />
+                  <span>Mark Email as Verified</span>
+                </label>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-[#ede7df]">
+                <button
+                  type="button"
+                  onClick={() => setSelectedUserForEdit(null)}
+                  className="rounded-lg border border-[#ded5c7] bg-white px-4 py-2 text-xs font-semibold text-[#6b5c51] hover:bg-[#faf7f2]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingUser}
+                  className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] shadow-xs disabled:opacity-50"
+                >
+                  {savingUser ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Manual Password Reset Modal ── */}
+      {selectedUserForPassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-[#ded5c7] bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-3">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Manual Password Reset
+                </h3>
+                <p className="text-xs text-[#827668]">
+                  Set a direct password for {selectedUserForPassword.name || selectedUserForPassword.email}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedUserForPassword(null)}
+                className="text-[#9a8e80] hover:text-[#1e1915] text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-[11px] text-amber-800">
+              ℹ️ This will immediately hash and override the password in the database. The user can sign in with this new password right away.
+            </div>
+
+            <form onSubmit={handleSavePassword} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  New Password
+                </label>
+                <div className="relative mt-1">
+                  <input
+                    type={showPasswordEye ? "text" : "password"}
+                    required
+                    minLength={6}
+                    placeholder="Minimum 6 characters"
+                    value={passwordForm.newPassword}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+                    }
+                    className="h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 pr-9 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordEye(!showPasswordEye)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-xs text-[#9a8e80] hover:text-[#1e1915]"
+                  >
+                    {showPasswordEye ? "🙈" : "👁️"}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Confirm New Password
+                </label>
+                <input
+                  type={showPasswordEye ? "text" : "password"}
+                  required
+                  minLength={6}
+                  placeholder="Re-enter password"
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
+                  }
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-[#ede7df]">
+                <button
+                  type="button"
+                  onClick={() => setSelectedUserForPassword(null)}
+                  className="rounded-lg border border-[#ded5c7] bg-white px-4 py-2 text-xs font-semibold text-[#6b5c51] hover:bg-[#faf7f2]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingPassword}
+                  className="rounded-lg bg-[#8a4d2b] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#723e22] shadow-xs disabled:opacity-50"
+                >
+                  {savingPassword ? "Updating..." : "Update Password"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Add New User Modal ── */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-lg rounded-2xl border border-[#ded5c7] bg-white p-6 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Add New User
+                </h3>
+                <p className="text-xs text-[#827668]">
+                  Register an atelier staff member or customer account manually
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddUserModal(false)}
+                className="text-[#9a8e80] hover:text-[#1e1915] text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveUser} className="mt-5 space-y-4">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. John Doe"
+                  value={userForm.name}
+                  onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. user@leatherhavencraft.com"
+                  value={userForm.email}
+                  onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Initial Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  placeholder="Minimum 6 characters"
+                  value={userForm.password}
+                  onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                  Phone Number (Optional)
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  value={userForm.phone}
+                  onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
+                  className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Account Type
+                  </label>
+                  <select
+                    value={userForm.accountType}
+                    onChange={(e) =>
+                      setUserForm({
+                        ...userForm,
+                        accountType: e.target.value as "admin" | "customer",
+                        role: e.target.value === "admin" ? "editor" : "customer",
+                      })
+                    }
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  >
+                    <option value="customer">Client Customer</option>
+                    <option value="admin">Atelier Admin</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Role Assignment
+                  </label>
+                  <select
+                    value={userForm.role}
+                    onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  >
+                    {userForm.accountType === "customer" ? (
+                      <option value="customer">Customer</option>
+                    ) : (
+                      <>
+                        <option value="editor">Editor</option>
+                        <option value="stakeholder">Stakeholder</option>
+                        <option value="superadmin">Superadmin</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="flex items-center gap-2 text-xs text-[#1e1915] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={userForm.isVerified}
+                    onChange={(e) => setUserForm({ ...userForm, isVerified: e.target.checked })}
+                    className="h-4 w-4 rounded border-[#d6cdbf] text-[#8a4d2b] focus:ring-[#8a4d2b]"
+                  />
+                  <span>Mark Email as Verified</span>
+                </label>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-[#ede7df]">
+                <button
+                  type="button"
+                  onClick={() => setShowAddUserModal(false)}
+                  className="rounded-lg border border-[#ded5c7] bg-white px-4 py-2 text-xs font-semibold text-[#6b5c51] hover:bg-[#faf7f2]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingUser}
+                  className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] shadow-xs disabled:opacity-50"
+                >
+                  {savingUser ? "Creating..." : "Create User"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Confirm Delete User Modal ── */}
+      {userToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 font-bold text-lg">
+                ⚠️
+              </span>
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Delete User Account
+                </h3>
+                <p className="text-xs text-[#827668]">Permanent Removal</p>
+              </div>
+            </div>
+
+            <p className="text-xs leading-relaxed text-[#52453c] mt-2">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-[#1e1915]">
+                {userToDelete.name || userToDelete.email} ({userToDelete.email})
+              </strong>
+              ? All customer profile data, orders link, or administrative rights will be immediately revoked.
+            </p>
+
+            <div className="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-[#ede7df]">
+              <button
+                type="button"
+                disabled={deletingUser}
+                onClick={() => setUserToDelete(null)}
+                className="rounded-lg border border-[#dcd4c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#52453c] hover:bg-[#faf7f2] disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deletingUser}
+                onClick={handleConfirmDeleteUser}
+                className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-rose-700 disabled:opacity-50 cursor-pointer shadow-xs flex items-center gap-2"
+              >
+                {deletingUser ? (
                   <>
                     <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     <span>Deleting...</span>

@@ -118,7 +118,7 @@ export function Header() {
                           href={`/brands/${brand.slug}`}
                           className="block px-4 py-2 text-xs font-medium tracking-wide text-[#2a1810] transition-colors hover:bg-[#faf7f2] hover:text-[#8a4d2b]"
                         >
-                          {brand.name}
+                          {brand.slug === "leather-haven-craft" ? `${brand.name} (Custom)` : brand.name}
                         </Link>
                       </li>
                     ))}
@@ -260,7 +260,7 @@ export function Header() {
                     className="flex items-center justify-between py-3.5 text-base font-normal text-[var(--ink)] hover:text-[#8a4d2b] transition-colors"
                     onClick={() => setOpen(false)}
                   >
-                    <span>{brand.name}</span>
+                    <span>{brand.slug === "leather-haven-craft" ? `${brand.name} (Custom)` : brand.name}</span>
                     <span aria-hidden="true" className="text-[var(--muted)] text-sm">
                       &rarr;
                     </span>
