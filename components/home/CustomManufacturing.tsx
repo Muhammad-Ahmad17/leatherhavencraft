@@ -31,32 +31,32 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
   return (
     <section
       id="custom-manufacturing"
-      className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-16 sm:py-24"
+      className="border-t border-[#ded5c7] bg-[#faf7f2] px-4 py-10 sm:px-6 sm:py-24"
       aria-labelledby="custom-manufacturing-heading"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="rounded-2xl border border-[#ded5c7] bg-white p-8 shadow-xs sm:p-12 lg:p-16">
+        <div className="rounded-xl sm:rounded-2xl border border-[#ded5c7] bg-white p-5 sm:p-12 lg:p-16 shadow-xs">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14 items-center">
             {/* Left Column: Heading, Context & Size Guide Referral */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#8a4d2b]/20 bg-[#faf6f0] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+            <div className="lg:col-span-7 space-y-3 sm:space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#8a4d2b]/20 bg-[#faf6f0] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#8a4d2b]">
                 <span>Atelier Bespoke &amp; Wholesale Production</span>
               </div>
 
               <h2
                 id="custom-manufacturing-heading"
-                className="font-serif text-3xl font-bold tracking-tight text-[#2a1810] sm:text-4xl lg:text-5xl leading-tight"
+                className="font-serif text-2xl font-bold tracking-tight text-[#2a1810] sm:text-4xl lg:text-5xl leading-snug sm:leading-tight"
               >
                 Custom Manufacturing, Wholesale &amp; Bulk Dealing
               </h2>
 
-              <p className="text-xs leading-relaxed text-[#706456] sm:text-sm">
+              <p className="text-[11px] sm:text-xs lg:text-sm leading-relaxed text-[#706456]">
                 Beyond our heritage archival drops, Leather Haven Craft operates a dedicated manufacturing atelier for individual made to measure tailoring, club outerwear, private label collections, and wholesale bulk orders. Every jacket is hand-patterned, grain-matched, and constructed by master leather artisans with tiered wholesale rates for boutiques, motorcycle clubs, and apparel brands worldwide.
               </p>
 
               {/* Referral Pill linking to the Size Guide */}
               {showSizeGuideLink && (
-                <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-3 text-xs text-[#706456]">
+                <div className="flex flex-wrap items-center gap-2 rounded-lg sm:rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-2.5 sm:p-3 text-[11px] sm:text-xs text-[#706456]">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b]/15 text-[#8a4d2b]">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -73,22 +73,22 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[#eee7de]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-[#eee7de]">
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Single &amp; Bulk Runs</span>
-                  <p className="text-[11px] text-[#706456]">
+                  <span className="block text-[11px] sm:text-xs font-bold text-[#2a1810]">Single &amp; Bulk Runs</span>
+                  <p className="text-[10px] sm:text-[11px] text-[#706456]">
                     From 1 made to measure piece to 100+ wholesale units with tiered volume pricing.
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Premium Tannery Hides</span>
-                  <p className="text-[11px] text-[#706456]">
+                  <span className="block text-[11px] sm:text-xs font-bold text-[#2a1810]">Premium Tannery Hides</span>
+                  <p className="text-[10px] sm:text-[11px] text-[#706456]">
                     Full grain cowhide, heavyweight steerhide, lambskin &amp; genuine shearling pelts.
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-xs font-bold text-[#2a1810]">Wholesale &amp; Branding</span>
-                  <p className="text-[11px] text-[#706456]">
+                  <span className="block text-[11px] sm:text-xs font-bold text-[#2a1810]">Wholesale &amp; Branding</span>
+                  <p className="text-[10px] sm:text-[11px] text-[#706456]">
                     Custom embossed patches, private label tags, heavy brass hardware &amp; silk linings.
                   </p>
                 </div>
@@ -96,15 +96,15 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
             </div>
 
             {/* Right Column: Direct Contact & Action Box */}
-            <div className="lg:col-span-5 rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-6 sm:p-8 space-y-6 text-center">
+            <div className="lg:col-span-5 rounded-lg sm:rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-4 sm:p-8 space-y-4 sm:space-y-6 text-center">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#8a4d2b]">
                   Wholesale &amp; Bespoke Consultations
                 </span>
-                <h3 className="mt-1 text-xl font-bold text-[#2a1810]">
+                <h3 className="mt-1 text-base sm:text-xl font-bold text-[#2a1810]">
                   Message or Mail Our Workshop
                 </h3>
-                <p className="mt-2 text-xs text-[#706456] leading-relaxed">
+                <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs text-[#706456] leading-normal sm:leading-relaxed">
                   Have a design sketch, measurement chart, or bulk boutique/club inquiry? Contact our artisans directly for wholesale price tiers and fabrication timelines.
                 </p>
               </div>
@@ -114,14 +114,14 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                   href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-5 text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-[#20ba59] shadow-xs cursor-pointer"
+                  className="flex h-10 sm:h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-4 sm:px-5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-black transition-all hover:bg-[#20ba59] shadow-xs cursor-pointer"
                 >
                   <span>Message for Wholesale &amp; Bulk (WhatsApp)</span>
                 </a>
 
                 <a
                   href={emailHref}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#ded5c7] bg-white px-5 text-xs font-bold uppercase tracking-wider text-[#2a1810] transition-all hover:border-[#8a4d2b] hover:bg-[#faf6f0] shadow-xs cursor-pointer"
+                  className="flex h-10 sm:h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#ded5c7] bg-white px-4 sm:px-5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2a1810] transition-all hover:border-[#8a4d2b] hover:bg-[#faf6f0] shadow-xs cursor-pointer"
                 >
                   <span>Email Bulk Specifications</span>
                 </a>
@@ -129,7 +129,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                 {showSizeGuideLink && (
                   <Link
                     href="/size-guide"
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#8a4d2b]/25 bg-[#faf6f0] px-4 text-xs font-bold uppercase tracking-wider text-[#8a4d2b] transition-all hover:bg-[#8a4d2b] hover:text-white shadow-2xs cursor-pointer"
+                    className="flex h-9 sm:h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#8a4d2b]/25 bg-[#faf6f0] px-3 sm:px-4 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#8a4d2b] transition-all hover:bg-[#8a4d2b] hover:text-white shadow-2xs cursor-pointer"
                   >
                     <svg
                       width="15"
@@ -149,7 +149,7 @@ export function CustomManufacturing({ showSizeGuideLink = true }: CustomManufact
                 )}
               </div>
 
-              <p className="text-[11px] text-[#8a7b70]">
+              <p className="text-[10px] sm:text-[11px] text-[#8a7b70]">
                 Direct reply within 30 minutes during workshop hours (Mon to Sat).
               </p>
             </div>

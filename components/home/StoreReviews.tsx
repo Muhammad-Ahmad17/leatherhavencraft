@@ -139,35 +139,35 @@ export function StoreReviews() {
   }
 
   return (
-    <section aria-label="Client reviews" className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#2a1810] px-6 py-20">
+    <section aria-label="Client reviews" className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#2a1810] px-4 py-10 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-6xl">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-12 border-b border-[#ded5c7]">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6 pb-6 sm:pb-12 border-b border-[#ded5c7]">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#8a4d2b]">
+            <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#8a4d2b]">
               Verified Atelier Experiences
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2a1810] sm:text-4xl">
+            <h2 className="mt-1 sm:mt-2 text-2xl font-bold tracking-tight text-[#2a1810] sm:text-4xl">
               Client Impressions &amp; Workshop Acclaim
             </h2>
-            <p className="mt-2 text-xs sm:text-sm text-[#6b5c51] max-w-xl">
+            <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs md:text-sm text-[#6b5c51] max-w-xl">
               Reflections from international collectors, motorcyclists, and bespoke outerwear enthusiasts.
             </p>
           </div>
 
           {/* Aggregate Rating Scoreboard & Action */}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 bg-white/70 border border-[#ded5c7] rounded-xl px-5 py-3.5 shadow-2xs">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white border border-[#ded5c7] rounded-lg sm:rounded-xl px-3.5 py-2.5 sm:px-5 sm:py-3.5 shadow-2xs">
             <div className="flex items-center gap-3">
-              <span className="font-serif text-3xl font-extrabold text-[#2a1810]">
+              <span className="font-serif text-2xl sm:text-3xl font-extrabold text-[#2a1810]">
                 {averageRating.toFixed(1)}
               </span>
               <div>
-                <div className="flex text-[#8a4d2b] text-sm">
+                <div className="flex text-[#8a4d2b] text-xs sm:text-sm">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i}>★</span>
                   ))}
                 </div>
-                <span className="text-[11px] text-[#706456] font-medium">
+                <span className="text-[10px] sm:text-[11px] text-[#706456] font-medium">
                   {totalCount}+ Verified Orders
                 </span>
               </div>
@@ -176,7 +176,7 @@ export function StoreReviews() {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="rounded-lg bg-[#2a1810] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] transition-colors cursor-pointer shadow-xs"
+              className="rounded-md sm:rounded-lg bg-[#2a1810] px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] transition-colors cursor-pointer shadow-xs"
             >
               Write a Review
             </button>
@@ -184,22 +184,22 @@ export function StoreReviews() {
         </div>
 
         {/* Reviews Showcase Grid */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-6 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
           {reviews.slice(0, 6).map((rev, idx) => (
             <article
               key={rev._id || idx}
-              className="flex flex-col justify-between rounded-xl border border-[#ded5c7] bg-white p-6 shadow-2xs transition-all hover:-translate-y-1 hover:shadow-md"
+              className="flex flex-col justify-between rounded-lg sm:rounded-xl border border-[#ded5c7] bg-white p-4 sm:p-6 shadow-2xs transition-all hover:-translate-y-1 hover:shadow-md"
             >
               <div>
                 {/* Rating stars and verified badge */}
-                <div className="flex items-center justify-between pb-3">
-                  <div className="flex text-[#8a4d2b] text-xs">
+                <div className="flex items-center justify-between pb-2 sm:pb-3">
+                  <div className="flex text-[#8a4d2b] text-[11px] sm:text-xs">
                     {Array.from({ length: Math.min(5, Math.max(1, rev.rating)) }).map((_, i) => (
                       <span key={i}>★</span>
                     ))}
                   </div>
                   {rev.verifiedPurchase && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#1b4332]/10 px-2 py-0.5 text-[10px] font-semibold text-[#1b4332]">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#1b4332]/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold text-[#1b4332]">
                       <svg className="w-2.5 h-2.5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -209,17 +209,17 @@ export function StoreReviews() {
                 </div>
 
                 {/* Review Title & Content */}
-                <h3 className="font-serif text-base font-bold text-[#2a1810] tracking-tight">
+                <h3 className="font-serif text-sm sm:text-base font-bold text-[#2a1810] tracking-tight">
                   &ldquo;{rev.title}&rdquo;
                 </h3>
-                <p className="mt-2 text-xs text-[#52443a] leading-relaxed italic">
+                <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs text-[#52443a] leading-normal sm:leading-relaxed italic">
                   {rev.content}
                 </p>
 
                 {/* Piece Purchased */}
                 {rev.piecePurchased && (
-                  <div className="mt-4">
-                    <span className="inline-block rounded-md bg-[#faf7f2] border border-[#ded5c7] px-2.5 py-1 text-[10px] font-medium text-[#8a4d2b]">
+                  <div className="mt-2.5 sm:mt-4">
+                    <span className="inline-block rounded-md bg-[#faf8f5] border border-[#ded5c7] px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-medium text-[#8a4d2b]">
                       Order: {rev.piecePurchased}
                     </span>
                   </div>
@@ -227,15 +227,15 @@ export function StoreReviews() {
               </div>
 
               {/* Author Metadata */}
-              <div className="mt-6 pt-4 border-t border-[#f0ebe3] flex items-center justify-between text-xs">
+              <div className="mt-3.5 sm:mt-6 pt-2.5 sm:pt-4 border-t border-[#f0ebe3] flex items-center justify-between text-[11px] sm:text-xs">
                 <div>
                   <span className="font-bold text-[#2a1810] block">{rev.clientName}</span>
                   {rev.clientLocation && (
-                    <span className="text-[11px] text-[#706456] block">{rev.clientLocation}</span>
+                    <span className="text-[10px] sm:text-[11px] text-[#706456] block">{rev.clientLocation}</span>
                   )}
                 </div>
                 {rev.createdAt && (
-                  <span className="text-[10px] text-[#9c9183]">
+                  <span className="text-[9px] sm:text-[10px] text-[#9c9183]">
                     {new Date(rev.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       year: "numeric",

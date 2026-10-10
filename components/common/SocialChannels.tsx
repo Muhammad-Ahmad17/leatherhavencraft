@@ -5,6 +5,7 @@ import { getInstagramUrl, getEtsyUrl, hasEtsyStore } from "@/lib/social";
 interface SocialChannelsProps {
   className?: string;
   variant?: "buttons" | "pills" | "compact";
+  dark?: boolean;
 }
 
 export function InstagramIcon({ className = "h-4 w-4" }: { className?: string }) {
@@ -40,7 +41,7 @@ export function EtsyIcon({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
-export function SocialChannels({ className = "", variant = "buttons" }: SocialChannelsProps) {
+export function SocialChannels({ className = "", variant = "buttons", dark = false }: SocialChannelsProps) {
   const instagramUrl = getInstagramUrl();
   const etsyUrl = getEtsyUrl();
   const isEtsyLive = hasEtsyStore();
@@ -53,7 +54,11 @@ export function SocialChannels({ className = "", variant = "buttons" }: SocialCh
           href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ded5c7] bg-white text-[#2a1810] transition-all hover:border-[#e1306c] hover:bg-[#faf5f6] hover:text-[#e1306c] shadow-2xs"
+          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all shadow-2xs ${
+            dark
+              ? "border-[#3a271c] bg-[#160f0a] text-[#f2ede6] hover:border-[#e1306c] hover:bg-[#2b171c] hover:text-[#e1306c]"
+              : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#e1306c] hover:bg-[#faf5f6] hover:text-[#e1306c]"
+          }`}
           aria-label="Follow Leather Haven Craft on Instagram"
           title="Instagram @leatherhavencraft"
         >
@@ -66,7 +71,11 @@ export function SocialChannels({ className = "", variant = "buttons" }: SocialCh
             href={etsyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ded5c7] bg-white text-[#2a1810] transition-all hover:border-[#f16521] hover:bg-[#fff7f2] hover:text-[#f16521] shadow-2xs"
+            className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all shadow-2xs ${
+              dark
+                ? "border-[#3a271c] bg-[#160f0a] text-[#f2ede6] hover:border-[#f16521] hover:bg-[#2f170c] hover:text-[#f16521]"
+                : "border-[#ded5c7] bg-white text-[#2a1810] hover:border-[#f16521] hover:bg-[#fff7f2] hover:text-[#f16521]"
+            }`}
             aria-label="Shop Leather Haven Craft on Etsy"
             title="Etsy Official Store"
           >
@@ -74,7 +83,11 @@ export function SocialChannels({ className = "", variant = "buttons" }: SocialCh
           </a>
         ) : (
           <div
-            className="group relative flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-[#ded5c7] bg-[#faf8f5] text-[#8a7b70] cursor-help"
+            className={`group relative flex h-8 w-8 items-center justify-center rounded-full border border-dashed cursor-help ${
+              dark
+                ? "border-[#3a271c] bg-[#160f0a]/60 text-[#8a7b6e]"
+                : "border-[#ded5c7] bg-[#faf8f5] text-[#8a7b70]"
+            }`}
             title="Etsy Store Opening Soon"
           >
             <EtsyIcon className="h-4 w-4 opacity-60" />

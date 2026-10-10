@@ -62,7 +62,7 @@ const homeFaqSchema = [
 
 export default async function HomePage() {
   const featuredProducts = await fetchLiveFeaturedProducts();
-  const scrollProducts = await fetchLiveScrollProducts(5);
+  const scrollProducts = await fetchLiveScrollProducts(6);
 
   const homePageSchema = {
     "@context": "https://schema.org",
@@ -91,8 +91,9 @@ export default async function HomePage() {
   return (
     <main>
       {/* High-priority preload links for the flagship interactive model animation assets */}
-      <link rel="preload" href="/scroll-model/model.webp" as="image" type="image/webp" fetchPriority="high" />
-      <link rel="preload" href="/scroll-model/jacket-1.webp" as="image" type="image/webp" fetchPriority="high" />
+            <link rel="preload" href="/scroll-model/model.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-6.webp" as="image" type="image/webp" fetchPriority="high" />
+      <link rel="preload" href="/scroll-model/jacket-1.webp" as="image" type="image/webp" />
       <link rel="preload" href="/scroll-model/jacket-2.webp" as="image" type="image/webp" />
       <link rel="preload" href="/scroll-model/jacket-3.webp" as="image" type="image/webp" />
       <link rel="preload" href="/scroll-model/jacket-4.webp" as="image" type="image/webp" />
@@ -139,7 +140,7 @@ export default async function HomePage() {
       </div>
 
       {/* ── 2. Scroll the collection (Curated flagship archive pieces) ── */}
-      <section aria-labelledby="scroll-collection" className="bg-[#f9f9f9]">
+      <section aria-labelledby="scroll-collection" className="bg-[#faf7f2] relative">
         <h2 id="scroll-collection" className="sr-only">
           Scroll the collection
         </h2>
@@ -149,7 +150,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── 3. Featured Archival Collection ── */}
-      <section aria-label="Featured jackets" className="border-t border-[#ded5c7] bg-[#faf7f2] px-6 py-12 sm:py-16">
+      <section aria-label="Featured jackets" className="border-t border-[#ded5c7] bg-white px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <h2 className="sr-only">Featured jackets</h2>
           <div className="flex justify-end mb-6 sm:mb-8">
