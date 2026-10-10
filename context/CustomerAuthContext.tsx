@@ -24,14 +24,18 @@ interface CustomerAuthContextType {
   token: string | null;
   isLoading: boolean;
   isAuthModalOpen: boolean;
-  authModalMode: "login" | "register";
+  authModalMode: "login" | "register" | "forgot" | "reset";
   openLogin: () => void;
   openRegister: () => void;
+  openForgotPassword: () => void;
+  openResetPassword: () => void;
   closeAuthModal: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-  register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; requiresVerification?: boolean; email?: string; message?: string }>;
+  register: (name: string, email: string, password: string, phone?: string, hp_website?: string) => Promise<{ success: boolean; requiresVerification?: boolean; email?: string; message?: string }>;
   verifyEmail: (email: string, code: string) => Promise<{ success: boolean; message?: string }>;
   resendCode: (email: string) => Promise<{ success: boolean; message?: string }>;
+  forgotPassword: (email: string, hp_website?: string) => Promise<{ success: boolean; message?: string }>;
+  resetPassword: (email: string, code: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
   updateProfile: (data: { name?: string; phone?: string; shippingAddress?: ShippingAddress }) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
 }
@@ -45,7 +49,7 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<"login" | "register">("login");
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register" | "forgot" | "reset">("login");
 
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL ||
@@ -106,6 +110,16 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
     setIsAuthModalOpen(true);
   };
 
+  const openForgotPassword = () => {
+    setAuthModalMode("forgot");
+    setIsAuthModalOpen(true);
+  };
+
+  const openResetPassword = () => {
+    setAuthModalMode("reset");
+    setIsAuthModalOpen(true);
+  };
+
   const closeAuthModal = () => {
     setIsAuthModalOpen(false);
   };
@@ -135,12 +149,12 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
     }
   };
 
-  const register = async (name: string, email: string, password: string, phone?: string) => {
+  const register = async (name: string, email: string, password: string, phone?: string, hp_website?: string) => {
     try {
       const res = await fetch(`${backendUrl}/api/customer/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, phone }),
+        body: JSON.stringify({ name, email, password, phone, hp_website }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
@@ -209,6 +223,53 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
     }
   };
 
+  const forgotPassword = async (email: string, hp_website?: string) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/customer/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, hp_website }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.message || "Failed to send reset code" };
+      }
+      return { success: true, message: data.message };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Network error occurred",
+      };
+    }
+  };
+
+  const resetPassword = async (email: string, code: string, newPassword: string) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/customer/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code, newPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.message || "Password reset failed" };
+      }
+
+      // Automatically log user in if token and customer returned
+      if (data.token && data.customer) {
+        localStorage.setItem(TOKEN_KEY, data.token);
+        setToken(data.token);
+        setCustomer(data.customer);
+      }
+      return { success: true, message: data.message };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Network error occurred",
+      };
+    }
+  };
+
   const updateProfile = async (data: { name?: string; phone?: string; shippingAddress?: ShippingAddress }) => {
     if (!token) return { success: false, message: "Not authenticated" };
     try {
@@ -245,11 +306,15 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
         authModalMode,
         openLogin,
         openRegister,
+        openForgotPassword,
+        openResetPassword,
         closeAuthModal,
         login,
         register,
         verifyEmail,
         resendCode,
+        forgotPassword,
+        resetPassword,
         updateProfile,
         logout,
       }}
