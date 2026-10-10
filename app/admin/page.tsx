@@ -583,7 +583,14 @@ export default function AdminDashboardPage() {
     loadBlogs();
     loadReviews();
     loadOrders();
-  }, [router, loadProducts, loadSubscribers, loadBlogs, loadReviews, loadOrders]);
+    loadUsers();
+  }, [router, loadProducts, loadSubscribers, loadBlogs, loadReviews, loadOrders, loadUsers]);
+
+  useEffect(() => {
+    if (activeTab === "users" || activeTab === "overview") {
+      loadUsers();
+    }
+  }, [activeTab, loadUsers]);
 
   function handleLogout() {
     clearAdminSession();
@@ -1403,7 +1410,7 @@ export default function AdminDashboardPage() {
         {activeTab === "overview" && (
           <div className="space-y-8">
             {/* Top 4 KPI Metrics */}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
               <div className="rounded-xl border border-[#e8e2d8] bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#7a6f62]">
                   <span>Total Catalog Pieces</span>
@@ -1466,6 +1473,22 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="mt-2 text-[11px] text-[#827668]">
                   {products.filter((p) => p.featured).length} runway featured pieces
+                </div>
+              </div>
+
+              <div
+                onClick={() => setActiveTab("users")}
+                className="cursor-pointer rounded-xl border border-[#e8e2d8] bg-white p-5 shadow-sm transition-all hover:border-[#8a4d2b] hover:shadow-md"
+              >
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#7a6f62]">
+                  <span>Registered Users</span>
+                  <span className="text-[#8a4d2b] hover:underline">View →</span>
+                </div>
+                <div className="mt-2 font-serif text-3xl font-bold text-[#1e1915]">
+                  {users.length}
+                </div>
+                <div className="mt-2 text-[11px] text-[#827668]">
+                  {users.filter((u) => u.accountType === "customer").length} customers · {users.filter((u) => u.accountType === "admin").length} admins
                 </div>
               </div>
             </div>
@@ -1548,8 +1571,49 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
+              {/* Recent Registered Users */}
+              <div className="rounded-xl border border-[#e8e2d8] bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold tracking-wide text-[#1e1915]">
+                    Recent Registered Users
+                  </h4>
+                  <button
+                    onClick={() => setActiveTab("users")}
+                    className="text-xs font-medium text-[#8a4d2b] hover:underline"
+                  >
+                    View all ({users.length}) →
+                  </button>
+                </div>
+                <div className="mt-4 divide-y divide-[#ede7df]">
+                  {users.slice(0, 5).map((u) => (
+                    <div key={u._id} className="flex items-center justify-between py-2.5 text-xs">
+                      <div className="min-w-0 pr-2">
+                        <div className="font-medium text-[#1e1915] truncate">
+                          {u.name || "Customer User"}
+                        </div>
+                        <div className="text-[10px] text-[#827668] truncate">
+                          {u.email}
+                        </div>
+                      </div>
+                      <span
+                        className={`shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                          u.accountType === "admin"
+                            ? "bg-[#2a1810] text-white"
+                            : "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                        }`}
+                      >
+                        {u.accountType === "admin" ? u.role : "Customer"}
+                      </span>
+                    </div>
+                  ))}
+                  {users.length === 0 && (
+                    <p className="py-6 text-center text-xs text-[#827668]">No users recorded yet.</p>
+                  )}
+                </div>
+              </div>
+
               {/* Recent Subscribers */}
-              <div className="rounded-xl border border-[#e8e2d8] bg-white p-6 shadow-sm lg:col-span-2">
+              <div className="rounded-xl border border-[#e8e2d8] bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-semibold tracking-wide text-[#1e1915]">
                     Recent Newsletter Signups
