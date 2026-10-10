@@ -29,7 +29,9 @@ interface CustomerAuthContextType {
   openRegister: () => void;
   closeAuthModal: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-  register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; message?: string }>;
+  register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; requiresVerification?: boolean; email?: string; message?: string }>;
+  verifyEmail: (email: string, code: string) => Promise<{ success: boolean; message?: string }>;
+  resendCode: (email: string) => Promise<{ success: boolean; message?: string }>;
   updateProfile: (data: { name?: string; phone?: string; shippingAddress?: ShippingAddress }) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
 }
@@ -145,11 +147,60 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
         return { success: false, message: data.message || "Registration failed" };
       }
 
+      if (data.requiresVerification) {
+        return { success: true, requiresVerification: true, email: data.email };
+      }
+
       localStorage.setItem(TOKEN_KEY, data.token);
       setToken(data.token);
       setCustomer(data.customer);
       setIsAuthModalOpen(false);
       return { success: true };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Network error occurred",
+      };
+    }
+  };
+
+  const verifyEmail = async (email: string, code: string) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/customer/verify-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.message || "Verification failed" };
+      }
+
+      localStorage.setItem(TOKEN_KEY, data.token);
+      setToken(data.token);
+      setCustomer(data.customer);
+      setIsAuthModalOpen(false);
+      return { success: true, message: data.message };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Network error occurred",
+      };
+    }
+  };
+
+  const resendCode = async (email: string) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/customer/resend-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      return {
+        success: Boolean(res.ok && data.success),
+        message: data.message || (res.ok ? "Code sent" : "Failed to resend code"),
+      };
     } catch (err: unknown) {
       return {
         success: false,
@@ -197,6 +248,8 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
         closeAuthModal,
         login,
         register,
+        verifyEmail,
+        resendCode,
         updateProfile,
         logout,
       }}
