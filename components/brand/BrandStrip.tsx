@@ -9,8 +9,6 @@ export function BrandStrip() {
     "harley-davidson",
     "schott-nyc",
     "supreme",
-    "accessories",
-    "others",
   ];
 
   const others = otherSlugs
@@ -58,9 +56,13 @@ export function BrandStrip() {
                 <img
                   src={brand.logo}
                   alt={brand.name}
-                  className={`h-8 sm:h-10 w-auto max-w-[130px] sm:max-w-[155px] object-contain ${
-                    isLHC ? "brightness-95" : ""
-                  }`}
+                  className={`w-auto object-contain transition-transform ${
+                    brand.slug === "accessories"
+                      ? "h-11 sm:h-14 max-w-[170px] sm:max-w-[200px] scale-110"
+                      : brand.slug === "harley-davidson"
+                      ? "h-8 sm:h-10 max-w-[130px] sm:max-w-[155px] scale-110"
+                      : "h-8 sm:h-10 max-w-[130px] sm:max-w-[155px]"
+                  } ${isLHC ? "brightness-95" : ""}`}
                 />
               )}
             </Link>
