@@ -77,6 +77,8 @@ interface AdminOrderItem {
 interface AdminOrder {
   _id: string;
   orderNumber: string;
+  orderSource?: "website" | "whatsapp" | "email" | "instagram" | "phone" | "other";
+  paymentMethod?: string;
   clientName: string;
   clientEmail: string;
   clientPhone?: string;
@@ -260,6 +262,27 @@ export default function AdminDashboardPage() {
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+  const [savingNewOrder, setSavingNewOrder] = useState(false);
+  const [newOrderForm, setNewOrderForm] = useState({
+    clientName: "",
+    clientEmail: "",
+    clientPhone: "",
+    orderSource: "whatsapp",
+    paymentMethod: "Inquiry/Direct Checkout",
+    street: "",
+    city: "",
+    country: "United States",
+    items: [
+      {
+        name: "",
+        size: "L",
+        color: "Black",
+        price: 350,
+        quantity: 1,
+      },
+    ],
+  });
   const [orderForm, setOrderForm] = useState({
     orderStatus: "order_placed",
     courier: "DHL Express",
@@ -607,6 +630,71 @@ export default function AdminDashboardPage() {
       note: "",
     });
     setShowOrderModal(true);
+  }
+
+  async function handleCreateNewOrder(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newOrderForm.clientName || !newOrderForm.clientEmail) {
+      showToast("Client name and email are required", "error");
+      return;
+    }
+    if (newOrderForm.items.length === 0 || !newOrderForm.items[0].name) {
+      showToast("Please specify at least one product name", "error");
+      return;
+    }
+
+    setSavingNewOrder(true);
+    try {
+      const payload = {
+        clientName: newOrderForm.clientName.trim(),
+        clientEmail: newOrderForm.clientEmail.trim(),
+        clientPhone: newOrderForm.clientPhone.trim(),
+        orderSource: newOrderForm.orderSource,
+        paymentMethod: newOrderForm.paymentMethod,
+        shippingAddress: {
+          street: newOrderForm.street.trim(),
+          city: newOrderForm.city.trim(),
+          country: newOrderForm.country.trim(),
+        },
+        items: newOrderForm.items.map((it) => ({
+          name: it.name.trim(),
+          slug: it.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          size: it.size,
+          color: it.color,
+          price: Number(it.price) || 0,
+          quantity: Number(it.quantity) || 1,
+        })),
+      };
+
+      const res = await adminFetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to create manual order");
+      }
+
+      showToast(`Order #${data.data.orderNumber} successfully created`);
+      setShowNewOrderModal(false);
+      setNewOrderForm({
+        clientName: "",
+        clientEmail: "",
+        clientPhone: "",
+        orderSource: "whatsapp",
+        paymentMethod: "Inquiry/Direct Checkout",
+        street: "",
+        city: "",
+        country: "United States",
+        items: [{ name: "", size: "L", color: "Black", price: 350, quantity: 1 }],
+      });
+      loadOrders();
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : "Error creating order", "error");
+    } finally {
+      setSavingNewOrder(false);
+    }
   }
 
   async function handleOrderFormSubmit(e: React.FormEvent) {
@@ -1679,6 +1767,14 @@ export default function AdminDashboardPage() {
                   ))}
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setShowNewOrderModal(true)}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2a1810] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#3d2417] cursor-pointer"
+              >
+                <span>+</span>
+                <span>Add Manual Order</span>
+              </button>
             </div>
 
             <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
@@ -1686,6 +1782,7 @@ export default function AdminDashboardPage() {
                 <thead className="border-b border-[#e8e2d8] bg-[#f4efe8] text-[11px] uppercase tracking-wider text-[#5e5346]">
                   <tr>
                     <th className="px-4 py-3">Order ID</th>
+                    <th className="px-4 py-3">Source</th>
                     <th className="px-4 py-3">Client</th>
                     <th className="px-4 py-3">Pieces Ordered</th>
                     <th className="px-4 py-3">Total</th>
@@ -1697,13 +1794,13 @@ export default function AdminDashboardPage() {
                 <tbody className="divide-y divide-[#ede7df]">
                   {loadingOrders ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-xs text-[#827668]">
+                      <td colSpan={8} className="py-12 text-center text-xs text-[#827668]">
                         Loading orders...
                       </td>
                     </tr>
                   ) : orders.filter((o) => orderStatusFilter === "all" || o.orderStatus === orderStatusFilter).length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-xs text-[#827668]">
+                      <td colSpan={8} className="py-12 text-center text-xs text-[#827668]">
                         No orders found for this stage.
                       </td>
                     </tr>
@@ -1717,6 +1814,23 @@ export default function AdminDashboardPage() {
                             <div className="text-[10px] text-[#85796b] font-normal">
                               {new Date(ord.createdAt).toLocaleDateString()}
                             </div>
+                          </td>
+                          <td className="px-4 py-3 align-top">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                ord.orderSource === "whatsapp"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-300"
+                                  : ord.orderSource === "email"
+                                  ? "bg-amber-50 text-amber-800 border border-amber-300"
+                                  : ord.orderSource === "instagram"
+                                  ? "bg-pink-50 text-pink-700 border border-pink-300"
+                                  : ord.orderSource === "phone"
+                                  ? "bg-sky-50 text-sky-700 border border-sky-300"
+                                  : "bg-stone-100 text-stone-700 border border-stone-300"
+                              }`}
+                            >
+                              {ord.orderSource || "whatsapp"}
+                            </span>
                           </td>
                           <td className="px-4 py-3 align-top">
                             <div className="font-semibold text-[#1e1915]">{ord.clientName}</div>
@@ -2305,6 +2419,14 @@ export default function AdminDashboardPage() {
                   {reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : "5.0"} / 5.0
                 </strong>
               </div>
+              <button
+                type="button"
+                onClick={() => setShowNewOrderModal(true)}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2a1810] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#3d2417] cursor-pointer"
+              >
+                <span>+</span>
+                <span>Add Manual Order</span>
+              </button>
             </div>
 
             <div className="overflow-hidden rounded-xl border border-[#e8e2d8] bg-white shadow-sm">
@@ -4521,6 +4643,242 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+      {/* ── New Manual Order Modal ── */}
+      {showNewOrderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-xl rounded-2xl border border-[#e8e2d8] bg-white p-6 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-[#ede7df] pb-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#1e1915]">
+                  Add Manual Atelier Order
+                </h3>
+                <p className="text-xs text-[#827668]">
+                  Register an order from WhatsApp, Email, Instagram, or Phone
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowNewOrderModal(false)}
+                className="text-[#9a8e80] hover:text-[#1e1915] text-lg font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNewOrder} className="mt-5 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Client Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Marcus Vance"
+                    value={newOrderForm.clientName}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, clientName: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Client Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="marcus@example.com"
+                    value={newOrderForm.clientEmail}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, clientEmail: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Client Phone
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+1 555 123 4567"
+                    value={newOrderForm.clientPhone}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, clientPhone: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Order Source
+                  </label>
+                  <select
+                    value={newOrderForm.orderSource}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, orderSource: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  >
+                    <option value="whatsapp">WhatsApp Concierge</option>
+                    <option value="email">Email Concierge</option>
+                    <option value="instagram">Instagram Direct</option>
+                    <option value="phone">Phone / WhatsApp Call</option>
+                    <option value="website">Direct Website</option>
+                    <option value="other">Other / In-Person</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Payment Method
+                  </label>
+                  <input
+                    type="text"
+                    value={newOrderForm.paymentMethod}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, paymentMethod: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Product item details */}
+              <div className="rounded-xl border border-[#ede7df] bg-[#faf8f5] p-3 space-y-3">
+                <span className="block text-[11px] font-bold uppercase tracking-wider text-[#8a4d2b]">
+                  Piece Ordered
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-[#6b6052]">
+                      Jacket / Product Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Avirex Vintage Icon Bomber"
+                      value={newOrderForm.items[0].name}
+                      onChange={(e) => {
+                        const items = [...newOrderForm.items];
+                        items[0].name = e.target.value;
+                        setNewOrderForm({ ...newOrderForm, items });
+                      }}
+                      className="mt-1 h-8 w-full rounded border border-[#d6cdbf] bg-white px-2.5 text-xs text-[#1e1915]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-semibold text-[#6b6052]">
+                        Size
+                      </label>
+                      <select
+                        value={newOrderForm.items[0].size}
+                        onChange={(e) => {
+                          const items = [...newOrderForm.items];
+                          items[0].size = e.target.value;
+                          setNewOrderForm({ ...newOrderForm, items });
+                        }}
+                        className="mt-1 h-8 w-full rounded border border-[#d6cdbf] bg-white px-2 text-xs text-[#1e1915]"
+                      >
+                        {["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "Custom Sizing"].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-semibold text-[#6b6052]">
+                        Price ($)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={newOrderForm.items[0].price}
+                        onChange={(e) => {
+                          const items = [...newOrderForm.items];
+                          items[0].price = Number(e.target.value) || 0;
+                          setNewOrderForm({ ...newOrderForm, items });
+                        }}
+                        className="mt-1 h-8 w-full rounded border border-[#d6cdbf] bg-white px-2 text-xs text-[#1e1915]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-semibold text-[#6b6052]">
+                        Qty
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={newOrderForm.items[0].quantity}
+                        onChange={(e) => {
+                          const items = [...newOrderForm.items];
+                          items[0].quantity = Number(e.target.value) || 1;
+                          setNewOrderForm({ ...newOrderForm, items });
+                        }}
+                        className="mt-1 h-8 w-full rounded border border-[#d6cdbf] bg-white px-2 text-xs text-[#1e1915]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping destination */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Shipping Street / City
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123 Fifth Ave, New York, NY"
+                    value={newOrderForm.street}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, street: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6b6052]">
+                    Destination Country
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="United States"
+                    value={newOrderForm.country}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, country: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-lg border border-[#d6cdbf] bg-white px-3 text-xs text-[#1e1915] focus:border-[#8a4d2b] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-[#ede7df]">
+                <button
+                  type="button"
+                  onClick={() => setShowNewOrderModal(false)}
+                  className="rounded-lg border border-[#dcd4c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#52453c] hover:bg-[#faf7f2] cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingNewOrder}
+                  className="rounded-lg bg-[#2a1810] px-5 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#3d2417] disabled:opacity-50 cursor-pointer shadow-xs flex items-center gap-2"
+                >
+                  {savingNewOrder ? (
+                    <>
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span>Creating Order...</span>
+                    </>
+                  ) : (
+                    "Save & Issue Ticket"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
 </div>
   );
 }
