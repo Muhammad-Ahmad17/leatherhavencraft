@@ -90,14 +90,41 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* High-priority preload links for the flagship interactive model animation assets */}
-            <link rel="preload" href="/scroll-model/model.webp" as="image" type="image/webp" fetchPriority="high" />
-      <link rel="preload" href="/scroll-model/jacket-6.webp" as="image" type="image/webp" fetchPriority="high" />
-      <link rel="preload" href="/scroll-model/jacket-1.webp" as="image" type="image/webp" />
-      <link rel="preload" href="/scroll-model/jacket-2.webp" as="image" type="image/webp" />
-      <link rel="preload" href="/scroll-model/jacket-3.webp" as="image" type="image/webp" />
-      <link rel="preload" href="/scroll-model/jacket-4.webp" as="image" type="image/webp" />
-      <link rel="preload" href="/scroll-model/jacket-5.webp" as="image" type="image/webp" />
+      {/* Critical above-the-fold hero image preloads for rapid mobile & desktop LCP */}
+      <link
+        rel="preload"
+        href="/banners/home-mobile.jpg"
+        as="image"
+        type="image/jpeg"
+        media="(max-width: 767px)"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        href="/banners/home-desktop.jpg"
+        as="image"
+        type="image/jpeg"
+        media="(min-width: 768px)"
+        fetchPriority="high"
+      />
+
+      {/* Flagship interactive model preloaded with responsive media queries */}
+      <link
+        rel="preload"
+        href="/scroll-model/model.webp"
+        as="image"
+        type="image/webp"
+        media="(min-width: 768px)"
+        fetchPriority="low"
+      />
+      <link
+        rel="preload"
+        href="/scroll-model/jacket-6.webp"
+        as="image"
+        type="image/webp"
+        media="(min-width: 768px)"
+        fetchPriority="low"
+      />
 
       <script
         type="application/ld+json"

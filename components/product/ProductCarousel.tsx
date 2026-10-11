@@ -16,14 +16,13 @@ export function ProductCarousel() {
 
   return (
     <div className="stage relative overflow-hidden">
-      {/* Hidden image preloader to ensure instant zero-latency rendering of all jackets and model */}
+      {/* Non-blocking background image preloader for smooth jacket swapping on scroll */}
       <div className="sr-only" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/scroll-model/model.webp"
           alt=""
-          loading="eager"
-          fetchPriority="high"
+          loading="lazy"
           decoding="async"
         />
         {products.map((p) =>
@@ -33,8 +32,7 @@ export function ProductCarousel() {
               key={p.id}
               src={p.scrollJacketImage}
               alt=""
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
               decoding="async"
             />
           ) : null

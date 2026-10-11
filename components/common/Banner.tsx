@@ -13,6 +13,9 @@ export function Banner({ desktop, mobile, alt = "", className = "" }: BannerProp
       <img
         src={mobile}
         alt={alt}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         className={`h-full w-full object-cover object-[center_28%] md:object-[72%_center] ${className}`}
       />
     </picture>
