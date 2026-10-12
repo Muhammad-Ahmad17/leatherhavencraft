@@ -10,21 +10,22 @@ import { useCart } from "@/context/CartContext";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { SearchModal } from "@/components/search/SearchModal";
 
-function MenuIcon({ open }: { open: boolean }) {
+function MenuIcon({ open, isTransparent = false }: { open: boolean; isTransparent?: boolean }) {
+  const barColor = isTransparent && !open ? "bg-white" : "bg-[var(--ink)]";
   return (
     <span className="relative block h-4 w-[22px]" aria-hidden="true">
       <span
-        className={`absolute left-0 block h-0.5 w-full bg-[var(--ink)] transition-transform duration-200 ${
+        className={`absolute left-0 block h-0.5 w-full ${barColor} transition-transform duration-200 ${
           open ? "top-2 rotate-45" : "top-0"
         }`}
       />
       <span
-        className={`absolute left-0 top-2 block h-0.5 w-full bg-[var(--ink)] transition-opacity duration-200 ${
+        className={`absolute left-0 top-2 block h-0.5 w-full ${barColor} transition-opacity duration-200 ${
           open ? "opacity-0" : "opacity-100"
         }`}
       />
       <span
-        className={`absolute left-0 block h-0.5 w-full bg-[var(--ink)] transition-transform duration-200 ${
+        className={`absolute left-0 block h-0.5 w-full ${barColor} transition-transform duration-200 ${
           open ? "top-2 -rotate-45" : "top-4"
         }`}
       />
@@ -41,6 +42,23 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const isHome = pathname === "/";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const { openCart, totalItems } = useCart();
   const { customer, openLogin } = useCustomerAuth();
   const stripBrands = getBrandStrip();
@@ -71,38 +89,61 @@ export function Header() {
   const shopActive = pathname === "/products" || pathname.startsWith("/products/");
   const journalActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
+  const isTransparent = isHome && !isScrolled && !open;
+
   return (
-    <header id="site-header" className="sticky top-0 z-40">
-      <div className="flex min-h-[var(--announcement-h)] items-center justify-center bg-[var(--leather-dark)] px-4 py-1 text-center text-[10px] tracking-[0.12em] text-white/90 uppercase sm:text-[11px]">
+    <header
+      id="site-header"
+      className={`fixed top-0 inset-x-0 z-40 transition-colors duration-500 ${
+        isTransparent
+          ? "bg-transparent text-white"
+          : "bg-white/95 backdrop-blur-md text-[var(--ink)] shadow-[0_4px_20px_rgba(0,0,0,0.06)] border-b border-[var(--line)]"
+      }`}
+    >
+      <div
+        className={`flex items-center justify-center overflow-hidden px-4 text-center text-[10px] tracking-[0.12em] uppercase transition-all duration-500 sm:text-[11px] ${
+          isTransparent
+            ? "h-0 opacity-0 bg-transparent py-0"
+            : "min-h-[var(--announcement-h)] bg-[var(--leather-dark)] text-white/90 opacity-100 py-1"
+        }`}
+      >
         Free Express Worldwide Delivery (7 to 9 Days) · Handcrafted Heritage Leather Outerwear
       </div>
 
-      <div className="border-b border-[var(--line)] bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+      <div className="transition-colors duration-500">
         <div className="mx-auto grid h-[var(--header-main-h)] max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 sm:px-8">
           <div className="flex min-w-0 items-center justify-start gap-2">
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center lg:hidden"
+              className={`flex h-9 w-9 shrink-0 items-center justify-center lg:hidden transition-colors ${
+                isTransparent ? "text-white" : "text-[var(--ink)]"
+              }`}
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => setOpen((value) => !value)}
             >
-              <MenuIcon open={open} />
+              <MenuIcon open={open} isTransparent={isTransparent} />
             </button>
 
             <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
               <Link
                 href="/products"
                 aria-current={shopActive ? "page" : undefined}
-                className={`${navLink} ${shopActive ? "text-[var(--leather)]" : "text-[var(--ink)]"}`}
+                className={`${navLink} ${
+                  shopActive
+                    ? isTransparent ? "text-white font-bold" : "text-[var(--leather)]"
+                    : isTransparent ? "text-white/90 hover:text-white" : "text-[var(--ink)]"
+                }`}
               >
                 Shop
               </Link>
               <div className="group relative">
                 <button
                   type="button"
-                  className={`${navLink} flex items-center gap-1.5 text-[var(--ink)]`}
+                  className={`${navLink} flex items-center gap-1.5 ${
+                    isTransparent ? "text-white/90 hover:text-white" : "text-[var(--ink)]"
+                  }`}
                   aria-haspopup="true"
                 >
                   Brands &amp; Collections
@@ -128,7 +169,11 @@ export function Header() {
               <Link
                 href="/blog"
                 aria-current={journalActive ? "page" : undefined}
-                className={`${navLink} ${journalActive ? "text-[var(--leather)]" : "text-[var(--ink)]"}`}
+                className={`${navLink} ${
+                  journalActive
+                    ? isTransparent ? "text-white font-bold" : "text-[var(--leather)]"
+                    : isTransparent ? "text-white/90 hover:text-white" : "text-[var(--ink)]"
+                }`}
               >
                 Journal
               </Link>
@@ -136,14 +181,20 @@ export function Header() {
           </div>
 
           <div className="flex justify-center px-1">
-            <SiteLogo centered className="h-[38px] max-w-[min(52vw,260px)] sm:h-[42px] lg:h-[46px] lg:max-w-[300px]" />
+            <SiteLogo
+              centered
+              inverted={isTransparent}
+              className="h-[38px] max-w-[min(52vw,260px)] sm:h-[42px] lg:h-[46px] lg:max-w-[300px] transition-all duration-300"
+            />
           </div>
 
           <div className="flex items-center justify-end gap-1">
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              className="flex h-9 w-9 items-center justify-center text-[var(--ink)] transition-opacity hover:opacity-70"
+              className={`flex h-9 w-9 items-center justify-center transition-opacity hover:opacity-70 ${
+                isTransparent ? "text-white" : "text-[var(--ink)]"
+              }`}
               aria-label="Search jackets (Cmd+K)"
               title="Search (Cmd+K)"
             >
@@ -155,7 +206,9 @@ export function Header() {
             {customer ? (
               <Link
                 href="/account"
-                className="flex h-9 items-center gap-1.5 px-1.5 rounded-md text-xs font-semibold text-[#2a1810] hover:text-[#8a4d2b] transition-colors"
+                className={`flex h-9 items-center gap-1.5 px-1.5 rounded-md text-xs font-semibold transition-colors ${
+                  isTransparent ? "text-white hover:text-white/80" : "text-[#2a1810] hover:text-[#8a4d2b]"
+                }`}
                 title={`Signed in as ${customer.name}`}
               >
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -170,7 +223,9 @@ export function Header() {
               <button
                 type="button"
                 onClick={openLogin}
-                className="flex h-9 w-9 items-center justify-center text-[var(--ink)] transition-opacity hover:opacity-70 cursor-pointer"
+                className={`flex h-9 w-9 items-center justify-center transition-opacity hover:opacity-70 cursor-pointer ${
+                  isTransparent ? "text-white" : "text-[var(--ink)]"
+                }`}
                 aria-label="Atelier Client Sign In"
                 title="Account / Sign In"
               >
@@ -183,7 +238,9 @@ export function Header() {
             <button
               type="button"
               onClick={openCart}
-              className="relative flex h-9 w-9 items-center justify-center text-[var(--ink)] transition-opacity hover:opacity-70"
+              className={`relative flex h-9 w-9 items-center justify-center transition-opacity hover:opacity-70 ${
+                isTransparent ? "text-white" : "text-[var(--ink)]"
+              }`}
               aria-label={`Shopping bag (${totalItems} pieces)`}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

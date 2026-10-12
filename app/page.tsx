@@ -132,7 +132,7 @@ export default async function HomePage() {
       />
 
       {/* ── 1. Hero + brand logos moving marquee ── */}
-      <div className="flex h-[calc(100dvh-var(--site-header-h))] flex-col">
+      <div className="flex h-[100dvh] flex-col">
         <section className="relative min-h-0 flex-1 overflow-hidden bg-[#1a110c] text-white">
           <Banner desktop="/banners/home-desktop.jpg" mobile="/banners/home-mobile.jpg" alt="" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent" />
