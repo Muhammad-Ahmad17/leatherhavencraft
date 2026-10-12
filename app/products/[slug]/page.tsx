@@ -22,12 +22,40 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await fetchLiveProductBySlug(slug);
-  if (!product) return { title: "Not found" };
+  if (!product) return { title: "Handcrafted Leather Jacket Not Found | Leather Haven Craft" };
+
+  const brand = getBrand(product.brand);
+  const brandName = brand ? brand.name : "Heritage Atelier";
+  const title = `${product.name} — Handcrafted Leather Outerwear | Leather Haven Craft`;
+  const description = `${product.description.slice(0, 155)}... Bench-made from full-grain hides. Express shipping to US, UK, and Europe.`;
+  const canonicalUrl = `https://www.leatherhavencraft.com/products/${product.slug}`;
+  const imageUrl = product.image ? (product.image.startsWith("http") ? product.image : `https://www.leatherhavencraft.com${product.image}`) : "https://www.leatherhavencraft.com/og.jpg";
 
   return {
-    title: `${product.name} | Leather Haven Craft`,
-    description: product.description,
-    alternates: { canonical: `/products/${product.slug}` },
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "Leather Haven Craft",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 1200,
+          alt: product.name,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -43,27 +71,72 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4);
 
+  const productImages = Array.isArray(product.images) && product.images.length > 0
+    ? product.images.map((img) => (img.startsWith("http") ? img : `https://www.leatherhavencraft.com${img}`))
+    : product.image ? [product.image.startsWith("http") ? product.image : `https://www.leatherhavencraft.com${product.image}`] : [];
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.image ? [product.image] : [],
+    image: productImages,
     sku: product.slug,
+    mpn: `LHC-${product.slug.toUpperCase()}`,
     brand: {
       "@type": "Brand",
       name: brand ? brand.name : "Leather Haven Craft",
     },
+    material: "Full-Grain Genuine Steerhide & Cowhide",
+    color: product.colorName || "Classic Leather",
+    category: "Apparel & Accessories > Clothing > Outerwear > Coats & Jackets",
     offers: {
       "@type": "Offer",
       url: `https://www.leatherhavencraft.com/products/${product.slug}`,
       priceCurrency: "USD",
       price: product.price,
+      priceValidUntil: "2027-12-31",
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
       seller: {
         "@type": "Organization",
         name: "Leather Haven Craft",
+        url: "https://www.leatherhavencraft.com",
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0.00",
+          currency: "USD",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: ["US", "GB", "CA", "DE", "FR", "IT", "ES", "NL", "AU"],
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "d",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 7,
+            maxValue: 9,
+            unitCode: "d",
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: ["US", "GB", "CA", "EU"],
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 30,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
       },
     },
   };
@@ -114,6 +187,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {/* Right Column: Minimalist Luxury Purchasing Panel */}
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-24">
+            {/* ── Independent Atelier Non-Affiliation Legal Badge ── */}
+            {product.brand !== "leather-haven-craft" && (
+              <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f4] p-3 text-[11px] leading-relaxed text-[#7a6b5e]">
+                <strong className="text-[#2a1810] font-semibold">Independent Atelier Tribute: </strong>
+                Handcrafted archival tribute bench-made by Leather Haven Craft. Inspired by heritage silhouettes under nominative fair use; not an official licensed merchandise item.
+              </div>
+            )}
             <div>
               {brand && (
                 <Link

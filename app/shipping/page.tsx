@@ -105,6 +105,96 @@ export default function ShippingPage() {
               </div>
             </div>
           </section>
+
+          {/* ── Official Refund Claim Checklist ── */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between border-b border-[#ded5c7] pb-2">
+              <h2 className="font-serif text-lg sm:text-xl font-bold text-[#221b16]">
+                4. Step-by-Step Refund Claim Checklist
+              </h2>
+              <span className="rounded-full bg-[#8a4d2b]/10 text-[#8a4d2b] border border-[#8a4d2b]/25 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                Mandatory Protocol
+              </span>
+            </div>
+
+            <p className="text-xs text-[#6b5c51]">
+              To guarantee seamless review by our workshop management and prevent processing delays, ensure all 5 verification steps are completed prior to dispatching your parcel:
+            </p>
+
+            <div className="rounded-xl border border-[#ded5c7] bg-[#f7f4ee] p-5 sm:p-6 space-y-4 shadow-2xs">
+              <div className="space-y-3.5">
+                <div className="flex items-start gap-3 rounded-lg border border-[#ded5c7]/80 bg-white p-3.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                    1
+                  </span>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#221b16]">
+                      7-to-8 Day Notice Window Check
+                    </strong>
+                    <span className="text-[11px] text-[#6b5c51]">
+                      Verify that your return claim is initiated within 7 to 8 calendar days from the courier delivery timestamp recorded on your tracking page.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-lg border border-[#ded5c7]/80 bg-white p-3.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                    2
+                  </span>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#221b16]">
+                      Garment &amp; Hide Condition Audit
+                    </strong>
+                    <span className="text-[11px] text-[#6b5c51]">
+                      The leather garment must be unworn, unscented, free from permanent elbow break-in creases, and devoid of alterations or collar scuffs.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-lg border border-[#ded5c7]/80 bg-white p-3.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                    3
+                  </span>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#221b16]">
+                      Original Packaging &amp; Accessories Preservation
+                    </strong>
+                    <span className="text-[11px] text-[#6b5c51]">
+                      Package the piece with all original materials, including the garment dust cover, wide wooden hanger, and attached atelier tags.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-lg border border-[#ded5c7]/80 bg-white p-3.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                    4
+                  </span>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#221b16]">
+                      Obtain RMA Return Authorization Number
+                    </strong>
+                    <span className="text-[11px] text-[#6b5c51]">
+                      Email support@leatherhavencraft.com with your Order Number (LHC-XXXXX) and photo verification to receive an authorized RMA intake code.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-lg border border-[#ded5c7]/80 bg-white p-3.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b] text-[10px] font-bold text-white">
+                    5
+                  </span>
+                  <div>
+                    <strong className="block text-xs font-bold text-[#221b16]">
+                      Tracked Courier Return Shipment
+                    </strong>
+                    <span className="text-[11px] text-[#6b5c51]">
+                      Ship your return with a reliable tracked courier service and provide the tracking AWB to our concierge. Refunds are issued to your original payment method within 5 to 7 business days following physical receipt and verification at our atelier.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </main>
