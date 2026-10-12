@@ -222,14 +222,38 @@ export function CartDrawer() {
         {/* Financial Breakdown & Checkout Panel */}
         {items.length > 0 && (
           <div className="border-t border-[#e5dcce] bg-white p-6 space-y-4">
-            {/* Promotional Code Form */}
+            {/* 1-Click Free Delivery Voucher Option for Users who missed or ignored popups */}
+            {!couponCode && (
+              <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-3.5 text-left space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                    Free Delivery Privilege
+                  </span>
+                  <span className="font-mono text-xs font-bold text-[#221b16]">
+                    -$50.00 Credit
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#5a4332] leading-relaxed">
+                  First time ordering? Apply voucher <strong className="font-mono font-bold text-[#8a4d2b]">FREEDELIVERY</strong> to waive the $50 express air courier fee.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => applyCoupon("FREEDELIVERY")}
+                  className="flex h-8 w-full items-center justify-center rounded-lg bg-[#8a4d2b] px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-white hover:bg-[#6e3b1f] active:scale-98 transition-all cursor-pointer shadow-2xs"
+                >
+                  Activate Free Delivery (-$50)
+                </button>
+              </div>
+            )}
+
+            {/* Promotional Code Form / Active Status */}
             <div className="rounded-xl border border-[#e5dcce] bg-[#faf8f5] p-3.5">
               {couponCode ? (
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#7a6b5e]">Code</span>
                     <span className="font-mono font-bold text-[#1c1815]">{couponCode}</span>
-                    <span className="rounded bg-[#25D366]/15 text-[#128C7E] px-1.5 py-0.5 text-[10px] font-bold">
+                    <span className="rounded border border-[#8a4d2b]/20 bg-white px-2 py-0.5 text-[10px] font-bold text-[#8a4d2b]">
                       -$50.00 Applied
                     </span>
                   </div>
