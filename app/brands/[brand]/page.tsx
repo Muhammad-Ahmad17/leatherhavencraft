@@ -147,9 +147,11 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
       {brand.slug !== "leather-haven-craft" && (
         <div className="mx-auto max-w-6xl px-6 pt-2 pb-4">
-          <div className="rounded-lg border border-[#ded5c7] bg-[#fbf9f6] p-3.5 text-xs text-[#706456] leading-relaxed">
-            <span className="font-semibold text-[#221b16]">Atelier Notice: </span>
-            Pieces in this section are master handcrafted tributes and custom made to measure archival recreations inspired by historic {brand.name} silhouettes. All trademarks belong to their respective owners under nominative fair use.
+          <div className="rounded-xl border border-[#ded5c7] bg-[#faf8f4] p-4 text-xs text-[#706456] leading-relaxed shadow-2xs">
+            <span className="font-bold text-[#2a1810] uppercase tracking-wider text-[11px] block mb-1">
+              Independent Atelier &amp; Nominative Fair Use Notice
+            </span>
+            All garments featured in this archival catalog are independent master tributes and custom made-to-measure recreations crafted by Leather Haven Craft. Leather Haven Craft is an independent bespoke atelier and is not affiliated with, endorsed by, or an authorized distributor of {brand.name}. All brand names, model references, and trademarks are cited under the doctrine of nominative fair use purely for descriptive silhouette and historical style identification.
           </div>
         </div>
       )}

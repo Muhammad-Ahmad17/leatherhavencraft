@@ -5,6 +5,7 @@ import { buildOrderMessage, buildWhatsAppUrl, CONTACT_EMAIL } from "@/lib/contac
 import { formatPrice, getDiscountedPrice, getProductPriceForSize, isPlusSize, PLUS_SIZE_SURCHARGE } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { UniversalSizeChart } from "@/components/common/UniversalSizeChart";
+import { StickyMobileQuickBuy } from "@/components/product/StickyMobileQuickBuy";
 
 type ProductPurchaseProps = {
   productId?: string | number;
@@ -268,21 +269,9 @@ export function ProductPurchase({
           )}
         </button>
 
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="h-11 rounded-lg border border-[#25D366]/40 bg-[#25D366]/10 text-[#128C7E] font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#25D366]/20 transition-colors"
-          >
-            <span>WhatsApp Order</span>
-          </a>
-          <a
-            href={mailHref}
-            className="h-11 rounded-lg border border-[#ded5c7] bg-white text-[#2a1810] font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:border-[#8a4d2b] hover:bg-[#faf8f5] transition-colors"
-          >
-            <span>Email Concierge</span>
-          </a>
+        {/* Delivery & First Order Coupon Notice — Directs user to cart where delivery is verified */}
+        <div className="rounded-lg border border-[#ded5c7] bg-[#fbf9f6] p-2.5 text-center text-[11px] text-[#706456]">
+          Express delivery added in bag. First order? Use voucher <strong className="font-mono text-[#8a4d2b] font-bold">FREEDELIVERY</strong> to waive the $50 fee!
         </div>
 
         {/* ── Wholesale & Bulk Dealing Notice ── */}
@@ -385,6 +374,21 @@ export function ProductPurchase({
           </div>
         </div>
       )}
+
+      {/* ── Sticky Mobile Quick-Buy Bar (Conversion Anchor on Scroll) ── */}
+      <StickyMobileQuickBuy
+        productName={productName}
+        image={image || "/catalog/field-bomber.jpg"}
+        brandName={brandName}
+        price={effectivePrice}
+        selectedSize={size}
+        onAddToCart={handleAddToBag}
+        onWhatsAppOrder={() => {
+          if (typeof window !== "undefined") {
+            window.open(whatsappHref, "_blank", "noopener,noreferrer");
+          }
+        }}
+      />
     </div>
   );
 }

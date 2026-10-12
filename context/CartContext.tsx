@@ -30,6 +30,12 @@ interface CartContextType {
   refreshCartPrices: () => Promise<void>;
   isSyncing: boolean;
   totalPrice: number;
+  subtotal: number;
+  deliveryFee: number;
+  discountAmount: number;
+  couponCode: string;
+  applyCoupon: (code: string) => boolean;
+  removeCoupon: () => void;
   totalItems: number;
 }
 
@@ -45,6 +51,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [couponCode, setCouponCode] = useState<string>("");
   const lastSyncTimeRef = useRef<number>(0);
 
   // Load cart from localStorage on mount
@@ -55,6 +62,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) setItems(parsed);
       }
+      const savedCoupon = localStorage.getItem("lhc_active_coupon");
+      if (savedCoupon) setCouponCode(savedCoupon);
     } catch (e) {
       console.error("Failed to load cart from localStorage", e);
     } finally {
@@ -243,8 +252,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
   };
 
-  const totalPrice = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+  const applyCoupon = (code: string): boolean => {
+    const clean = code.trim().toUpperCase();
+    if (clean === "FREEDELIVERY" || clean === "FREE50") {
+      setCouponCode(clean);
+      localStorage.setItem("lhc_active_coupon", clean);
+      return true;
+    }
+    return false;
+  };
+
+  const removeCoupon = () => {
+    setCouponCode("");
+    localStorage.removeItem("lhc_active_coupon");
+  };
+
+  const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
   const totalItems = items.reduce((sum, it) => sum + it.quantity, 0);
+  
+  // Standard express delivery is $50 when items exist
+  const baseDelivery = items.length > 0 ? 50 : 0;
+  // If FREEDELIVERY coupon applied, discount $50
+  const isFreeDelivery = couponCode === "FREEDELIVERY" || couponCode === "FREE50";
+  const deliveryFee = baseDelivery;
+  const discountAmount = isFreeDelivery ? baseDelivery : 0;
+  const totalPrice = Math.max(0, subtotal + deliveryFee - discountAmount);
 
   return (
     <CartContext.Provider
@@ -260,6 +292,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         refreshCartPrices,
         isSyncing,
+        subtotal,
+        deliveryFee,
+        discountAmount,
+        couponCode,
+        applyCoupon,
+        removeCoupon,
         totalPrice,
         totalItems,
       }}

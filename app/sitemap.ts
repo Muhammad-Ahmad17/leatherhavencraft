@@ -34,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/size-guide`, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/shipping`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/refund-policy`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.5 },
     ...liveBlogs.map((post) => ({

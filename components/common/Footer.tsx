@@ -185,7 +185,9 @@ export function Footer() {
             <span className="text-[#ded5c7]">·</span>
             <Link href="/faq" className="hover:text-[#221b16] transition-colors">FAQ</Link>
             <span className="text-[#ded5c7]">·</span>
-            <Link href="/shipping" className="hover:text-[#221b16] transition-colors">Shipping &amp; Returns</Link>
+            <Link href="/shipping" className="hover:text-[#221b16] transition-colors">Delivery</Link>
+            <span className="text-[#ded5c7]">·</span>
+            <Link href="/refund-policy" className="hover:text-[#221b16] transition-colors font-medium">Refund Policy</Link>
             <span className="text-[#ded5c7]">·</span>
             <Link href="/terms" className="hover:text-[#221b16] transition-colors">Terms</Link>
             <span className="text-[#ded5c7]">·</span>

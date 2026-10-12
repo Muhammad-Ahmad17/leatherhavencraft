@@ -39,9 +39,12 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-medium text-[#221b16]">2. Independent Atelier &amp; Trademark Notice</h2>
+            <h2 className="text-lg font-medium text-[#221b16]">2. Independent Atelier &amp; Nominative Fair Use Trademark Notice</h2>
             <p className="mt-2">
-              We operate as an independent artisan leather workshop and custom outerwear atelier. All garments inspired by archival cuts and heritage silhouettes (including designs referencing Schott NYC, Avirex, Pelle Pelle, and Harley-Davidson styles) are master handcrafted tributes bench-built using heavyweight full-grain hides, period-accurate brass hardware, and custom anatomical tailoring. Leather Haven Craft is an independent atelier and does not claim official affiliation, sponsorship, or licensing from these respective trademark holders; all brand names and model designations are utilized strictly for descriptive style and silhouette identification.
+              Leather Haven Craft operates exclusively as an independent bespoke leather workshop, custom tailoring atelier, and archival outerwear restoration house. All garments listed on this website referencing heritage silhouettes or vintage styles (including archival cuts inspired by Avirex, Pelle Pelle, Harley-Davidson, Schott NYC, Vanson, or Supreme) are independently bench-crafted artisan tributes, custom recreations, and made-to-measure interpretations created from genuine full-grain hides.
+            </p>
+            <p className="mt-2">
+              <strong>Non-Affiliation Disclaimer:</strong> Leather Haven Craft is not an authorized distributor, official partner, affiliated entity, licensee, or sponsored partner of any referenced third-party brand or trademark holder. All third-party registered trademarks, service marks, trade names, model designations, and brand logos mentioned on this website belong strictly and exclusively to their respective owners. Any reference to these brand names is made solely under the doctrine of <em>Nominative Fair Use</em> to truthfully and accurately describe historical silhouette origin, vintage aesthetic styling, and archival cultural inspiration to collectors.
             </p>
           </section>
 
