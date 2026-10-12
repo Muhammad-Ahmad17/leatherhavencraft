@@ -183,8 +183,8 @@ export function Header() {
           <div className="flex justify-center px-1">
             <SiteLogo
               centered
-              inverted={false}
-              className="h-[38px] max-w-[min(52vw,260px)] sm:h-[42px] lg:h-[46px] lg:max-w-[300px] transition-all duration-300 drop-shadow-sm"
+              inverted={isTransparent}
+              className="h-[38px] max-w-[min(52vw,260px)] sm:h-[42px] lg:h-[46px] lg:max-w-[300px] transition-all duration-300"
             />
           </div>
 
