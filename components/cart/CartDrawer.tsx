@@ -52,10 +52,12 @@ export function CartDrawer() {
     }
   };
 
+  const siteOrigin = typeof window !== "undefined" ? window.location.origin : "https://www.leatherhavencraft.com";
+
   const orderSummaryText = items
     .map(
       (it, idx) =>
-        `${idx + 1}. ${it.name}${it.brandName ? ` (${it.brandName})` : ""}\n   ${it.color ? `Color: ${it.color} | ` : ""}Size: ${it.size} | Qty: ${it.quantity} | ${formatPrice(it.price * it.quantity)}`
+        `${idx + 1}. ${it.name}${it.brandName ? ` (${it.brandName})` : ""}\n   ${it.color ? `Color: ${it.color} | ` : ""}Size: ${it.size} | Qty: ${it.quantity} | Price: ${formatPrice(it.price * it.quantity)}\n   Product Link: ${siteOrigin}/products/${it.slug}`
     )
     .join("\n\n");
 
