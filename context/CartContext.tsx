@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { getDiscountedPrice, getProductPriceForSize } from "@/lib/utils";
 
 export interface CartItem {
   id: string | number;
@@ -26,6 +27,8 @@ interface CartContextType {
   removeItem: (id: string | number, size: string, color?: string) => void;
   updateQuantity: (id: string | number, size: string, quantity: number, color?: string) => void;
   clearCart: () => void;
+  refreshCartPrices: () => Promise<void>;
+  isSyncing: boolean;
   totalPrice: number;
   totalItems: number;
 }
@@ -41,6 +44,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const lastSyncTimeRef = useRef<number>(0);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -67,9 +72,136 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  const openCart = () => setIsOpen(true);
+  /**
+   * Sync active cart items with latest database prices & discounts.
+   * Runs when user opens cart, reopens site, or switches back to tab.
+   */
+  const refreshCartPrices = useCallback(async () => {
+    if (items.length === 0) return;
+
+    // Rate-limit sync calls to once every 15 seconds unless forced
+    const now = Date.now();
+    if (now - lastSyncTimeRef.current < 15000) return;
+    lastSyncTimeRef.current = now;
+
+    setIsSyncing(true);
+    try {
+      // Fetch latest catalog slice or individual product details
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL ||
+        (process.env.NODE_ENV === "production"
+          ? "https://api.leatherhavencraft.com"
+          : "http://localhost:5000");
+
+      const res = await fetch(`${backendUrl}/api/products?limit=200&inStock=all`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) return;
+      const json = await res.json();
+      if (!json.success || !Array.isArray(json.data)) return;
+
+      const liveProducts = json.data as Array<{
+        _id?: string;
+        id?: string | number;
+        slug?: string;
+        name?: string;
+        price: number;
+        discountPercent?: number;
+      }>;
+
+      // Map by id and slug for instant lookup
+      const productMap = new Map<string, { price: number; discountPercent: number; name?: string }>();
+      for (const p of liveProducts) {
+        const keyId = String(p._id || p.id || "");
+        const keySlug = String(p.slug || "").toLowerCase();
+        const info = {
+          price: Number(p.price) || 0,
+          discountPercent: Number(p.discountPercent) || 0,
+          name: p.name,
+        };
+        if (keyId) productMap.set(keyId, info);
+        if (keySlug) productMap.set(keySlug, info);
+      }
+
+      setItems((prevItems) => {
+        let hasChanges = false;
+        const updated = prevItems.map((cartItem) => {
+          const liveInfo =
+            productMap.get(String(cartItem.id)) ||
+            productMap.get(String(cartItem.slug).toLowerCase());
+
+          if (!liveInfo) return cartItem;
+
+          // Recompute effective price with size surcharge and latest discount
+          const basePrice = liveInfo.price;
+          const discountPct = liveInfo.discountPercent;
+          const discountedBase = getDiscountedPrice(basePrice, discountPct);
+          const newEffectivePrice = getProductPriceForSize(discountedBase, cartItem.size);
+          const newOriginalPrice = getProductPriceForSize(basePrice, cartItem.size);
+
+          if (
+            cartItem.price !== newEffectivePrice ||
+            cartItem.discountPercent !== discountPct ||
+            cartItem.originalPrice !== newOriginalPrice
+          ) {
+            hasChanges = true;
+            return {
+              ...cartItem,
+              price: newEffectivePrice,
+              originalPrice: newOriginalPrice,
+              discountPercent: discountPct,
+            };
+          }
+          return cartItem;
+        });
+
+        return hasChanges ? updated : prevItems;
+      });
+    } catch (err) {
+      console.error("[CartContext] Error syncing live prices:", err);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [items.length]);
+
+  // Sync on initial cart load once items are loaded
+  useEffect(() => {
+    if (isLoaded && items.length > 0) {
+      refreshCartPrices();
+    }
+  }, [isLoaded, refreshCartPrices]);
+
+  // Sync when window refocuses or user reopens page
+  useEffect(() => {
+    const handleFocus = () => {
+      refreshCartPrices();
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        refreshCartPrices();
+      }
+    });
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [refreshCartPrices]);
+
+  const openCart = () => {
+    setIsOpen(true);
+    refreshCartPrices();
+  };
+
   const closeCart = () => setIsOpen(false);
-  const toggleCart = () => setIsOpen((prev) => !prev);
+  const toggleCart = () => {
+    setIsOpen((prev) => {
+      const next = !prev;
+      if (next) refreshCartPrices();
+      return next;
+    });
+  };
 
   const addItem = (newItem: Omit<CartItem, "quantity">, qty: number = 1) => {
     setItems((prev) => {
@@ -126,6 +258,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         removeItem,
         updateQuantity,
         clearCart,
+        refreshCartPrices,
+        isSyncing,
         totalPrice,
         totalItems,
       }}
