@@ -8,7 +8,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import { CustomerAuthModal } from "@/components/auth/CustomerAuthModal";
 import { AtelierConciergeWidget } from "@/components/common/AtelierConciergeWidget";
-import { SideDeliveryBadge } from "@/components/common/SideDeliveryBadge";
+import { DeliveryModal } from "@/components/common/DeliveryModal";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,7 +28,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <CartDrawer />
         <CustomerAuthModal />
         <AtelierConciergeWidget />
-        <SideDeliveryBadge />
+        <DeliveryModal />
       </CartProvider>
     </CustomerAuthProvider>
   );
