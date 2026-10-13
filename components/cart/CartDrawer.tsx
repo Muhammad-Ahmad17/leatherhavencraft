@@ -323,22 +323,51 @@ export function CartDrawer() {
               </div>
             </div>
 
-            {/* Checkout CTAs */}
+            {/* Primary Order Flow: Bespoke Tailoring via Concierge */}
             <div className="space-y-2.5 pt-1">
+              <div className="rounded-lg border border-[#e5dcce] bg-[#faf8f5] p-3 text-center">
+                <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#8a4d2b]">
+                  Atelier Order Process
+                </span>
+                <p className="mt-1 text-[11px] text-[#5a4332] leading-relaxed">
+                  Each piece is tailored to your exact measurements. Confirm sizing, custom fit details, and dispatch schedules directly with our head master tailor.
+                </p>
+              </div>
+
+              {/* Order via WhatsApp */}
               <a
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-[#2a1810] px-4 text-xs font-bold uppercase tracking-[0.15em] text-white hover:bg-[#3d2417] transition-all shadow-sm cursor-pointer"
+                className="flex h-12 w-full items-center justify-center rounded-xl bg-[#2a1810] px-4 text-xs font-bold uppercase tracking-[0.15em] text-white hover:bg-[#3d2417] active:scale-98 transition-all shadow-sm cursor-pointer"
               >
-                Proceed via WhatsApp Concierge
+                Order via WhatsApp Concierge
               </a>
+
+              {/* Order via Email */}
               <a
                 href={mailHref}
-                className="flex h-12 w-full items-center justify-center rounded-xl border border-[#1c1815] bg-white px-4 text-xs font-bold uppercase tracking-[0.15em] text-[#1c1815] hover:bg-[#faf8f5] transition-all shadow-2xs cursor-pointer"
+                className="flex h-12 w-full items-center justify-center rounded-xl border border-[#1c1815] bg-white px-4 text-xs font-bold uppercase tracking-[0.15em] text-[#1c1815] hover:bg-[#faf8f5] active:scale-98 transition-all shadow-2xs cursor-pointer"
               >
-                Inquire via Email Concierge
+                Order via Email Concierge
               </a>
+
+              {/* Online Gateway Direct Checkout (Coming Soon) */}
+              <div className="relative group pt-1">
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#ded5c7] bg-[#f5f1eb]/70 px-4 text-xs font-semibold uppercase tracking-[0.15em] text-[#9c8e82] cursor-not-allowed select-none"
+                >
+                  <span>Direct Card &amp; Apple Pay Checkout</span>
+                  <span className="rounded bg-[#ded5c7] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5a4332]">
+                    Coming Soon
+                  </span>
+                </button>
+                <p className="mt-1 text-center text-[10px] text-[#9c8e82]">
+                  Instant card terminal currently undergoing annual security audit. Please complete your commission through our concierge above.
+                </p>
+              </div>
             </div>
 
             <div className="flex justify-center pt-1">
