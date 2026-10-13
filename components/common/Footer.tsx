@@ -176,7 +176,7 @@ export function Footer() {
       <div className="border-t border-[#ded5c7] bg-[#f4efe8]/50">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4 text-[11px] text-[#706456] sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE_NAME}. Artisan Leather Atelier. All rights reserved.
+            © {new Date().getFullYear()} {SITE_NAME}. Master Handcrafted Leather Outerwear & Atelier Goods. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
             <Link href="/blog" className="hover:text-[#221b16] transition-colors font-medium">Journal</Link>
