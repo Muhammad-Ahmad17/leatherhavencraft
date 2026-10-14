@@ -75,7 +75,7 @@ export function OurProcess() {
   return (
     <section
       ref={sectionRef}
-      className="border-t border-[#ded5c7] bg-white px-4 py-10 sm:px-6 sm:py-24 overflow-hidden"
+      className="border-t border-[#ded5c7] bg-white px-3.5 py-6 sm:px-6 sm:py-24 overflow-hidden"
       aria-labelledby="our-process-heading"
     >
       <div className="mx-auto max-w-6xl">
@@ -97,7 +97,7 @@ export function OurProcess() {
         </div>
 
         {/* ── Steps Container with Connecting Collision Line ── */}
-        <div className="relative mt-8 sm:mt-18">
+        <div className="relative mt-4 sm:mt-18">
           {/* Continuous horizontal connection line (desktop) */}
           <div
             className={`hidden lg:block absolute top-[52px] left-[6%] right-[6%] h-[2px] bg-gradient-to-r from-[#ded5c7] via-[#8a4d2b]/40 to-[#ded5c7] transition-all duration-1000 ease-out z-0 ${
@@ -115,14 +115,14 @@ export function OurProcess() {
             aria-hidden="true"
           />
 
-          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 relative z-10">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 relative z-10">
             {steps.map((step, idx) => {
               // Staggered delays: 01 (100ms), 02 (300ms), 03 (500ms), 04 (700ms)
               const delays = ["delay-100", "delay-300", "delay-500", "delay-700"];
               return (
                 <div
                   key={step.num}
-                  className={`group relative flex flex-col justify-between rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-4 sm:p-6 shadow-2xs transition-all duration-700 ease-out hover:border-[#8a4d2b] hover:shadow-md hover:-translate-y-1 ${
+                  className={`group relative flex flex-col justify-between rounded-xl border border-[#ded5c7] bg-[#faf8f5] p-3 sm:p-6 shadow-2xs transition-all duration-700 ease-out hover:border-[#8a4d2b] hover:shadow-md hover:-translate-y-1 ${
                     delays[idx]
                   } ${
                     inView
@@ -133,7 +133,7 @@ export function OurProcess() {
                   <div>
                     {/* Header: Step Badge & Atelier Icon */}
                     <div className="flex items-center justify-between">
-                      <span className="flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-md sm:rounded-lg bg-white border border-[#ded5c7] font-mono text-xs sm:text-sm font-bold text-[#8a4d2b] shadow-2xs group-hover:border-[#8a4d2b] group-hover:bg-[#8a4d2b] group-hover:text-white transition-all">
+                      <span className="flex h-7 w-7 sm:h-11 sm:w-11 items-center justify-center rounded-md sm:rounded-lg bg-white border border-[#ded5c7] font-mono text-xs sm:text-sm font-bold text-[#8a4d2b] shadow-2xs group-hover:border-[#8a4d2b] group-hover:bg-[#8a4d2b] group-hover:text-white transition-all">
                         {step.num}
                       </span>
                       <div className="text-[#8a4d2b]/70 group-hover:text-[#8a4d2b] transition-colors">
@@ -161,7 +161,7 @@ export function OurProcess() {
           </div>
         </div>
 
-        <div className="mt-6 sm:mt-12 rounded-lg border border-[#ded5c7] bg-[#faf8f5] p-3 sm:p-4 text-center text-[11px] sm:text-xs text-[#706456]">
+        <div className="mt-4 sm:mt-12 rounded-lg border border-[#ded5c7] bg-[#faf8f5] p-2.5 sm:p-4 text-center text-[10px] sm:text-xs text-[#706456]">
           <span className="font-semibold text-[#2a1810]">Atelier Benchmark: </span>
           Every piece is measured against archival standards before final dispatch.
         </div>

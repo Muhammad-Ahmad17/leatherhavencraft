@@ -139,7 +139,7 @@ export function StoreReviews() {
   }
 
   return (
-    <section aria-label="Client reviews" className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#2a1810] px-4 py-10 sm:px-6 sm:py-20">
+    <section aria-label="Client reviews" className="border-t border-[#ded5c7] bg-[#faf7f2] text-[#2a1810] px-3.5 py-6 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-6xl">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6 pb-6 sm:pb-12 border-b border-[#ded5c7]">
@@ -184,11 +184,13 @@ export function StoreReviews() {
         </div>
 
         {/* Reviews Showcase Grid */}
-        <div className="mt-6 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
+        <div className="mt-4 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
           {reviews.slice(0, 6).map((rev, idx) => (
             <article
               key={rev._id || idx}
-              className="flex flex-col justify-between rounded-lg sm:rounded-xl border border-[#ded5c7] bg-white p-4 sm:p-6 shadow-2xs transition-all hover:-translate-y-1 hover:shadow-md"
+              className={`flex flex-col justify-between rounded-lg sm:rounded-xl border border-[#ded5c7] bg-white p-3 sm:p-6 shadow-2xs transition-all hover:-translate-y-1 hover:shadow-md ${
+                idx >= 3 ? "hidden sm:flex" : "flex"
+              }`}
             >
               <div>
                 {/* Rating stars and verified badge */}
