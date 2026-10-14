@@ -28,7 +28,7 @@ export interface Brand {
 export const brands: Brand[] = [
 {
     slug: "leather-haven-craft",
-    name: "Leather Haven Craft",
+    name: "Leather Haven Craft (Custom)", 
     logo: "/brands/leather-haven-craft.png",
     tagline: "Signature handcrafted leather outerwear and bespoke atelier goods.",
     accent: "#1f1610",
