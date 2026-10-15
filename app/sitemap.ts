@@ -4,6 +4,8 @@ import { fetchLiveProducts, products } from "@/data/products";
 import { BLOG_POSTS, fetchLiveBlogs } from "@/data/blogPosts";
 import { getSiteUrl } from "@/lib/constants";
 
+export const revalidate = 3600; // Refresh sitemap cache hourly
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl();
 
