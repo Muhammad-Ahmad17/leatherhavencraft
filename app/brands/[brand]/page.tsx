@@ -162,6 +162,83 @@ export default async function BrandPage({ params }: BrandPageProps) {
         initialBrand={brand.slug}
       />
 
+      {/* ── Rich Editorial Dossier & Heritage Story Section for Search Engine Authority ── */}
+      {brand.heritage && (
+        <section className="border-t border-[#ded5c7] bg-[#faf8f4] px-6 py-14 sm:py-18" aria-label="Heritage and craftsmanship editorial">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 pb-10 border-b border-[#ded5c7]">
+              <div className="max-w-xl">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.24em] text-[#8a4d2b]">
+                  Archival Authority &amp; Craftsmanship
+                </span>
+                <h2 className="mt-2 font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#2a1810]">
+                  The Heritage &amp; Tailoring Standards of {brand.name}
+                </h2>
+                <p className="mt-3 text-xs sm:text-sm text-[#706456] leading-relaxed">
+                  Historical context, hide curation discipline, and technical specifications behind our master handcrafted tributes.
+                </p>
+              </div>
+
+              {/* Atelier Specifications Quick-Facts Card */}
+              <div className="w-full md:w-80 rounded-xl border border-[#ded5c7] bg-white p-5 shadow-2xs space-y-3.5 text-xs">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b] block">
+                    Origin &amp; Discipline
+                  </span>
+                  <span className="font-semibold text-[#2a1810] block mt-0.5">
+                    {brand.heritage.originPlace} ({brand.heritage.originYear})
+                  </span>
+                </div>
+                <div className="border-t border-[#f0ebe3] pt-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b] block">
+                    Primary Hides Selected
+                  </span>
+                  <span className="text-[#5a4332] block mt-0.5 leading-normal">
+                    {brand.heritage.primaryHides}
+                  </span>
+                </div>
+                <div className="border-t border-[#f0ebe3] pt-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a4d2b] block">
+                    Hardware &amp; Assembly
+                  </span>
+                  <span className="text-[#5a4332] block mt-0.5 leading-normal">
+                    {brand.heritage.hardwareNotes}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* In-depth Historical Dossier Narrative */}
+            {Array.isArray(brand.heritage.heritageStory) && brand.heritage.heritageStory.length > 0 && (
+              <div className="mt-10 space-y-4 max-w-4xl text-xs sm:text-sm text-[#5a4332] leading-relaxed">
+                {brand.heritage.heritageStory.map((paragraph: string, idx: number) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+            )}
+
+            {/* Authenticity & Tailoring Pillars */}
+            {Array.isArray(brand.heritage.authenticityPoints) && brand.heritage.authenticityPoints.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-[#ded5c7]">
+                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-[#2a1810] mb-4">
+                  Signature Silhouette Benchmarks
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {brand.heritage.authenticityPoints.map((point: string, idx: number) => (
+                    <div key={idx} className="rounded-lg border border-[#ded5c7] bg-white p-3.5 text-xs text-[#5a4332] flex items-start gap-2.5 shadow-2xs">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#8a4d2b]/10 text-[10px] font-bold text-[#8a4d2b]">
+                        ✓
+                      </span>
+                      <span>{point}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {brand.slug === "leather-haven-craft" && (
         <CustomManufacturing />
       )}
