@@ -81,7 +81,7 @@ function BrandTile({
         {/* Bottom Content: House Name, Tagline & Micro Arrow Action */}
         <div className="relative z-10 flex flex-col justify-end">
           <h3 className="font-serif text-xl sm:text-2xl lg:text-[26px] font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-[#f3e5d0]">
-            {isLHC ? "Leather Haven Craft (Custom)" : name}
+            {name}
           </h3>
           <p className="mt-1 text-[11px] sm:text-xs text-white/80 line-clamp-2 leading-relaxed">
             {tagline}
