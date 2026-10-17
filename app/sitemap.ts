@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brands } from "@/data/brands";
-import { fetchLiveProducts, products } from "@/data/products";
+import { fetchLiveProducts, products, cleanProductSlug } from "@/data/products";
 import { BLOG_POSTS, fetchLiveBlogs } from "@/data/blogPosts";
 import { getSiteUrl } from "@/lib/constants";
 
@@ -50,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     })),
     ...liveProducts.map((product) => ({
-      url: `${base}/products/${product.slug}`,
+      url: `${base}/products/${cleanProductSlug(product.slug)}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),

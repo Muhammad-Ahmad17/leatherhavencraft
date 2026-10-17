@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/data/products";
-import { getBrandLabel } from "@/data/products";
+import { getBrandLabel, cleanProductSlug } from "@/data/products";
 import { formatPrice, getDiscountedPrice } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -11,7 +11,7 @@ export function ProductCard({ product }: { product: Product }) {
   );
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block">
+    <Link href={`/products/${cleanProductSlug(product.slug)}`} className="group block">
       <span className="relative block aspect-[3/4] overflow-hidden bg-[var(--bg2)] rounded-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
