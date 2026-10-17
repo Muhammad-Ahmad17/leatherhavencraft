@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getBrandLabel } from "@/data/products";
+import { getBrandLabel, cleanProductSlug } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { useScrollAnimationContext } from "@/components/animations/scroll-animation-context";
 
