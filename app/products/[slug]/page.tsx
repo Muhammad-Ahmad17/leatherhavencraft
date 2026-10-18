@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getBrand } from "@/data/brands";
-import { fetchLiveProductBySlug, fetchLiveProductsByBrand, fetchLiveProducts, products } from "@/data/products";
+import { fetchLiveProductBySlug, fetchLiveProductsByBrand, fetchLiveProducts, products, cleanProductSlug } from "@/data/products";
 import { formatPrice, getDiscountedPrice } from "@/lib/utils";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -34,7 +34,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const cleanSnippet = product.description.replace(/\s+/g, " ").trim().slice(0, 110);
   const description = `${cleanSnippet}... Bench-tailored to your measurements with full-grain leather. Code FREEDELIVERY for free express shipping.`;
   
-  const canonicalUrl = `https://www.leatherhavencraft.com/products/${product.slug}`;
+  const canonicalSlug = cleanProductSlug(product.slug);
+  const canonicalUrl = `https://www.leatherhavencraft.com/products/${canonicalSlug}`;
   const imageUrl = product.image ? (product.image.startsWith("http") ? product.image : `https://www.leatherhavencraft.com${product.image}`) : "https://www.leatherhavencraft.com/og.jpg";
 
   return {
@@ -69,6 +70,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await fetchLiveProductBySlug(slug);
   if (!product) notFound();
+
+  // 301 Permanent Redirect: If user visits the legacy ugly slug (e.g. pelle-pelle-pelle-pelle-...),
+  // seamlessly 301 redirect them to the clean professional slug.
+  // This satisfies senior engineer standards while transferring 100% SEO rank to the clean URL!
+  const canonicalSlug = cleanProductSlug(product.slug);
+  if (slug !== canonicalSlug && slug === product.slug && canonicalSlug !== product.slug) {
+    permanentRedirect(`/products/${canonicalSlug}`);
+  }
 
   const brand = getBrand(product.brand);
 

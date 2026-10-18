@@ -1659,8 +1659,36 @@ export const products: Product[] = [
   }
 ];
 
+export function cleanProductSlug(slug: string): string {
+  if (!slug) return "";
+  let s = slug.toLowerCase().trim();
+  const prefixes: [string, string][] = [
+    ["pelle-pelle-pelle-pelle-", "pelle-pelle-"],
+    ["avirex-avirex-", "avirex-"],
+    ["supreme-supreme-", "supreme-"],
+    ["harley-davidson-h-d-", "harley-davidson-"],
+    ["harley-davidson-harley-davidson-", "harley-davidson-"],
+  ];
+  for (const [p, r] of prefixes) {
+    if (s.startsWith(p)) {
+      s = r + s.slice(p.length);
+      break;
+    }
+  }
+  return s;
+}
+
 export function getProduct(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug) || scrollModelProducts.find((p) => p.slug === slug);
+  const normalized = slug.toLowerCase().trim();
+  const cleaned = cleanProductSlug(normalized);
+  
+  // 1. Direct match on exact slug
+  let match = products.find((p) => p.slug === normalized) || scrollModelProducts.find((p) => p.slug === normalized);
+  if (match) return match;
+
+  // 2. Match on cleaned slug
+  match = products.find((p) => cleanProductSlug(p.slug) === cleaned) || scrollModelProducts.find((p) => cleanProductSlug(p.slug) === cleaned);
+  return match;
 }
 
 export function getProductsByBrand(brandSlug: string): Product[] {

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
   return {
     title: `${brand.name} Leather Jackets & Outerwear Archive | Leather Haven Craft`,
     description: `Explore master handcrafted tributes and archival silhouettes inspired by ${brand.name}: ${brand.tagline} Heavy full-grain hides, period-accurate brass hardware, and made to measure tailoring. Express shipping to US, UK, and Europe.`,
-    alternates: { canonical: `/brands/${brand.slug}` },
+    alternates: { canonical: `https://www.leatherhavencraft.com/brands/${brand.slug}` },
     openGraph: {
       title: `${brand.name} Leather Jackets | Leather Haven Craft`,
       description: brand.tagline,

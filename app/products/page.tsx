@@ -33,7 +33,7 @@ export async function generateMetadata({
     : `${titlePrefix} | Leather Haven Craft`;
 
   const canonicalUrl =
-    pageNum > 1 ? `/products?page=${pageNum}` : "/products";
+    pageNum > 1 ? `https://www.leatherhavencraft.com/products?page=${pageNum}` : "https://www.leatherhavencraft.com/products";
 
   return {
     title: fullTitle,

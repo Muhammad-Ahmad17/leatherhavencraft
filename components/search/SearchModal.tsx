@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/data/products";
+import { cleanProductSlug } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 
 interface SearchModalProps {
