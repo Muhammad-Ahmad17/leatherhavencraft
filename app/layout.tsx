@@ -1,6 +1,8 @@
 import localFont from "next/font/local";
 import type { Metadata, Viewport } from "next";
 import { SiteShell } from "@/components/common/SiteShell";
+import { TopProgressBar } from "@/components/common/TopProgressBar";
+import { Suspense } from "react";
 import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/constants";
 import "./globals.css";
 
@@ -180,6 +182,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
+        <Suspense fallback={null}>
+          <TopProgressBar />
+        </Suspense>
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
