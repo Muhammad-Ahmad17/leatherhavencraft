@@ -9,6 +9,7 @@ import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import { CustomerAuthModal } from "@/components/auth/CustomerAuthModal";
 import { AtelierConciergeWidget } from "@/components/common/AtelierConciergeWidget";
 import { DeliveryModal } from "@/components/common/DeliveryModal";
+import { NavigationProvider } from "@/context/NavigationContext";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,15 +22,17 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <CustomerAuthProvider>
-      <CartProvider>
-        <Header />
-        {children}
-        {!isProductDetail && <Footer />}
-        <CartDrawer />
-        <CustomerAuthModal />
-        <AtelierConciergeWidget />
-        <DeliveryModal />
-      </CartProvider>
+      <NavigationProvider>
+        <CartProvider>
+          <Header />
+          {children}
+          {!isProductDetail && <Footer />}
+          <CartDrawer />
+          <CustomerAuthModal />
+          <AtelierConciergeWidget />
+          <DeliveryModal />
+        </CartProvider>
+      </NavigationProvider>
     </CustomerAuthProvider>
   );
 }

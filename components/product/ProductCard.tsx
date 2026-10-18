@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/data/products";
 import { getBrandLabel, cleanProductSlug } from "@/data/products";
 import { formatPrice, getDiscountedPrice } from "@/lib/utils";
+import { useNavigation } from "@/context/NavigationContext";
 
 export function ProductCard({ product }: { product: Product }) {
-  const [clicked, setClicked] = useState(false);
+  const { navigatingSlug, startNavigation } = useNavigation();
+  const cleanSlug = cleanProductSlug(product.slug);
+
+  // Spinner runs ONLY on the first selected product that was clicked
+  const isOpening = navigatingSlug === cleanSlug;
 
   const hasHover = Boolean(
     product.imageHover &&
@@ -15,10 +19,19 @@ export function ProductCard({ product }: { product: Product }) {
     product.imageHover.trim().length > 0
   );
 
+  const handleClick = (e: React.MouseEvent) => {
+    // If another product is already opening, prevent opening multiple spinners
+    if (navigatingSlug && navigatingSlug !== cleanSlug) {
+      e.preventDefault();
+      return;
+    }
+    startNavigation(cleanSlug);
+  };
+
   return (
     <Link
-      href={`/products/${cleanProductSlug(product.slug)}`}
-      onClick={() => setClicked(true)}
+      href={`/products/${cleanSlug}`}
+      onClick={handleClick}
       className="group block relative"
     >
       <span className="relative block aspect-[3/4] overflow-hidden bg-[var(--bg2)] rounded-sm">
@@ -50,7 +63,7 @@ export function ProductCard({ product }: { product: Product }) {
             -{product.discountPercent}% OFF
           </span>
         )}
-        {clicked && (
+        {isOpening && (
           <span className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all">
             <svg className="animate-spin h-7 w-7 text-white mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
